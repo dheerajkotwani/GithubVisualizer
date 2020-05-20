@@ -1,0 +1,2 @@
+rootProject.name='Github Visualizer'
+include ':app'
