@@ -1,7 +1,6 @@
 package project.dheeraj.githubvisualizer
 
-object GithubModel {
-    data class Profile (val login: String,
+data class ProfileModel (val login: String,
                                  val avatar_url: String,
                                  val url: String,
                                  val name: String,
@@ -10,4 +9,3 @@ object GithubModel {
                                  val followers: String,
                                  val following: String,
                                  val location: String)
-}

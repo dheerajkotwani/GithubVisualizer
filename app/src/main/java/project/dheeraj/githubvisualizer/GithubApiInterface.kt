@@ -11,7 +11,7 @@ import java.util.*
 interface GithubApiInterface {
 
     @GET("users/{user}")
-    fun Check(@Query("user") user: String): retrofit2.Call<GithubModel.Profile>
+    fun Check(@Query("user") user: String): retrofit2.Call<ProfileModel>
 
 
 }

@@ -6,8 +6,6 @@ import android.widget.Toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.create
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,26 +18,21 @@ class MainActivity : AppCompatActivity() {
 
         apiInterface = RetrofitClient.getClient().create(GithubApiInterface::class.java)
 
-        val call: Call<GithubModel.Profile> = apiInterface.Check("dheerajkotwani")
-        call.enqueue(object : Callback<GithubModel.Profile>{
-            override fun onFailure(call: Call<GithubModel.Profile>, t: Throwable) {
+        val call: Call<ProfileModel> = apiInterface.Check("dheerajkotwani")
+        call.enqueue(object : Callback<ProfileModel>{
+            override fun onFailure(call: Call<ProfileModel>, t: Throwable) {
             }
 
             override fun onResponse(
-                call: Call<GithubModel.Profile>,
-                response: Response<GithubModel.Profile>
+                call: Call<ProfileModel>,
+                response: Response<ProfileModel>
             ) {
-                Toast.makeText(this@MainActivity, response.body()!!.name, Toast.LENGTH_LONG).show()
+                if (response.body()!=null) {
+                    Toast.makeText(this@MainActivity, response.body()!!.name, Toast.LENGTH_LONG).show()
+                }
             }
 
         }
         )
     }
-//    private fun beginSearch(searchString: String) {
-//        disposable = apiInterface.Check(searchString)
-//            .subscribe(
-//                { result -> txt_search_result.text = "${result} result found" },
-//                { error -> Toast.makeText(this, error.message, Toast.LENGTH_SHORT).show() }
-//            )
-//    }
 }
