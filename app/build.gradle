@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 29
@@ -43,10 +45,59 @@ dependencies {
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation "com.squareup.retrofit2:adapter-rxjava:${RETROFIT_VERSION}"
+    implementation("com.squareup.retrofit2:converter-simplexml:${RETROFIT_VERSION}") {
+        exclude group: 'xpp3', module: 'xpp3'
+        exclude group: 'stax', module: 'stax-api'
+        exclude group: 'stax', module: 'stax'
+    }
 
     // Glide
     implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'com.google.firebase:firebase-auth:19.3.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    // recyclerView module
+    implementation "com.github.skydoves:baserecyclerviewadapter:0.1.3"
+
+    // Timber
+    implementation "com.jakewharton.timber:timber:${TIMBER_VERSION}"
+
+//    // Preference Room
+//    implementation "com.github.skydoves:preferenceroom:${PREFERENCE_ROOM_VERSION}"
+//    kapt "com.github.skydoves:preferenceroom-processor:${PREFERENCE_ROOM_VERSION}"
+
+//    // architecture components
+//    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
+//    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
+//    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+//    implementation "androidx.room:room-runtime:$roomVersion"
+//    kapt "androidx.room:room-compiler:$roomVersion"
+
+    implementation "com.google.dagger:dagger:${DAGGER_VERSION}"
+    annotationProcessor "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
+
+    implementation "com.tbruyelle.rxpermissions:rxpermissions:${RX_PERMISSION_VERSION}"
+
+    implementation "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
+    annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
+
+
+    implementation "de.hdodenhof:circleimageview:${CIRCLE_IMAGEVIEW_VERSION}"
+
+    implementation "com.unstoppable:submitbutton:${SUBMIT_BUTTON_VERSION}"
+
+    implementation "com.afollestad.material-dialogs:core:${MATERIAL_DIALOG_VERSION}"
+    implementation "com.afollestad.material-dialogs:commons:${MATERIAL_DIALOG_VERSION}"
+
+    implementation "com.zzhoujay.richtext:richtext:${RICKTEXT_VERSION}"
+    implementation 'com.zzhoujay.glideimagegetter:glideimagegetter:1.0.5'
+
+    implementation "com.orhanobut:logger:${LOGGER_VERSION}"
+    implementation "com.timehop.stickyheadersrecyclerview:library:${STICKY_HEAD_VERSION}"
+
+
+    implementation "org.jsoup:jsoup:${JSOUP_VERSION}"
 
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

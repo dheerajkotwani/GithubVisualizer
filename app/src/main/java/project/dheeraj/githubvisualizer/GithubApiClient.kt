@@ -4,11 +4,10 @@ import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-
-object RetrofitClient{
+object GithubApiClient{
 
     lateinit var retrofit: Retrofit
-    final var BASE_URL = AppConfig.GITHUB_BASE_URL
+    final var BASE_URL = AppConfig.GITHUB_API_BASE_URL
 
     var gson = GsonBuilder()
         .setLenient()
