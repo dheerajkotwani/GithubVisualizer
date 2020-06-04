@@ -6,7 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".Activity.MainActivity">
 
-    <include
-        layout="@layout/fragment_profile"/>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/main_view_pager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.etebarian.meowbottomnavigation.MeowBottomNavigation
+        android:id="@+id/main_bottom_navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:mbn_countBackgroundColor="@color/black_90"
+        app:mbn_backgroundBottomColor="@color/black_90"
+        app:mbn_defaultIconColor="@color/white"
+        app:mbn_selectedIconColor="@color/grey_800"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

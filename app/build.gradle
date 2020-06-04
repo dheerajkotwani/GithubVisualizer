@@ -14,7 +14,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -55,6 +55,7 @@ dependencies {
     // Glide
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.google.firebase:firebase-auth:19.3.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     // recyclerView module
@@ -62,6 +63,12 @@ dependencies {
 
     // Timber
     implementation "com.jakewharton.timber:timber:${TIMBER_VERSION}"
+
+    // Meow Bottom Navigation
+    implementation "com.etebarian:meow-bottom-navigation:${MEOW_NAVIGATION_VERSION}"
+
+    // View Pager 2
+    implementation "androidx.viewpager2:viewpager2:${VIEW_PAGER2_VERSION}"
 
 //    // Preference Room
 //    implementation "com.github.skydoves:preferenceroom:${PREFERENCE_ROOM_VERSION}"

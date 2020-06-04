@@ -20,7 +20,8 @@
 
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.MainActivity"></activity>
+        <activity android:name=".Activity.MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>
