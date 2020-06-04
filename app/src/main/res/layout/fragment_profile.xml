@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/grey_100">
-
+    android:background="@color/grey_100"
+    android:layout_marginBottom="24dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,6 +15,7 @@
         android:background="@color/white"
         android:paddingTop="10dp"
         android:paddingBottom="16dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -57,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:text="dheerajkotwani"
                     android:singleLine="true"
-                    android:textColor="@android:color/darker_gray"
+                    android:textColor="@color/grey_800"
                     android:textSize="14dp"
                     android:fontFamily="@font/roboto_regular"/>
 
@@ -65,7 +66,7 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <!--<LinearLayout
             android:layout_margin="16dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -73,6 +74,7 @@
             android:padding="6dp">
 
             <ImageView
+                android:id="@+id/image_status"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
@@ -81,6 +83,7 @@
                 android:layout_marginEnd="4dp"/>
 
             <TextView
+                android:id="@+id/text_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
@@ -90,16 +93,17 @@
                 android:fontFamily="@font/roboto_light"
                 android:textStyle="bold"/>
 
-        </LinearLayout>
+        </LinearLayout>-->
 
         <TextView
+            android:id="@+id/text_bio"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16dp"
             android:text="@string/my_bio"
-            android:textColor="@android:color/black"
+            android:textColor="@color/grey_800"
             android:fontFamily="@font/roboto_light"
             android:textStyle="bold"/>
 
@@ -118,10 +122,12 @@
                 android:layout_marginEnd="4dp"/>
 
             <TextView
+                android:id="@+id/text_organizaions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
                 android:text="Organisations"
+                android:singleLine="true"
                 android:layout_gravity="center"
                 android:textColor="@color/black_90"
                 android:fontFamily="@font/roboto_regular"/>
@@ -143,10 +149,12 @@
                 android:layout_marginEnd="4dp"/>
 
             <TextView
+                android:id="@+id/text_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
                 android:text="Email"
+                android:singleLine="true"
                 android:layout_gravity="center"
                 android:textColor="@color/black_90"
                 android:fontFamily="@font/roboto_regular"/>
@@ -168,10 +176,12 @@
                 android:layout_marginEnd="4dp"/>
 
             <TextView
+                android:id="@+id/text_website"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
                 android:text="website"
+                android:singleLine="true"
                 android:layout_gravity="center"
                 android:textColor="@color/black_90"
                 android:fontFamily="@font/roboto_regular"/>
@@ -193,10 +203,39 @@
                 android:layout_marginEnd="4dp"/>
 
             <TextView
+                android:id="@+id/text_twitter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="twitter"
+                android:singleLine="true"
+                android:layout_gravity="center"
+                android:textColor="@color/black_90"
+                android:fontFamily="@font/roboto_regular"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/github_logo"
+                android:layout_marginEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/text_joined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
                 android:text="Joined"
+                android:singleLine="true"
                 android:layout_gravity="center"
                 android:textColor="@color/black_90"
                 android:fontFamily="@font/roboto_regular"/>
@@ -219,6 +258,7 @@
                 android:layout_weight="1">
 
                 <TextView
+                    android:id="@+id/text_followers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16dp"
@@ -250,6 +290,7 @@
                 android:layout_weight="1">
 
                 <TextView
+                    android:id="@+id/text_following"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16dp"
@@ -282,6 +323,7 @@
                 android:layout_weight="1">
 
                 <TextView
+                    android:id="@+id/text_repo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16dp"

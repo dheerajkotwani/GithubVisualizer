@@ -1,20 +1,19 @@
 package project.dheeraj.githubvisualizer.Activity
 
+import GithubUserModel
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import androidx.viewpager2.widget.ViewPager2
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
-import kotlinx.android.synthetic.main.activity_main.*
 import project.dheeraj.githubvisualizer.*
 import project.dheeraj.githubvisualizer.Adapter.ViewPagerAdapter
 import project.dheeraj.githubvisualizer.AppConfig.ACCESS_TOKEN
 import project.dheeraj.githubvisualizer.AppConfig.SHARED_PREF
 import project.dheeraj.githubvisualizer.Fragment.Main.*
-import project.dheeraj.githubvisualizer.Model.FragmentModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPref: SharedPreferences
     private lateinit var mainBottomNavigation: MeowBottomNavigation
     private lateinit var mainViewPager: ViewPager
-    private lateinit var  fragmentModel: ArrayList<FragmentModel>
+    private lateinit var fragmentModel: ArrayList<Fragment>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +37,23 @@ class MainActivity : AppCompatActivity() {
 
         setViewPager()
 
+        mainViewPager.
+            setOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+                override fun onPageScrollStateChanged(state: Int) {
+                }
+
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                }
+
+                override fun onPageSelected(position: Int) {
+                    mainBottomNavigation.show(position+1)
+                }
+
+            })
 
         mainBottomNavigation.setOnShowListener {
             // YOUR CODES
@@ -51,10 +67,10 @@ class MainActivity : AppCompatActivity() {
 
         apiInterface =
             GithubApiClient.getClient().create(GithubApiInterface::class.java);
-        var call: Call<ProfileModel> =
+        var call: Call<GithubUserModel> =
             apiInterface.getUserInfo("token ${sharedPref.getString(ACCESS_TOKEN, "")}")
-        call.enqueue(object : Callback<ProfileModel> {
-            override fun onFailure(call: Call<ProfileModel>, t: Throwable) {
+        call.enqueue(object : Callback<GithubUserModel> {
+            override fun onFailure(call: Call<GithubUserModel>, t: Throwable) {
                 Toast.makeText(
                     this@MainActivity,
                     "error: ${t.message}",
@@ -62,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
 
-            override fun onResponse(call: Call<ProfileModel>, response: Response<ProfileModel>) {
+            override fun onResponse(call: Call<GithubUserModel>, response: Response<GithubUserModel>) {
                 Toast.makeText(
                     this@MainActivity,
                     "response: ${response.body()!!.bio}",
@@ -87,11 +103,11 @@ class MainActivity : AppCompatActivity() {
 
         mainBottomNavigation.show(3)
 
-        fragmentModel.add(FragmentModel(HomeFragment()))
-        fragmentModel.add(FragmentModel(SearchFragment()))
-        fragmentModel.add(FragmentModel(FeedFragment()))
-        fragmentModel.add(FragmentModel(NotificationFragment()))
-        fragmentModel.add(FragmentModel(ProfileFragment()))
+        fragmentModel.add(HomeFragment())
+        fragmentModel.add(SearchFragment())
+        fragmentModel.add(FeedFragment())
+        fragmentModel.add(NotificationFragment())
+        fragmentModel.add(ProfileFragment())
 
     }
 

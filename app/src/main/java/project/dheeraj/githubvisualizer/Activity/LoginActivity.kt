@@ -1,5 +1,6 @@
 package project.dheeraj.githubvisualizer.Activity
 
+import GithubUserModel
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -150,10 +151,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
                 val apiInterface =
                         GithubApiClient.getClient().create(GithubApiInterface::class.java);
-                    var call: Call<ProfileModel> =
+                    var call: Call<GithubUserModel> =
                         apiInterface.getUserInfo("token ${(it!!.credential as OAuthCredential).accessToken}")
-                    call.enqueue(object : Callback<ProfileModel> {
-                        override fun onFailure(call: Call<ProfileModel>, t: Throwable) {
+                    call.enqueue(object : Callback<GithubUserModel> {
+                        override fun onFailure(call: Call<GithubUserModel>, t: Throwable) {
                             Toast.makeText(
                                 this@LoginActivity,
                                 "error: ${t.message}",
@@ -161,9 +162,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                             ).show()
                         }
 
-                        override fun onResponse(call: Call<ProfileModel>, response: Response<ProfileModel>) {
+                        override fun onResponse(call: Call<GithubUserModel>, response: Response<GithubUserModel>) {
                             Log.d("RESPONSE", response.message())
-                            Log.d("UserName", response.body()!!.name)
+                            Log.d("UserName", response.body()!!.login)
 
                             Toast.makeText(
                                 this@LoginActivity,
