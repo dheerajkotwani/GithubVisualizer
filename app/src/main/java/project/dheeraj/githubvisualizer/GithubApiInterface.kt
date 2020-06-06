@@ -1,6 +1,7 @@
 package project.dheeraj.githubvisualizer
 
 import EventsModel
+import FollowerModel
 import project.dheeraj.githubvisualizer.Model.FeedModels.FeedModel
 import GithubUserModel
 import NotificationModel
@@ -11,8 +12,12 @@ import kotlin.collections.ArrayList
 
 interface GithubApiInterface {
 
+    @Headers("Content-Type: application/json")
     @GET("users/{user}")
-    fun Check(@Query("user") user: String): retrofit2.Call<ProfileModel>
+    fun getPublicUser(
+        @Header("Authorization") token: String,
+        @Path("user") user: String
+    ): retrofit2.Call<GithubUserModel>
 
     @Headers("Content-Type: application/json")
     @GET("/user")
@@ -49,16 +54,16 @@ interface GithubApiInterface {
     ): retrofit2.Call<SearchModel>
 
     @Headers("Content-Type: application/json")
-    @GET("/user/repos?per_page=100")
+    @GET("/user/repos?sort=updated&per_page=100")
     fun getMyRepos(
         @Header("Authorization") user: String
     ): retrofit2.Call<ArrayList<RepositoryModel>>
 
     @Headers("Content-Type: application/json")
-    @GET("/users/{username}/repos?per_page=100")
+    @GET("/users/{username}/repos?sort=updated&per_page=100")
     fun getUserRepos(
         @Header("Authorization") user: String,
-        @Query("username") username:String
+        @Path("username") username:String
     ): retrofit2.Call<ArrayList<RepositoryModel>>
 
     @Headers("Content-Type: application/json")
@@ -67,6 +72,28 @@ interface GithubApiInterface {
         @Header("Authorization") user: String
     ): retrofit2.Call<ArrayList<RepositoryModel>>
 
+    @Headers("Content-Type: application/json")
+    @GET("/users/{username}/repos?sort=updated&per_page=5")
+    fun topReposUser(
+        @Header("Authorization") user: String,
+        @Path("username") username:String
+    ): retrofit2.Call<ArrayList<RepositoryModel>>
+
+    @Headers("Content-Type: application/json")
+    @GET("/users/{username}/following?per_page=100")
+    fun getFollowing(
+        @Header("Authorization") token: String,
+        @Path("username") username:String,
+        @Query("page") page:Int
+    ): retrofit2.Call<ArrayList<FollowerModel>>
+
+    @Headers("Content-Type: application/json")
+    @GET("/users/{username}/followers?per_page=100")
+    fun getFollowers(
+        @Header("Authorization") token: String,
+        @Path("username") username:String,
+        @Query("page") page:Int
+    ): retrofit2.Call<ArrayList<FollowerModel>>
 
 
 }

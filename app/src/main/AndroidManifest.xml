@@ -6,24 +6,38 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_github_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/ic_github_logo"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".Activity.ProfileActivity"
-            android:label="@string/title_activity_profile"
+        <activity android:name=".Activity.IssuesActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".Activity.OrganizationsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Activity.GistsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Activity.FollowActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Activity.RepositoriesActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activity.LoginActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:name=".Activity.SplashScreenActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Activity.ProfileActivity"
+            android:label="@string/title_activity_profile"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.LoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".Activity.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

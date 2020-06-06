@@ -11,6 +11,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.pranavpandey.android.dynamic.toasts.DynamicToast
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.android.synthetic.main.layout_notifications.view.*
 import project.dheeraj.githubvisualizer.Adapter.NotificationsAdapter.*
 import project.dheeraj.githubvisualizer.R
@@ -37,10 +40,22 @@ class RepositoryAdapter(var context: Context,
 
     override fun onBindViewHolder(holder: RepositoryAdapter.ViewHolder, position: Int) {
         holder.title.text = repoModel[position].name
-        holder.description.text = repoModel[position].name
+        if (repoModel[position].description.isNullOrEmpty())
+            holder.description.text = repoModel[position].name
+        else
+            holder.description.text = repoModel[position].description
         holder.language.text = repoModel[position].language
         holder.stars.text = repoModel[position].stargazers_count.toString()
         holder.forks.text = repoModel[position].forks_count.toString()
+        holder.repoOwner.text = repoModel[position].owner.login
+
+        Glide.with(context)
+            .load(repoModel[position].owner.avatar_url)
+            .into(holder.repoImage)
+
+        holder.itemView.setOnClickListener {
+            DynamicToast.makeWarning(context, "Developing").show()
+        }
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -50,6 +65,9 @@ class RepositoryAdapter(var context: Context,
         var language:TextView = itemView.findViewById(R.id.repo_language)
         var stars:TextView = itemView.findViewById(R.id.repo_stars)
         var forks:TextView = itemView.findViewById(R.id.repo_forks)
+        var repoOwner:TextView = itemView.findViewById(R.id.repoOwner)
+        var repoImage:CircleImageView = itemView.findViewById(R.id.repoImage)
+
 
     }
 

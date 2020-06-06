@@ -92,7 +92,7 @@ class FeedFragment : Fragment(), FragmentLifecycle {
         var call: Call<ArrayList<EventsModel>> =
             apiInterface.getEvents(
                 "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}",
-                "dheerajkotwani", page
+                "${sharedPref.getString(AppConfig.LOGIN, "")}", page
             )
         try {
 

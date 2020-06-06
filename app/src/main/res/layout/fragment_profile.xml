@@ -38,7 +38,7 @@
                 app:cardCornerRadius="10dp">
 
                 <ImageView
-                    android:id="@+id/imageView_displayImage"
+                    android:id="@+id/profileImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 
@@ -52,7 +52,7 @@
                 android:layout_gravity="center">
 
                 <TextView
-                    android:id="@+id/text_name"
+                    android:id="@+id/tvDisplayName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Dheeraj Kotwani"
@@ -62,10 +62,10 @@
                     android:textStyle="bold"
                     android:fontFamily="@font/roboto_regular"/>
                 <TextView
-                    android:id="@+id/text_username"
+                    android:id="@+id/tvUserName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="dheerajkotwani"
+                    android:text="userName"
                     android:singleLine="true"
                     android:textColor="@color/grey_800"
                     android:textSize="14dp"
@@ -105,7 +105,7 @@
         </LinearLayout>-->
 
         <TextView
-            android:id="@+id/text_bio"
+            android:id="@+id/tvBio"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_width="match_parent"
@@ -116,6 +116,7 @@
             android:fontFamily="@font/roboto_regular"/>
 
         <LinearLayout
+            android:id="@+id/llOrganisations"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="5dp"
@@ -130,7 +131,7 @@
                 android:layout_marginEnd="4dp"/>
 
             <TextView
-                android:id="@+id/text_organizaions"
+                android:id="@+id/tvDescriptions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
@@ -143,6 +144,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llLocation"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="5dp"
@@ -157,7 +159,7 @@
                 android:layout_marginEnd="4dp"/>
 
             <TextView
-                android:id="@+id/text_location"
+                android:id="@+id/tvLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
@@ -170,6 +172,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llEmail"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="5dp"
@@ -184,7 +187,7 @@
                 android:layout_marginEnd="4dp"/>
 
             <TextView
-                android:id="@+id/text_email"
+                android:id="@+id/tvEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
@@ -197,6 +200,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llWebsite"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="5dp"
@@ -211,7 +215,7 @@
                 android:layout_marginEnd="4dp"/>
 
             <TextView
-                android:id="@+id/text_website"
+                android:id="@+id/tvWebsites"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
@@ -224,6 +228,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/llTwitter"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="5dp"
@@ -238,7 +243,7 @@
                 android:layout_marginEnd="4dp"/>
 
             <TextView
-                android:id="@+id/text_twitter"
+                android:id="@+id/tvTwitter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
@@ -265,7 +270,7 @@
                 android:layout_marginEnd="4dp"/>
 
             <TextView
-                android:id="@+id/text_joined"
+                android:id="@+id/tvJoined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
@@ -287,7 +292,7 @@
 
 
             <LinearLayout
-                android:id="@+id/ll_followers"
+                android:id="@+id/llFollowers"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -296,7 +301,7 @@
                 android:focusable="true">
 
                 <TextView
-                    android:id="@+id/text_followers"
+                    android:id="@+id/tvFollowers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16dp"
@@ -322,7 +327,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ll_following"
+                android:id="@+id/llFollowing"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -331,7 +336,7 @@
                 android:focusable="true">
 
                 <TextView
-                    android:id="@+id/text_following"
+                    android:id="@+id/tvFollowing"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16dp"
@@ -358,7 +363,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ll_repo"
+                android:id="@+id/llRepo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -367,7 +372,7 @@
                 android:focusable="true">
 
                 <TextView
-                    android:id="@+id/text_repo"
+                    android:id="@+id/tvRepositories"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16dp"
@@ -393,7 +398,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ll_stars"
+                android:id="@+id/llGists"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -402,7 +407,7 @@
                 android:focusable="true">
 
                 <TextView
-                    android:id="@+id/text_stars"
+                    android:id="@+id/tvGists"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16dp"
@@ -448,7 +453,7 @@
                     android:textColor="@color/black_90"/>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/toprepo_recyclerView"
+                    android:id="@+id/topRepoRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"

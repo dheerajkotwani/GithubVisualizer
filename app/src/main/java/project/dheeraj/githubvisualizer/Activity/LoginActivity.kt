@@ -19,6 +19,8 @@ import okhttp3.*
 import org.json.JSONObject
 import project.dheeraj.githubvisualizer.*
 import project.dheeraj.githubvisualizer.AppConfig.ACCESS_TOKEN
+import project.dheeraj.githubvisualizer.AppConfig.LOGIN
+import project.dheeraj.githubvisualizer.AppConfig.NAME
 import project.dheeraj.githubvisualizer.AppConfig.SHARED_PREF
 import project.dheeraj.githubvisualizer.R
 import retrofit2.Call
@@ -44,8 +46,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_login)
 
         initialiseViews()
-        if (auth.currentUser!=null)
+        if (auth.currentUser!=null) {
             startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
         loginButton.setOnClickListener(this)
 
 
@@ -89,12 +93,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-//    private fun getLoginService(token: String?): LoginService? {
-//        return AppRetrofit()
-//            .getRetrofit(AppConfig.GITHUB_API_BASE_URL, token.toString())!!
-//            .create(LoginService::class.java)
-//    }
-
     private fun verifyCredentials(username: String, password: String) {
 
         var token: String = Credentials.basic(username, password);
@@ -106,14 +104,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
         provider.scopes = scopes
-
-//       var intent: Intent = Intent(Intent.ACTION_VIEW,
-//            Uri.parse("https://github.com/login/oauth/authorize?client_id=${AppConfig.CLIENT_ID}" +
-//                    "&scope=${AppConfig.OAUTH2_SCOPE}" +
-//                    "&login=${username}" +
-//                    "&redirect_uri=${AppConfig.REDIRECT_URL}"));
-//        startActivity(intent)
-
 
         auth
             .startActivityForSignInWithProvider( /* activity= */this, provider.build())
@@ -129,24 +119,16 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     Toast.LENGTH_SHORT
                 ).show()
 
-//                Toast.makeText(this," access Token:  ${(it!!.credential as OAuthCredential).accessToken}", Toast.LENGTH_LONG).show()
-//                Toast.makeText(this,"idToken:  ${(it!!.credential as OAuthCredential).idToken}", Toast.LENGTH_LONG).show()
-//                Toast.makeText(this," secret:  ${(it!!.credential as OAuthCredential).secret}", Toast.LENGTH_LONG).show()
-
-//                usernameEditText.setText(((it as zzh) as zzc).toString());
-
-//                var json:String = it.user!!.zzc().persistenceKey;
-//
-//                    var obj: AuthResult? = it;
-//                    (obj!!.credential as OAuthCredential).accessToken
 
                 with (sharedPref.edit()) {
                     putString(ACCESS_TOKEN, (it!!.credential as OAuthCredential).accessToken)
+                    putString(NAME, auth.currentUser!!.displayName)
+                    putString(NAME, auth.currentUser!!.email)
                     commit()
                 }
 
                 startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-
+                finish()
 
 
                 val apiInterface =
@@ -166,11 +148,18 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                             Log.d("RESPONSE", response.message())
                             Log.d("UserName", response.body()!!.login)
 
-                            Toast.makeText(
-                                this@LoginActivity,
-                                "response: ${response.body()!!.bio}",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            with (sharedPref.edit()) {
+                                putString(ACCESS_TOKEN, (it!!.credential as OAuthCredential).accessToken)
+                                putString(NAME, auth.currentUser!!.displayName)
+                                putString(NAME, auth.currentUser!!.email)
+                                commit()
+                            }
+
+//                            Toast.makeText(
+//                                this@LoginActivity,
+//                                "response: ${response.body()!!.bio}",
+//                                Toast.LENGTH_LONG
+//                            ).show()
                         }
                     })
 

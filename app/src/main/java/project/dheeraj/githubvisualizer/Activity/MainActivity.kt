@@ -9,6 +9,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
+import com.google.firebase.FirebaseApp
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.messaging.FirebaseMessaging
 import project.dheeraj.githubvisualizer.*
 import project.dheeraj.githubvisualizer.Adapter.ViewPagerAdapter
 import project.dheeraj.githubvisualizer.AppConfig.ACCESS_TOKEN
@@ -84,6 +87,11 @@ class MainActivity : AppCompatActivity() {
                     "response: ${response.body()!!.bio}",
                     Toast.LENGTH_LONG
                 ).show()
+                
+                sharedPref.edit()
+                    .putString(AppConfig.NAME, response.body()!!.name)
+                    .putString(AppConfig.LOGIN, response.body()!!.login)
+                    .apply()
             }
         })
     }
@@ -116,5 +124,15 @@ class MainActivity : AppCompatActivity() {
         mainBottomNavigation = findViewById(R.id.main_bottom_navigation)
         mainViewPager = findViewById(R.id.main_view_pager)
         fragmentModel = ArrayList()
+
+        FirebaseApp.initializeApp(baseContext)
+        FirebaseAnalytics.getInstance(baseContext)
+        FirebaseMessaging.getInstance().isAutoInitEnabled
+
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 }

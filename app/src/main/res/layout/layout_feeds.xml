@@ -19,8 +19,9 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/feedUserImage"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:padding="3dp"
                 android:src="@drawable/github_logo"
                 android:layout_gravity="center"/>
 
@@ -29,6 +30,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="user name"
+                android:padding="4dp"
                 android:singleLine="true"
                 android:fontFamily="@font/roboto_regular"
                 android:includeFontPadding="false"

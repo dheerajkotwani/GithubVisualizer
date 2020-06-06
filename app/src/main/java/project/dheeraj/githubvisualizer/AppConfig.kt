@@ -17,11 +17,13 @@ object AppConfig {
     const val CACHE_MAX_AGE = 4 * 7 * 24 * 60 * 60
     const val CLIENT_ID: String = "e5f4203ad416624865dd"
     const val CLIENT_SECRET: String = "68c29a037c13960d75e6c01ca0234e6f37ef8375"
-    const val OAUTH2_SCOPE = "user,repo,gist,notifications"
+    const val OAUTH2_SCOPE = "user,repo,gist,notifications,admin"
     const val OAUTH2_URL = GITHUB_BASE_URL + "login/oauth/authorize"
     const val REDIRECT_URL = "https://github-visualizer.firebaseapp.com/__/auth/handler";
     const val AUTH_CODE = "project.dheeraj.githubvisualizer.AUTHORIZE"
     const val SHARED_PREF = "project.dheeraj.githubvisualizer.SHARED_PREF"
     const val ACCESS_TOKEN = "project.dheeraj.githubvisualizer.ACCESS_TOKEN"
+    const val LOGIN = "project.dheeraj.githubvisualizer.LOGIN"
+    const val NAME = "project.dheeraj.githubvisualizer.NAME"
 
 }

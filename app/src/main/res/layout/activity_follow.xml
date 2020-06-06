@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.RepositoriesActivity">
+
+    <LinearLayout
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/buttonBack"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_arrow_back_black_24dp"
+            android:padding="10dp"
+            android:layout_gravity="center"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:padding="6dp">
+
+            <TextView
+                android:id="@+id/pageTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Follow"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:fontFamily="@font/roboto_regular"
+                android:textColor="@color/black_90"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="2dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_person_black_24dp"
+                    android:layout_gravity="center"
+                    android:tint="@color/grey_600"/>
+
+                <TextView
+                    android:id="@+id/userName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="username"
+                    android:textSize="14dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="6dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/followRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/titleBar"
+        android:layout_marginTop="6dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+    <ProgressBar
+        android:id="@+id/followProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

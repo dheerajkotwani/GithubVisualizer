@@ -24,7 +24,7 @@
             app:collapsedTitleGravity="start"
             app:expandedTitleGravity="top"
             app:expandedTitleMarginStart="96dp"
-            app:expandedTitleMarginTop="44dp"
+            app:expandedTitleMarginTop="80dp"
             app:toolbarId="@+id/toolbar"
             app:expandedTitleTextAppearance="@style/Toolbar.Expand.TitleText"
             android:paddingTop="0dp">
@@ -54,7 +54,7 @@
                 android:paddingStart="@dimen/spacing_normal"
                 android:paddingEnd="@dimen/spacing_normal"
                 android:paddingBottom="@dimen/spacing_normal"
-                android:layout_marginTop="76dp">
+                android:layout_marginTop="70dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/userAvatar"
@@ -62,28 +62,6 @@
                     android:layout_height="72dp"
                     android:transitionName="userAvatar"
                     android:src="@drawable/github_logo"/>
-
-                <TextView
-                    android:id="@+id/location"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16dp"
-                    android:layout_toEndOf="@+id/userAvatar"
-                    android:text="location"
-                    android:layout_marginStart="@dimen/spacing_normal"
-                    android:layout_marginTop="@dimen/spacing_x_large"/>
-
-                <TextView
-                    android:id="@+id/joinedDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:text="Joined"
-                    android:textSize="16dp"
-                    android:layout_below="@+id/location"
-                    android:layout_toEndOf="@+id/userAvatar"
-                    android:layout_marginStart="@dimen/spacing_normal"
-                    android:transitionName="issueTitle"/>
 
             </RelativeLayout>
 
