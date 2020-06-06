@@ -8,43 +8,76 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/notification_icon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="center"/>
+        android:orientation="vertical"
+        android:layout_marginBottom="10dp">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="10dp"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/feedUserImage"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/github_logo"
+                android:layout_gravity="center"/>
 
             <TextView
-                android:id="@+id/notification_text"
-                android:layout_width="wrap_content"
+                android:id="@+id/feedUserName"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="NOTIFICATION"
-                android:textStyle="bold"
+                android:text="user name"
+                android:singleLine="true"
+                android:fontFamily="@font/roboto_regular"
+                android:includeFontPadding="false"
+                android:layout_weight="1"
+                android:layout_gravity="center"
                 android:textSize="16dp"
-                android:textColor="@color/grey_800"/>
+                android:layout_marginStart="5dp"
+                android:textColor="@color/blue_900"/>
 
             <TextView
-                android:id="@+id/notification_time"
+                android:id="@+id/feedTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="NOTIFICATION"
+                android:text="Time"
+                android:singleLine="true"
+                android:fontFamily="@font/roboto_regular"
                 android:textSize="14dp"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/grey_800"/>
+                android:layout_gravity="center"
+                android:textColor="@color/grey_700"/>
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/feedTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is title"
+            android:layout_weight="1"
+            android:fontFamily="@font/roboto_regular"
+            android:layout_gravity="center"
+            android:textSize="16dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/black_90"/>
+
+        <TextView
+            android:id="@+id/feedDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is description"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="14dp"
+            android:maxLines="4"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_gravity="center"
+            android:textColor="@color/grey_700"/>
+
+
 
     </LinearLayout>
 

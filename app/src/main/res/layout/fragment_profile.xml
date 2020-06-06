@@ -6,6 +6,15 @@
     android:background="@color/grey_100"
     android:layout_marginBottom="24dp">
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -103,9 +112,8 @@
             android:layout_height="wrap_content"
             android:textSize="16dp"
             android:text="@string/my_bio"
-            android:textColor="@color/grey_800"
-            android:fontFamily="@font/roboto_light"
-            android:textStyle="bold"/>
+            android:textColor="@color/grey_700"
+            android:fontFamily="@font/roboto_regular"/>
 
         <LinearLayout
             android:layout_marginStart="16dp"
@@ -118,7 +126,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
-                android:src="@drawable/github_logo"
+                android:src="@drawable/ic_organization"
                 android:layout_marginEnd="4dp"/>
 
             <TextView
@@ -145,7 +153,34 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
-                android:src="@drawable/github_logo"
+                android:src="@drawable/ic_location_on_black_24dp"
+                android:layout_marginEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/text_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:text="Location"
+                android:singleLine="true"
+                android:layout_gravity="center"
+                android:textColor="@color/black_90"
+                android:fontFamily="@font/roboto_regular"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_email_black_24dp"
                 android:layout_marginEnd="4dp"/>
 
             <TextView
@@ -172,7 +207,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
-                android:src="@drawable/github_logo"
+                android:src="@drawable/ic_insert_link_black_24dp"
                 android:layout_marginEnd="4dp"/>
 
             <TextView
@@ -199,7 +234,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
-                android:src="@drawable/github_logo"
+                android:src="@drawable/ic_twitter"
                 android:layout_marginEnd="4dp"/>
 
             <TextView
@@ -226,7 +261,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
-                android:src="@drawable/github_logo"
+                android:src="@drawable/ic_date_range_black_24dp"
                 android:layout_marginEnd="4dp"/>
 
             <TextView
@@ -248,14 +283,17 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:orientation="horizontal"
-            android:layout_marginTop="4dp">
+            android:layout_marginTop="8dp">
 
 
             <LinearLayout
+                android:id="@+id/ll_followers"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true">
 
                 <TextView
                     android:id="@+id/text_followers"
@@ -284,10 +322,13 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_following"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true">
 
                 <TextView
                     android:id="@+id/text_following"
@@ -317,10 +358,13 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_repo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true">
 
                 <TextView
                     android:id="@+id/text_repo"
@@ -348,12 +392,76 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/ll_stars"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/text_stars"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:fontFamily="@font/roboto_light"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textColor="@color/black_90"
+                    android:text="80"
+                    android:textAlignment="center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14dp"
+                    android:fontFamily="@font/roboto_light"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textColor="@color/grey_700"
+                    android:text="Gists"
+                    android:includeFontPadding="false"
+                    android:textAlignment="center"/>
+
+            </LinearLayout>
+
         </LinearLayout>
-<!--        -->
-<!--        <LinearLayout-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
 
     </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Top Repositories"
+                    android:textSize="20dp"
+                    android:fontFamily="@font/alata_regular"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/black_90"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/toprepo_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+
+
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="40dp"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

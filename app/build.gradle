@@ -30,6 +30,9 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 dependencies {
@@ -56,6 +59,8 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.google.firebase:firebase-auth:19.3.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.firebase:firebase-core:16.0.4'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     // recyclerView module
@@ -69,6 +74,11 @@ dependencies {
 
     // View Pager 2
     implementation "androidx.viewpager2:viewpager2:${VIEW_PAGER2_VERSION}"
+
+    // Material Toast
+    implementation 'com.javiersc:materialtoast:1.0.2'
+
+    implementation 'com.pranavpandey.android:dynamic-toasts:3.2.0'
 
 //    // Preference Room
 //    implementation "com.github.skydoves:preferenceroom:${PREFERENCE_ROOM_VERSION}"
@@ -94,6 +104,8 @@ dependencies {
     // optional - Guava support for Room, including Optional and ListenableFuture
     implementation "androidx.room:room-guava:$room_version"
 
+    // Pretty Time
+    implementation 'org.ocpsoft.prettytime:prettytime:4.0.4.Final'
 
     implementation "com.google.dagger:dagger:${DAGGER_VERSION}"
     annotationProcessor "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"

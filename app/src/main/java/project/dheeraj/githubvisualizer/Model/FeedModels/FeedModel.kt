@@ -1,3 +1,7 @@
+package project.dheeraj.githubvisualizer.Model.FeedModels
+
+import _links
+
 class FeedModel (
 
 	val timeline_url : String,

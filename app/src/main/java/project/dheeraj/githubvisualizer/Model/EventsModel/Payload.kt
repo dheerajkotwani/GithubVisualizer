@@ -1,4 +1,7 @@
-/* 
+import project.dheeraj.githubvisualizer.Model.EventsModel.Pull_request
+import java.lang.reflect.Member
+
+/*
 Copyright (c) 2020 Kotlin Data Classes Generated from JSON powered by http://www.json2kotlin.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -16,8 +19,17 @@ data class Payload (
 	val size : Number,
 	val distinct_size : Number,
 	val ref : String,
+	val ref_type : String,
 	val description: String,
 	val head : String,
 	val before : String,
-	val commits : List<Commits>
+	val commits : List<Commits>,
+	val action : String,
+	val number : Int,
+	val pull_request : Pull_request,
+	val issue : Issue,
+	val comment : Comment,
+	val forkee : Forkee,
+	val member : project.dheeraj.githubvisualizer.Model.EventsModel.Member
+
 )

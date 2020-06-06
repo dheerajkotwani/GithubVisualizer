@@ -14,5 +14,5 @@ data class SearchModel (
 
 	val total_count : Int,
 	val incomplete_results : Boolean,
-	val items : List<Items>
+	val items : ArrayList<Items>
 )

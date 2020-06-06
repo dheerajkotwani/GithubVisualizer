@@ -17,4 +17,5 @@ data class Commits (
 	val message : String,
 	val distinct : Boolean,
 	val url : String
+
 )

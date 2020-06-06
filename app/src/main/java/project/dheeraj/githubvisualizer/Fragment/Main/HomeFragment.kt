@@ -8,7 +8,7 @@ import android.view.ViewGroup
 
 import project.dheeraj.githubvisualizer.R
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), FragmentLifecycle {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +21,12 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)
+    }
+
+    override fun onPauseFragment() {
+    }
+
+    override fun onResumeFragment() {
     }
 
 
