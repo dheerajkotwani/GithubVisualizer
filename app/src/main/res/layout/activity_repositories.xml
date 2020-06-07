@@ -81,6 +81,34 @@
         android:layout_marginTop="6dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
+    <LinearLayout
+        android:id="@+id/noRepoFound"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/titleBar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:src="@drawable/nothing_to_display"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nothing to Display"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/black_90"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+
     <ProgressBar
         android:id="@+id/repoProgressbar"
         android:layout_width="wrap_content"

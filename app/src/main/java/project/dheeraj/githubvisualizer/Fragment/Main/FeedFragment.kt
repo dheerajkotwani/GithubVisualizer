@@ -1,6 +1,7 @@
 package project.dheeraj.githubvisualizer.Fragment.Main
 
 import EventsModel
+import StarredModel
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_feed.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import project.dheeraj.githubvisualizer.Adapter.FeedsAdapter
 import project.dheeraj.githubvisualizer.AppConfig
 import project.dheeraj.githubvisualizer.GithubApiClient
@@ -129,6 +131,8 @@ class FeedFragment : Fragment(), FragmentLifecycle {
             feedsProgressBar.visibility = View.GONE
         }
     }
+
+
 
     override fun onPauseFragment() {
     }

@@ -1,21 +1,17 @@
 package project.dheeraj.githubvisualizer.Adapter
 
-import EventsModel
-import NotificationModel
-import OrganizationsModel
 import RepositoryModel
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.layout_notifications.view.*
-import project.dheeraj.githubvisualizer.Adapter.NotificationsAdapter.*
+import project.dheeraj.githubvisualizer.Activity.RepositoryInfoActivity
 import project.dheeraj.githubvisualizer.R
 
 class RepositoryAdapter(var context: Context,
@@ -54,7 +50,13 @@ class RepositoryAdapter(var context: Context,
             .into(holder.repoImage)
 
         holder.itemView.setOnClickListener {
-            DynamicToast.makeWarning(context, "Developing").show()
+
+            val intent = Intent (context, RepositoryInfoActivity::class.java)
+            intent.putExtra("owner", repoModel[position].owner.login )
+            intent.putExtra("repo", repoModel[position].name )
+            context.startActivity(Intent(intent))
+
+//            DynamicToast.makeWarning(context, "Developing").show()
         }
     }
 

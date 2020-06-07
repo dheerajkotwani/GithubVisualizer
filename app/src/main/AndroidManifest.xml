@@ -8,19 +8,34 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_github_logo"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@drawable/ic_github_logo"
         android:supportsRtl="true"
-        android:largeHeap="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.IssuesActivity"
+        <activity
+            android:name=".Activity.RepositoryInfoActivity"
+            android:label="@string/title_activity_repository_info"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".Activity.OrganizationsActivity"
+        <activity
+            android:name=".Activity.PullRequestActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Activity.GistsActivity"
+        <activity
+            android:name=".Activity.DeveloperInfoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Activity.FollowActivity"
+        <activity
+            android:name=".Activity.IssuesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Activity.RepositoriesActivity"
+        <activity
+            android:name=".Activity.OrganizationsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.GistsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.FollowActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.RepositoriesActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.SplashScreenActivity"

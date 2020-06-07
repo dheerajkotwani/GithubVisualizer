@@ -82,11 +82,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<GithubUserModel>, response: Response<GithubUserModel>) {
-                Toast.makeText(
-                    this@MainActivity,
-                    "response: ${response.body()!!.bio}",
-                    Toast.LENGTH_LONG
-                ).show()
                 
                 sharedPref.edit()
                     .putString(AppConfig.NAME, response.body()!!.name)

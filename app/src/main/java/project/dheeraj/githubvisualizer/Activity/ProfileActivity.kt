@@ -57,19 +57,38 @@ class ProfileActivity : AppCompatActivity() {
         supportActionBar!!.title = username
         sharedPref = getSharedPreferences(AppConfig.SHARED_PREF, Context.MODE_PRIVATE)
 
-        Glide.with(baseContext)
-            .load(intent.getStringExtra("avatar"))
-            .into(userAvatar)
+        if (intent.hasExtra("avatar")) {
+            Glide.with(baseContext)
+                .load(intent.getStringExtra("avatar"))
+                .into(userAvatar)
 
-        Glide.with(baseContext)
-            .load(intent.getStringExtra("avatar"))
-            .into(userBackgroundImage)
+            Glide.with(baseContext)
+                .load(intent.getStringExtra("avatar"))
+                .into(userBackgroundImage)
+        }
+
+//        githubContributions.loadUserName("dheerajkotwani")
 
 
         var apiInterface =
             GithubApiClient.getClient().create(GithubApiInterface::class.java);
+
+        fetchStars(apiInterface)
         getUserData(apiInterface, username)
         getTopRepos(username)
+
+        if (sharedPref.getString(AppConfig.LOGIN, "") == username)
+            buttonFollow.visibility = View.GONE
+        else
+            checkFollow(apiInterface, username)
+
+        buttonFollow.setOnClickListener {
+            buttonFollow.isClickable = false
+            if (buttonFollow.text == "FOLLOWING")
+                unfollowUser (apiInterface, username)
+            else
+                followUser (apiInterface, username)
+        }
 
 
         // TODO
@@ -99,10 +118,89 @@ class ProfileActivity : AppCompatActivity() {
 
         // TODO
         llGistsUser.setOnClickListener {
-            DynamicToast.makeWarning(this@ProfileActivity, "Developing").show()
+//            DynamicToast.makeWarning(this@ProfileActivity, "Developing").show()
+            val intent = Intent(this@ProfileActivity, RepositoriesActivity::class.java)
+            intent.putExtra(AppConfig.LOGIN, username)
+            intent.putExtra("USER_TYPE", "user")
+            intent.putExtra("PAGE", "STARS")
+            startActivity(intent)
         }
 
 
+    }
+
+    private fun followUser(apiInterface: GithubApiInterface,
+                            username: String){
+
+        var call =
+            apiInterface.followUser("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}", username)
+
+        call.enqueue(object : Callback<String>{
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                buttonFollow.isClickable = true
+                Toast.makeText(this@ProfileActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                buttonFollow.isClickable = true
+                if (response.code() == 204){
+                    Toast.makeText(this@ProfileActivity, "User Followed", Toast.LENGTH_SHORT).show()
+                    buttonFollow.text = "FOLLOWING"
+                }
+                else {
+                    Toast.makeText(this@ProfileActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        })
+    }
+
+    private fun unfollowUser(apiInterface: GithubApiInterface,
+                            username: String){
+
+        var call =
+            apiInterface.unfollowUser("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}", username)
+
+        call.enqueue(object : Callback<String>{
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                buttonFollow.isClickable = true
+                Toast.makeText(this@ProfileActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                buttonFollow.isClickable = true
+                if (response.code() == 204){
+                    Toast.makeText(this@ProfileActivity, "User Unfollowed", Toast.LENGTH_SHORT).show()
+                    buttonFollow.text = "FOLLOW"
+                }
+                else {
+                    Toast.makeText(this@ProfileActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        })
+    }
+
+    private fun checkFollow(apiInterface: GithubApiInterface,
+                       username: String){
+
+        var call =
+            apiInterface.checkFollow("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}", username)
+
+        call.enqueue(object : Callback<String>{
+            override fun onFailure(call: Call<String>, t: Throwable) {
+            }
+
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (response.code() == 404){
+                    buttonFollow.text = "FOLLOW"
+                }
+                else if (response.code() == 204){
+                    buttonFollow.text = "FOLLOWING"
+                }
+            }
+
+        })
     }
 
     private fun getUserData(
@@ -176,6 +274,14 @@ class ProfileActivity : AppCompatActivity() {
                         tvRepositoriesUser.text =
                             (response.body()!!.public_repos).toString()
 
+                        Glide.with(baseContext)
+                            .load(response.body()!!.avatar_url)
+                            .into(userAvatar)
+
+                        Glide.with(baseContext)
+                            .load(response.body()!!.avatar_url)
+                            .into(userBackgroundImage)
+
                     } catch (e: Exception) {
                         Timber.e(e)
                     }
@@ -219,6 +325,46 @@ class ProfileActivity : AppCompatActivity() {
 
             })
 
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    private fun fetchStars(
+        apiInterface: GithubApiInterface
+    ) {
+
+        var call: Call<ArrayList<RepositoryModel>> =
+            apiInterface.starredRepoOfUser(
+                "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}",
+                username
+            )
+        try {
+
+
+            call.enqueue(object : Callback<ArrayList<RepositoryModel>> {
+                override fun onFailure(call: Call<ArrayList<RepositoryModel>>, t: Throwable) {
+                    Toast.makeText(
+                        this@ProfileActivity,
+                        "error: ${t.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+                override fun onResponse(
+                    call: Call<ArrayList<RepositoryModel>>,
+                    response: Response<ArrayList<RepositoryModel>>
+                ) {
+                    try {
+
+                        tvGistsUser.text = "${response.body()!!.size}"
+
+                    } catch (e: Exception) {
+                        Timber.e(e)
+
+                    }
+                }
+            })
         } catch (e: Exception) {
             Timber.e(e)
         }

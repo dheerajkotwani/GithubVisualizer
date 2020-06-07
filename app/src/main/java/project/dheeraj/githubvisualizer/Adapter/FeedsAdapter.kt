@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import de.hdodenhof.circleimageview.CircleImageView
 import project.dheeraj.githubvisualizer.Activity.ProfileActivity
+import project.dheeraj.githubvisualizer.Activity.RepositoryInfoActivity
 import project.dheeraj.githubvisualizer.R
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -140,7 +141,7 @@ class FeedsAdapter(var context: Context,
 
                 val s = SpannableStringBuilder()
                     .append("Forked ")
-                    .bold { append("${eventsModel[position].payload.forkee.name} ")}
+                    .bold { append("${eventsModel[position].repo.name} ")}
                     .append("to ")
                     .bold { append(eventsModel[position].payload.forkee.full_name) }
 
@@ -222,7 +223,13 @@ class FeedsAdapter(var context: Context,
 
 
         holder.itemView.setOnClickListener {
-            DynamicToast.makeWarning(context, "Developing").show()
+
+            val intent = Intent (context, RepositoryInfoActivity::class.java)
+            intent.putExtra("repo", eventsModel[position].repo.name.substringAfterLast("/") )
+            intent.putExtra("owner", eventsModel[position].repo.name.substringBeforeLast("/") )
+            context.startActivity(Intent(intent))
+
+//            DynamicToast.makeWarning(context, "Developing").show()
         }
     }
 

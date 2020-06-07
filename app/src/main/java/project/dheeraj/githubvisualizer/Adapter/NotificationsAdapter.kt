@@ -3,6 +3,7 @@ package project.dheeraj.githubvisualizer.Adapter
 import NotificationModel
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.javiersc.materialtoast.MaterialToast
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import kotlinx.android.synthetic.main.layout_notifications.view.*
+import project.dheeraj.githubvisualizer.Activity.RepositoryInfoActivity
 import project.dheeraj.githubvisualizer.Adapter.NotificationsAdapter.*
 import project.dheeraj.githubvisualizer.R
 import java.text.ParseException
@@ -42,6 +44,7 @@ class NotificationsAdapter(var context: Context,
     @SuppressLint("SimpleDateFormat")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.notificationTitle.text = notifications[position].subject.title
+        holder.notificationName.text = notifications[position].repository.name
 //        holder.notificationTime.text = notifications[position].updated_at
         if (notifications.get(position).subject.type == "PullRequest") {
 
@@ -61,7 +64,12 @@ class NotificationsAdapter(var context: Context,
         }
         holder.itemView.setOnClickListener {
 
-            DynamicToast.makeWarning(context, "Developing").show()
+            val intent = Intent (context, RepositoryInfoActivity::class.java)
+            intent.putExtra("owner", notifications[position].repository.owner.login )
+            intent.putExtra("repo", notifications[position].repository.name )
+            context.startActivity(intent)
+
+//            DynamicToast.makeWarning(context, "Developing").show()
 
         }
 
@@ -91,6 +99,7 @@ class NotificationsAdapter(var context: Context,
         var notificationImage: ImageView = itemView.findViewById(R.id.notification_icon)
         var notificationTitle: TextView = itemView.findViewById(R.id.notification_text)
         var notificationTime: TextView = itemView.findViewById(R.id.notification_time)
+        var notificationName: TextView = itemView.findViewById(R.id.notificationName)
 
     }
 

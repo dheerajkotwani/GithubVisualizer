@@ -107,6 +107,15 @@ dependencies {
     // Pretty Time
     implementation 'org.ocpsoft.prettytime:prettytime:4.0.4.Final'
 
+    // Github Contribution
+    implementation 'com.github.javierugarte:githubcontributionsview:1.2.2'
+//    implementation 'com.github.hiroaki-dev:ContributionsView:v0.1'
+
+    // Markdown
+//    implementation 'com.github.tiagohm.MarkdownView:library:0.19.0'
+    implementation 'com.github.billthefarmer:MarkdownView:v1.04'
+    implementation 'com.github.GrenderG:MarkdownView:0.1.2'
+
     implementation "com.google.dagger:dagger:${DAGGER_VERSION}"
     annotationProcessor "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
 

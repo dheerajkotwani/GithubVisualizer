@@ -52,8 +52,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         }
         loginButton.setOnClickListener(this)
 
-
-
     }
 
     private fun initialiseViews() {
@@ -120,15 +118,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 ).show()
 
 
-                with (sharedPref.edit()) {
-                    putString(ACCESS_TOKEN, (it!!.credential as OAuthCredential).accessToken)
-                    putString(NAME, auth.currentUser!!.displayName)
-                    putString(NAME, auth.currentUser!!.email)
-                    commit()
-                }
+                sharedPref.edit()
+                    .putString(ACCESS_TOKEN, (it!!.credential as OAuthCredential).accessToken)
+                    .putString(NAME, auth.currentUser!!.displayName)
+                    .apply()
 
-                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                finish()
 
 
                 val apiInterface =
@@ -148,18 +142,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                             Log.d("RESPONSE", response.message())
                             Log.d("UserName", response.body()!!.login)
 
-                            with (sharedPref.edit()) {
-                                putString(ACCESS_TOKEN, (it!!.credential as OAuthCredential).accessToken)
-                                putString(NAME, auth.currentUser!!.displayName)
-                                putString(NAME, auth.currentUser!!.email)
-                                commit()
-                            }
+                            sharedPref.edit()
+                                .putString(ACCESS_TOKEN, (it!!.credential as OAuthCredential).accessToken)
+                                .putString(NAME, auth.currentUser!!.displayName)
+                                .putString(AppConfig.LOGIN, response.body()!!.login)
+                                .apply()
+                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                            finish()
 
-//                            Toast.makeText(
-//                                this@LoginActivity,
-//                                "response: ${response.body()!!.bio}",
-//                                Toast.LENGTH_LONG
-//                            ).show()
                         }
                     })
 

@@ -40,24 +40,55 @@ class RepositoriesActivity : AppCompatActivity() {
             finish()
         }
 
+        if (intent.hasExtra("PAGE") && intent.getStringExtra("PAGE")=="STARS") {
 
+            pageTitle.text = "Starred Repositories"
 
-        if (intent.getStringExtra("USER_TYPE" ) == "user") {
+            if (intent.getStringExtra("USER_TYPE") == "user") {
 
-            // TODO
-            username = intent.getStringExtra(AppConfig.LOGIN)
-            call =
-                apiInterface.getUserRepos("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}",
-                    username)
-            getRepositories(apiInterface, call)
+                // TODO
+                username = intent.getStringExtra(AppConfig.LOGIN)
+                call =
+                    apiInterface.starredRepoOfUser(
+                        "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}",
+                        username
+                    )
+                getStarredRepo(apiInterface, call)
 
+            } else {
+
+                call =
+                    apiInterface.starredRepo(
+                        "token ${sharedPref.getString(
+                            AppConfig.ACCESS_TOKEN,
+                            ""
+                        )}"
+                    )
+                getStarredRepo(apiInterface, call)
+
+            }
         }
         else {
 
-            call =
-                apiInterface.getMyRepos("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}")
-            getRepositories(apiInterface, call)
+            pageTitle.text = "Repositories"
 
+            if (intent.getStringExtra("USER_TYPE" ) == "user") {
+
+                // TODO
+                username = intent.getStringExtra(AppConfig.LOGIN)
+                call =
+                    apiInterface.getUserRepos("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}",
+                        username)
+                getRepositories(apiInterface, call)
+
+            }
+            else {
+
+                call =
+                    apiInterface.getMyRepos("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}")
+                getRepositories(apiInterface, call)
+
+            }
         }
 
     }
@@ -82,6 +113,40 @@ class RepositoriesActivity : AppCompatActivity() {
                         repoRecyclerView.adapter = RepositoryAdapter(this@RepositoriesActivity, repos)
                         if (repoProgressbar.visibility == View.VISIBLE)
                         repoProgressbar.visibility = View.GONE
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                    }
+
+                }
+
+            })
+
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+
+    private fun getStarredRepo(apiInterface: GithubApiInterface, call: Call<ArrayList<RepositoryModel>>) {
+        try {
+
+            call.enqueue(object : Callback<ArrayList<RepositoryModel>> {
+                override fun onFailure(call: Call<ArrayList<RepositoryModel>>, t: Throwable) {
+                    Timber.e(t)
+                }
+
+                override fun onResponse(
+                    call: Call<ArrayList<RepositoryModel>>,
+                    response: Response<ArrayList<RepositoryModel>>
+                ) {
+                    var repos: ArrayList<RepositoryModel> = ArrayList()
+
+                    repos = response.body()!!
+
+                    try {
+                        repoRecyclerView.adapter = RepositoryAdapter(this@RepositoriesActivity, repos)
+                        if (repoProgressbar.visibility == View.VISIBLE)
+                            repoProgressbar.visibility = View.GONE
                     } catch (e: Exception) {
                         Timber.e(e)
                     }

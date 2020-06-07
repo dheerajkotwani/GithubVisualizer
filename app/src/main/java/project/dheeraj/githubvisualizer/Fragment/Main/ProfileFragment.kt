@@ -2,6 +2,7 @@ package project.dheeraj.githubvisualizer.Fragment.Main
 
 import GithubUserModel
 import RepositoryModel
+import StarredModel
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -85,9 +86,12 @@ class ProfileFragment : Fragment(), FragmentLifecycle {
         var apiInterface =
             GithubApiClient.getClient().create(GithubApiInterface::class.java);
 
+        fetchStars(apiInterface)
+
         getUserData(apiInterface, view)
 
         getTopRepos(apiInterface)
+
 
         // TODO
         view.llFollowers.setOnClickListener {
@@ -111,12 +115,19 @@ class ProfileFragment : Fragment(), FragmentLifecycle {
             val intent = Intent(context, RepositoriesActivity::class.java)
             intent.putExtra(AppConfig.LOGIN, sharedPref.getString(AppConfig.LOGIN, "User"))
             intent.putExtra("USER_TYPE", "me")
+            intent.putExtra("PAGE", "REPO")
             startActivity(intent)
         }
 
         // TODO
         view.llGists.setOnClickListener {
-            DynamicToast.makeWarning(context!!, "Developing").show()
+
+            val intent = Intent(context, RepositoriesActivity::class.java)
+            intent.putExtra(AppConfig.LOGIN, sharedPref.getString(AppConfig.LOGIN, "User"))
+            intent.putExtra("USER_TYPE", "me")
+            intent.putExtra("PAGE", "STARS")
+            startActivity(intent)
+//            DynamicToast.makeWarning(context!!, "Developing").show()
         }
 
         // TODO
@@ -184,6 +195,9 @@ class ProfileFragment : Fragment(), FragmentLifecycle {
 
                     try {
 
+                        if (profileUserProgressBar.visibility == View.VISIBLE)
+                            profileUserProgressBar.visibility = View.GONE
+
                         if (response.body()!!.name.isNullOrEmpty())
                             tvDisplayName.text = "Github User"
                         else
@@ -223,8 +237,8 @@ class ProfileFragment : Fragment(), FragmentLifecycle {
                         tvJoined.text = "Joined: ${response.body()!!.created_at.subSequence(0, 10)}"
                         tvFollowers.text = response.body()!!.followers.toString()
                         tvFollowing.text = response.body()!!.following.toString()
-                        tvStars.text =
-                            "${response.body()!!.public_gists + response.body()!!.private_gists}"
+//                        tvStars.text =
+//                            "${response.body()!!.public_gists + response.body()!!.private_gists}"
                         tvRepositories.text =
                             (response.body()!!.public_repos + response.body()!!.total_private_repos).toString()
 
@@ -241,6 +255,45 @@ class ProfileFragment : Fragment(), FragmentLifecycle {
 
                     } catch (e: Exception) {
                         Timber.e(e)
+                    }
+                }
+            })
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    private fun fetchStars(
+        apiInterface: GithubApiInterface
+    ) {
+
+        var call: Call<ArrayList<RepositoryModel>> =
+            apiInterface.starredRepo(
+                "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}"
+            )
+        try {
+
+
+            call.enqueue(object : Callback<ArrayList<RepositoryModel>> {
+                override fun onFailure(call: Call<ArrayList<RepositoryModel>>, t: Throwable) {
+                    Toast.makeText(
+                        context,
+                        "error: ${t.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+                override fun onResponse(
+                    call: Call<ArrayList<RepositoryModel>>,
+                    response: Response<ArrayList<RepositoryModel>>
+                ) {
+                    try {
+
+                        tvStars.text = "${response.body()!!.size}"
+
+                    } catch (e: Exception) {
+                        Timber.e(e)
+
                     }
                 }
             })
