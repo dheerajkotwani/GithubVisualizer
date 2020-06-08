@@ -37,6 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="NOTIFICATION"
+                android:fontFamily="@font/alata_regular"
                 android:textStyle="bold"
                 android:textSize="16dp"
                 android:textColor="@color/grey_800"/>
@@ -46,6 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Github User"
+                android:fontFamily="@font/alata_regular"
                 android:textSize="14dp"
                 android:layout_marginTop="4dp"
                 android:textColor="@color/grey_800"/>
