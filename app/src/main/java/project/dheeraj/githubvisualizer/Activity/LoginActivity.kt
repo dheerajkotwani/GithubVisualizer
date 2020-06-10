@@ -28,7 +28,6 @@ import GithubUserModel
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -36,21 +35,19 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
-import com.google.android.gms.common.internal.zzh
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.*
 import okhttp3.*
-import org.json.JSONObject
 import project.dheeraj.githubvisualizer.*
 import project.dheeraj.githubvisualizer.AppConfig.ACCESS_TOKEN
-import project.dheeraj.githubvisualizer.AppConfig.LOGIN
 import project.dheeraj.githubvisualizer.AppConfig.NAME
 import project.dheeraj.githubvisualizer.AppConfig.SHARED_PREF
+import project.dheeraj.githubvisualizer.Network.GithubApiClient
+import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.R
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -148,11 +145,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     .apply()
 
 
-
                 val apiInterface =
                         GithubApiClient.getClient().create(GithubApiInterface::class.java);
                     var call: Call<GithubUserModel> =
-                        apiInterface.getUserInfo("token ${(it!!.credential as OAuthCredential).accessToken}")
+                        apiInterface.getUserData("token ${(it!!.credential as OAuthCredential).accessToken}")
                     call.enqueue(object : Callback<GithubUserModel> {
                         override fun onFailure(call: Call<GithubUserModel>, t: Throwable) {
                             Toast.makeText(

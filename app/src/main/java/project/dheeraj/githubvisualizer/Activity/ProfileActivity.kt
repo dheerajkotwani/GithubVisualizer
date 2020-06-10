@@ -32,34 +32,22 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.activity_profile.toolbar
 import kotlinx.android.synthetic.main.content_profile.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.llEmail
 import kotlinx.android.synthetic.main.fragment_profile.llLocation
 import kotlinx.android.synthetic.main.fragment_profile.llOrganisations
 import kotlinx.android.synthetic.main.fragment_profile.llTwitter
 import kotlinx.android.synthetic.main.fragment_profile.llWebsite
-import kotlinx.android.synthetic.main.fragment_profile.tvBio
 import kotlinx.android.synthetic.main.fragment_profile.tvDisplayName
-import kotlinx.android.synthetic.main.fragment_profile.tvEmail
 import kotlinx.android.synthetic.main.fragment_profile.tvFollowers
-import kotlinx.android.synthetic.main.fragment_profile.tvFollowing
-import kotlinx.android.synthetic.main.fragment_profile.tvGists
-import kotlinx.android.synthetic.main.fragment_profile.tvJoined
-import kotlinx.android.synthetic.main.fragment_profile.tvLocation
-import kotlinx.android.synthetic.main.fragment_profile.tvRepositories
-import kotlinx.android.synthetic.main.fragment_profile.tvTwitter
-import kotlinx.android.synthetic.main.fragment_profile.tvWebsites
-import kotlinx.android.synthetic.main.fragment_profile.view.*
 import project.dheeraj.githubvisualizer.Adapter.RepositoryAdapter
 import project.dheeraj.githubvisualizer.AppConfig
-import project.dheeraj.githubvisualizer.GithubApiClient
-import project.dheeraj.githubvisualizer.GithubApiInterface
+import project.dheeraj.githubvisualizer.Network.GithubApiClient
+import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.R
 import retrofit2.Call
 import retrofit2.Callback
@@ -70,6 +58,9 @@ class ProfileActivity : AppCompatActivity() {
 
     private lateinit var sharedPref: SharedPreferences
     private lateinit var username: String
+    private var followersCount: Int = 0
+    private var starPage: Int = 1
+    private var starRepo: ArrayList<RepositoryModel> = ArrayList()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,18 +72,7 @@ class ProfileActivity : AppCompatActivity() {
         supportActionBar!!.title = username
         sharedPref = getSharedPreferences(AppConfig.SHARED_PREF, Context.MODE_PRIVATE)
 
-//        if (intent.hasExtra("avatar")) {
-//            Glide.with(baseContext)
-//                .load(intent.getStringExtra("avatar"))
-//                .into(userAvatar)
-//
-//            Glide.with(baseContext)
-//                .load(intent.getStringExtra("avatar"))
-//                .into(userBackgroundImage)
-//        }
-
-//        githubContributions.loadUserName("dheerajkotwani")
-
+        // TODO implement clicks for different fields in desc eg. twitter, website
 
         var apiInterface =
             GithubApiClient.getClient().create(GithubApiInterface::class.java);
@@ -154,7 +134,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun followUser(apiInterface: GithubApiInterface,
-                            username: String){
+                           username: String){
 
         var call =
             apiInterface.followUser("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}", username)
@@ -170,9 +150,14 @@ class ProfileActivity : AppCompatActivity() {
                 if (response.code() == 204){
                     Toast.makeText(this@ProfileActivity, "User Followed", Toast.LENGTH_SHORT).show()
                     buttonFollow.text = "FOLLOWING"
+                    followersCount++
+                    tvFollowers.text = followersCount.toString()
+                    Toast.makeText(this@ProfileActivity, "Followed", Toast.LENGTH_SHORT).show()
                 }
                 else {
                     Toast.makeText(this@ProfileActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
+                    buttonFollow.isClickable = true
+
                 }
             }
 
@@ -180,7 +165,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun unfollowUser(apiInterface: GithubApiInterface,
-                            username: String){
+                             username: String){
 
         var call =
             apiInterface.unfollowUser("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}", username)
@@ -196,8 +181,12 @@ class ProfileActivity : AppCompatActivity() {
                 if (response.code() == 204){
                     Toast.makeText(this@ProfileActivity, "User Unfollowed", Toast.LENGTH_SHORT).show()
                     buttonFollow.text = "FOLLOW"
+                    followersCount--
+                    tvFollowers.text = followersCount.toString()
+                    Toast.makeText(this@ProfileActivity, "Unfollowed", Toast.LENGTH_SHORT).show()
                 }
                 else {
+                    buttonFollow.isClickable = true
                     Toast.makeText(this@ProfileActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -206,7 +195,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun checkFollow(apiInterface: GithubApiInterface,
-                       username: String){
+                            username: String){
 
         var call =
             apiInterface.checkFollow("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}", username)
@@ -216,8 +205,14 @@ class ProfileActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<String>, response: Response<String>) {
+
+                if (buttonFollow.visibility == View.GONE)
+                    buttonFollow.visibility = View.VISIBLE
+
                 if (response.code() == 404){
                     buttonFollow.text = "FOLLOW"
+
+
                 }
                 else if (response.code() == 204){
                     buttonFollow.text = "FOLLOWING"
@@ -252,6 +247,8 @@ class ProfileActivity : AppCompatActivity() {
 
                         if (userInfoCard.visibility == View.GONE)
                             userInfoCard.visibility = View.VISIBLE
+
+
                         if (profileProgressBar.visibility == View.VISIBLE)
                             profileProgressBar.visibility = View.GONE
 
@@ -292,6 +289,7 @@ class ProfileActivity : AppCompatActivity() {
 
                         tvJoinedUser.text = "Joined: ${response.body()!!.created_at.subSequence(0, 10)}"
                         tvFollowersUser.text = response.body()!!.followers.toString()
+                        followersCount = response.body()!!.followers
                         tvFollowingUser.text = response.body()!!.following.toString()
 //                        tvGistsUser.text =
 //                            "${response.body()!!.public_gists}"
@@ -361,7 +359,7 @@ class ProfileActivity : AppCompatActivity() {
         var call: Call<ArrayList<RepositoryModel>> =
             apiInterface.starredRepoOfUser(
                 "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}",
-                username
+                username, starPage
             )
         try {
 
@@ -381,17 +379,28 @@ class ProfileActivity : AppCompatActivity() {
                 ) {
                     try {
 
-                        tvGistsUser.text = "${response.body()!!.size}"
+                        if (response.body()!!.size > 0) {
+                            for (i in response.body()!!) {
+                                starRepo.add(i)
+                            }
+                            starPage++
+                            fetchStars(apiInterface)
+                            tvGistsUser.text = "${starRepo.size}"
+                        }
+                        else
+                            tvGistsUser.text = "${starRepo.size}"
 
                     } catch (e: Exception) {
                         Timber.e(e)
-
+                        tvGistsUser.text = "${starRepo.size}"
                     }
                 }
             })
         } catch (e: Exception) {
             Timber.e(e)
+            tvGistsUser.text = "${starRepo.size}"
         }
+
     }
 
 }

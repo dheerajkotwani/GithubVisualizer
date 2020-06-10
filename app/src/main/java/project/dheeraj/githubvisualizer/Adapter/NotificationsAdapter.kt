@@ -59,10 +59,7 @@ class NotificationsAdapter(var context: Context,
         return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return notifications.size
-//        return 5
-    }
+    override fun getItemCount() = notifications.size
 
 
     @SuppressLint("SimpleDateFormat")

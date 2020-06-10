@@ -50,17 +50,13 @@ class IssuesAdapter(var context: Context,
                     var issues: ArrayList<IssuesModel>):
     RecyclerView.Adapter<IssuesAdapter.ViewHolder>() {
 
-
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IssuesAdapter.ViewHolder {
-        var view = LayoutInflater.from(context).inflate(R.layout.layout_notifications, parent, false)
+        var view = LayoutInflater.from(context).inflate(R.layout.layout_issues, parent, false)
         return ViewHolder(view)
+
     }
 
-    override fun getItemCount(): Int {
-        return issues.size
-    }
+    override fun getItemCount() = issues.size
 
 
     override fun onBindViewHolder(holder: IssuesAdapter.ViewHolder, position: Int) {

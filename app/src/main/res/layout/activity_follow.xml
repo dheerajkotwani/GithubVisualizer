@@ -78,10 +78,26 @@
         android:layout_marginTop="6dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
-    <ProgressBar
-        android:id="@+id/followProgressBar"
+    <TextView
+        android:id="@+id/buttonLoadMore"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/followRecyclerView"
+        android:text="Load More"
+        android:textSize="14dp"
+        android:textColor="@color/blue_900"
+        android:fontFamily="@font/roboto_regular"
+        android:textStyle="bold"
+        android:padding="10dp"
+        android:textAlignment="center"/>
+
+
+    <ImageView
+        android:id="@+id/followProgressBar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/github_loader"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

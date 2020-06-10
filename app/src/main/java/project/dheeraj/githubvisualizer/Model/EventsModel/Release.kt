@@ -22,29 +22,26 @@
  * SOFTWARE.
  */
 
-package project.dheeraj.githubvisualizer
-
-import com.google.gson.GsonBuilder
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-
-object GithubApiClient{
-
-    lateinit var retrofit: Retrofit
-    final var BASE_URL = AppConfig.GITHUB_API_BASE_URL
-
-    var gson = GsonBuilder()
-        .setLenient()
-        .create()
 
 
-    fun getClient() : Retrofit
-    {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-    }
+data class Release (
 
-
-}
+	val url : String,
+	val assets_url : String,
+	val upload_url : String,
+	val html_url : String,
+	val id : Int,
+	val node_id : String,
+	val tag_name : String,
+	val target_commitish : String,
+	val name : String,
+	val draft : Boolean,
+	val author : Author,
+	val prerelease : Boolean,
+	val created_at : String,
+	val published_at : String,
+	val assets : List<Assets>,
+	val tarball_url : String,
+	val zipball_url : String,
+	val body : String
+)

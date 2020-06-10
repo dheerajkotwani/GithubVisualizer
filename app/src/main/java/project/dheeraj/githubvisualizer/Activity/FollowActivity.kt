@@ -30,29 +30,39 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_follow.*
-import kotlinx.android.synthetic.main.activity_repositories.*
 import kotlinx.android.synthetic.main.activity_repositories.buttonBack
 import kotlinx.android.synthetic.main.activity_repositories.userName
+import kotlinx.android.synthetic.main.fragment_notification.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import project.dheeraj.githubvisualizer.Adapter.FollowAdapter
 import project.dheeraj.githubvisualizer.Adapter.RepositoryAdapter
 import project.dheeraj.githubvisualizer.Adapter.SearchAdapter
 import project.dheeraj.githubvisualizer.AppConfig
-import project.dheeraj.githubvisualizer.GithubApiClient
-import project.dheeraj.githubvisualizer.GithubApiInterface
+import project.dheeraj.githubvisualizer.Network.GithubApiClient
+import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.R
+import project.dheeraj.githubvisualizer.ViewModel.FollowViewModel
+import project.dheeraj.githubvisualizer.ViewModel.ProfileViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
-import kotlinx.android.synthetic.main.activity_repositories.pageTitle as pageTitle1
 
 class FollowActivity : AppCompatActivity() {
 
     private lateinit var sharedPref: SharedPreferences
-    private lateinit var call: Call<ArrayList<FollowerModel>>
     private var page = 1
+    private lateinit var viewModel: FollowViewModel
+    private lateinit var token: String
+    private var followerPage: Boolean = false
+    private lateinit var adapter: FollowAdapter
+    private lateinit var followList: ArrayList<FollowerModel>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,8 +72,15 @@ class FollowActivity : AppCompatActivity() {
 
         sharedPref = getSharedPreferences(AppConfig.SHARED_PREF, Context.MODE_PRIVATE)
         userName.text = intent.getStringExtra(AppConfig.LOGIN)
-        var apiInterface =
-            GithubApiClient.getClient().create(GithubApiInterface::class.java);
+        viewModel = ViewModelProviders.of(this).get(FollowViewModel::class.java)
+        token = "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}"
+        followList = ArrayList()
+        adapter = FollowAdapter(this, followList)
+        followRecyclerView.adapter = adapter
+
+        Glide.with(this)
+            .load(R.drawable.github_loader)
+            .into(followProgressBar)
 
         buttonBack.setOnClickListener {
             onBackPressed()
@@ -73,76 +90,71 @@ class FollowActivity : AppCompatActivity() {
         page = 1
         userName.text = intent.getStringExtra(AppConfig.LOGIN )
 
-        if (intent.getStringExtra("PAGE" ) == "follower") {
+        followerPage = intent.getStringExtra("PAGE" ) == "follower"
 
-            // TODO
+        if (followerPage) {
+
             pageTitle.text = "Followers"
-            call =
-                apiInterface.getFollowers("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}",
-                    intent.getStringExtra(AppConfig.LOGIN ), page)
-            getFollow(apiInterface, call)
+            viewModel.getFollowers(token, userName.text.toString(), page)
+            getFollow()
 
         }
         else {
 
             pageTitle.text = "Following"
-            call =
-                apiInterface.getFollowing("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}",
-                    intent.getStringExtra(AppConfig.LOGIN ), page)
-            getFollow(apiInterface, call)
+            viewModel.getFollowers(token, userName.text.toString(), page)
+            getFollow()
 
         }
 
-        followRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(1)
-                    && (followProgressBar.visibility==View.GONE)) {
-//                    Toast.makeText(context, "Last", Toast.LENGTH_LONG).show()
-                    page++
-                    getFollow(apiInterface, call)
+        buttonLoadMore.setOnClickListener {
+
+            buttonLoadMore.isClickable = false
+            page++
+            if (followerPage) {
+
+                viewModel.getFollowers(token, userName.text.toString(), page)
+                getFollow()
+
+            }
+            else {
+
+                viewModel.getFollowers(token, userName.text.toString(), page)
+                getFollow()
+
+            }
+
+        }
+
+    }
+
+    private fun getFollow() {
+
+        viewModel.followList.observe(this, Observer {
+            if (it.isNullOrEmpty()) {
+                Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show()
+                if (followProgressBar.visibility == View.VISIBLE)
+                    followProgressBar.visibility = View.GONE
+            }
+            else {
+
+                if (it.size==100){
+
+                    buttonLoadMore.visibility = View.VISIBLE
+                    buttonLoadMore.isClickable = true
                 }
+
+                followList.addAll(it)
+
+                if (followProgressBar.visibility == View.VISIBLE)
+                    followProgressBar.visibility = View.GONE
+
+                adapter.notifyDataSetChanged()
+
             }
         })
 
-    }
 
-    private fun getFollow(apiInterface: GithubApiInterface, call: Call<ArrayList<FollowerModel>>) {
-        try {
-
-            call.enqueue(object : Callback<ArrayList<FollowerModel>> {
-                override fun onFailure(call: Call<ArrayList<FollowerModel>>, t: Throwable) {
-                    Timber.e(t)
-                }
-
-                override fun onResponse(
-                    call: Call<ArrayList<FollowerModel>>,
-                    response: Response<ArrayList<FollowerModel>>
-                ) {
-                    var follow: ArrayList<FollowerModel> = ArrayList()
-
-                    follow = response.body()!!
-
-                    try {
-                        followRecyclerView.adapter = FollowAdapter(this@FollowActivity, follow)
-                        if (followProgressBar.visibility == View.VISIBLE)
-                            followProgressBar.visibility = View.GONE
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                    }
-
-                }
-
-            })
-
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
     }
 
 }

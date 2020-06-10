@@ -24,6 +24,13 @@
                 android:indeterminateTint="@color/blue_300"
                 android:indeterminate="true"/>
 
+        <LinearLayout
+            android:id="@+id/cardUserInfo"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -140,7 +147,7 @@
                         android:layout_marginEnd="4dp"/>
 
                     <TextView
-                        android:id="@+id/tvDescriptions"
+                        android:id="@+id/tvOrganization"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="14dp"
@@ -224,7 +231,7 @@
                         android:layout_marginEnd="4dp"/>
 
                     <TextView
-                        android:id="@+id/tvWebsites"
+                        android:id="@+id/tvWebsite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="14dp"
@@ -318,7 +325,7 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:textColor="@color/black_90"
-                            android:text="0"
+                            android:text=""
                             android:textAlignment="center"/>
 
                         <TextView
@@ -353,7 +360,7 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:textColor="@color/black_90"
-                            android:text="0"
+                            android:text=""
                             android:textAlignment="center"/>
 
                         <TextView
@@ -389,7 +396,7 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:textColor="@color/black_90"
-                            android:text="0"
+                            android:text=""
                             android:textAlignment="center"/>
 
                         <TextView
@@ -416,7 +423,7 @@
                         android:focusable="true">
 
                         <TextView
-                            android:id="@+id/tvGists"
+                            android:id="@+id/tvStars"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="16dp"
@@ -424,7 +431,7 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:textColor="@color/black_90"
-                            android:text="0"
+                            android:text=""
                             android:textAlignment="center"/>
 
                         <TextView
@@ -462,12 +469,13 @@
                     android:textColor="@color/black_90"/>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/topRepoRecyclerView"
+                    android:id="@+id/recyclerViewTopRepo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
+            </LinearLayout>
 
 
 

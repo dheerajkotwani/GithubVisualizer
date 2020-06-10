@@ -61,6 +61,8 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.firebase:firebase-core:16.0.4'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     // recyclerView module
@@ -85,10 +87,10 @@ dependencies {
 //    kapt "com.github.skydoves:preferenceroom-processor:${PREFERENCE_ROOM_VERSION}"
 
     // architecture components
-/*    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
-    implementation "androidx.room:room-runtime:$roomVersion"
-    kapt "androidx.room:room-compiler:$roomVersion"*/
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
+//    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
+//    implementation "androidx.room:room-runtime:$roomVersion"
+//    kapt "androidx.room:room-compiler:$roomVersion"
 
     // Room
     implementation "androidx.room:room-runtime:$room_version"
@@ -116,6 +118,10 @@ dependencies {
     implementation 'com.github.billthefarmer:MarkdownView:v1.04'
     implementation 'com.github.GrenderG:MarkdownView:0.1.2'
 
+    // kodein Dependency Framework
+    implementation 'org.kodein.di:kodein-di-generic-jvm:6.2.1'
+    implementation 'org.kodein.di:kodein-di-framework-android-x:6.2.1'
+
     implementation "com.google.dagger:dagger:${DAGGER_VERSION}"
     annotationProcessor "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
 
@@ -124,19 +130,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
     annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
 
-
     implementation "de.hdodenhof:circleimageview:${CIRCLE_IMAGEVIEW_VERSION}"
-
-    implementation "com.unstoppable:submitbutton:${SUBMIT_BUTTON_VERSION}"
-
-    implementation "com.afollestad.material-dialogs:core:${MATERIAL_DIALOG_VERSION}"
-    implementation "com.afollestad.material-dialogs:commons:${MATERIAL_DIALOG_VERSION}"
-
-    implementation "com.zzhoujay.richtext:richtext:${RICKTEXT_VERSION}"
-    implementation 'com.zzhoujay.glideimagegetter:glideimagegetter:1.0.5'
-
-    implementation "com.orhanobut:logger:${LOGGER_VERSION}"
-    implementation "com.timehop.stickyheadersrecyclerview:library:${STICKY_HEAD_VERSION}"
 
 
     implementation "org.jsoup:jsoup:${JSOUP_VERSION}"

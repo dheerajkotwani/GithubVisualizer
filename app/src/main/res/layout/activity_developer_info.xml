@@ -109,7 +109,7 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:textColor="@color/black_90"
-                            android:text="0"
+                            android:text=""
                             android:textAlignment="center"/>
 
                         <TextView
@@ -144,7 +144,7 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:textColor="@color/black_90"
-                            android:text="0"
+                            android:text=""
                             android:textAlignment="center"/>
 
                         <TextView
@@ -180,7 +180,7 @@
                             android:layout_gravity="center"
                             android:gravity="center"
                             android:textColor="@color/black_90"
-                            android:text="0"
+                            android:text=""
                             android:textAlignment="center"/>
 
                         <TextView

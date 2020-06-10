@@ -29,8 +29,6 @@ import SearchModel
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -38,20 +36,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.*
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.fragment_search.*
-import project.dheeraj.githubvisualizer.Adapter.NotificationsAdapter
+import kotlinx.android.synthetic.main.fragment_notification.*
+import kotlinx.android.synthetic.main.fragment_profile.*
+import project.dheeraj.githubvisualizer.Adapter.RepositoryAdapter
 import project.dheeraj.githubvisualizer.Adapter.SearchAdapter
 import project.dheeraj.githubvisualizer.AppConfig
-import project.dheeraj.githubvisualizer.GithubApiClient
-import project.dheeraj.githubvisualizer.GithubApiInterface
+import project.dheeraj.githubvisualizer.Network.GithubApiClient
+import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 
 import project.dheeraj.githubvisualizer.R
+import project.dheeraj.githubvisualizer.ViewModel.ProfileViewModel
+import project.dheeraj.githubvisualizer.ViewModel.SearchViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SearchFragment : Fragment(), FragmentLifecycle {
+class SearchFragment : Fragment() {
 
     private lateinit var sharedPref: SharedPreferences
     private lateinit var searchReclerView: RecyclerView
@@ -60,11 +63,8 @@ class SearchFragment : Fragment(), FragmentLifecycle {
     private lateinit var progressBar: ProgressBar
     private lateinit var etSearch: EditText
     private lateinit var imageSearch: ImageView
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    private lateinit var viewModel: SearchViewModel
+    private lateinit var token: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,56 +74,54 @@ class SearchFragment : Fragment(), FragmentLifecycle {
         var view =  inflater.inflate(R.layout.fragment_search, container, false)
 
         sharedPref = context!!.getSharedPreferences(AppConfig.SHARED_PREF, Context.MODE_PRIVATE)
+        viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
+        token = "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}"
         etSearch = view.findViewById(R.id.search_bar)
         searchReclerView = view.findViewById(R.id.search_recyclerView)
         progressBar = view.findViewById(R.id.search_progressbar)
         imageSearch = view.findViewById(R.id.search_icon)
         search = ArrayList()
 
-
-       /* etSearch.addTextChangedListener(object: TextWatcher{
-            override fun afterTextChanged(p0: Editable?) {
-                if(etSearch.text.toString().isEmpty()){
-                    progressBar.visibility = View.GONE
-                }
-                else {
-                    progressBar.visibility = View.VISIBLE*/
         if (etSearch.text.isNotEmpty())
             getSearchResult()
 
         imageSearch.setOnClickListener{
 
+            viewModel.getSearchRepo(token, etSearch.text.toString())
             getSearchResult()
 
         }
 
-        etSearch.setOnEditorActionListener(object: TextView.OnEditorActionListener{
-            override fun onEditorAction(p0: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                    actionId == EditorInfo.IME_ACTION_DONE ||
-                    event != null &&
-                    event.getAction() == KeyEvent.ACTION_DOWN &&
-                    event.getKeyCode() == KeyEvent.KEYCODE_ENTER)
-                        getSearchResult()
-                return true;
-            }
+        etSearch.setOnEditorActionListener { _, actionId, event ->
 
-        })
-        /*}
-    }
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                actionId == EditorInfo.IME_ACTION_DONE ||
+                event != null &&
+                event.action == KeyEvent.ACTION_DOWN &&
+                event.keyCode == KeyEvent.KEYCODE_ENTER)
+                getSearchResult()
+            true
 
-    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-    }
-
-    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-    }
-
-})*/
-
+        }
 
         return view
     }
 
+    private fun getSearchResult() {
+
+        viewModel.searchUserList.observe(viewLifecycleOwner, Observer {
+            if (it.items.isNullOrEmpty()) {
+                Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show()
+                if (NotificationsProgressBar.visibility == View.VISIBLE)
+                    NotificationsProgressBar.visibility = View.GONE
+            }
+            else {
+                searchReclerView.adapter = SearchAdapter(context!!, it.items)
+            }
+        })
+
+    }
+/*
     private fun getSearchResult() {
 
         if (!etSearch.text.isNullOrEmpty()) {
@@ -163,10 +161,6 @@ class SearchFragment : Fragment(), FragmentLifecycle {
             getSearchResult()
     }
 
-    override fun onPauseFragment() {
-    }
 
-    override fun onResumeFragment() {
-    }
-
+ */
 }

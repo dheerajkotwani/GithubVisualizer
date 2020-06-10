@@ -22,26 +22,32 @@
  * SOFTWARE.
  */
 
-import project.dheeraj.githubvisualizer.Model.EventsModel.Pull_request
+package project.dheeraj.githubvisualizer.Network
 
-data class Payload (
+import com.google.gson.GsonBuilder
+import project.dheeraj.githubvisualizer.AppConfig
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-	val push_id : Number,
-	val size : Number,
-	val distinct_size : Number,
-	val ref : String,
-	val ref_type : String,
-	val description: String,
-	val head : String,
-	val before : String,
-	val commits : List<Commits>,
-	val action : String,
-	val number : Int,
-	val pull_request : Pull_request,
-	val issue : Issue,
-	val comment : Comment,
-	val forkee : Forkee,
-	val member : project.dheeraj.githubvisualizer.Model.EventsModel.Member,
-	val release: Release
 
-)
+object RetrofitClient{
+
+    lateinit var retrofit: Retrofit
+    final var BASE_URL =
+        AppConfig.GITHUB_BASE_URL
+
+    var gson = GsonBuilder()
+        .setLenient()
+        .create()
+
+
+    fun getClient() : Retrofit
+    {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+    }
+
+
+}

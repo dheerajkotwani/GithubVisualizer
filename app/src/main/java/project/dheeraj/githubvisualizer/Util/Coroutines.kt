@@ -22,30 +22,25 @@
  * SOFTWARE.
  */
 
-package project.dheeraj.githubvisualizer
+package project.dheeraj.githubvisualizer.Util
 
-import com.google.gson.GsonBuilder
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import javax.security.auth.callback.Callback
 
+object Coroutines {
 
-object RetrofitClient{
+    fun<T: Any> ioThenMain(work: suspend (() -> T?), callback: ((T?) -> Unit)) =
 
-    lateinit var retrofit: Retrofit
-    final var BASE_URL = AppConfig.GITHUB_BASE_URL
+        CoroutineScope(Dispatchers.Main).launch {
+            val data = CoroutineScope(Dispatchers.IO).async rt@{
+                return@rt work()
+            }.await()
 
-    var gson = GsonBuilder()
-        .setLenient()
-        .create()
+            callback(data)
 
-
-    fun getClient() : Retrofit
-    {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-    }
-
+        }
 
 }

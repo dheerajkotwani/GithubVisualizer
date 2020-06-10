@@ -32,16 +32,16 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
+import android.webkit.WebSettings
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.activity_developer_info.*
 import kotlinx.android.synthetic.main.activity_repository_info.*
 import kotlinx.android.synthetic.main.content_repository_info.*
 import project.dheeraj.githubvisualizer.AppConfig
-import project.dheeraj.githubvisualizer.GithubApiClient
-import project.dheeraj.githubvisualizer.GithubApiInterface
+import project.dheeraj.githubvisualizer.Network.GithubApiClient
+import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.R
 import retrofit2.Call
 import retrofit2.Callback
@@ -54,7 +54,9 @@ class RepositoryInfoActivity : AppCompatActivity() {
     private lateinit var sharedPref: SharedPreferences
     private lateinit var owner: String
     private lateinit var repo: String
+    private var starCount: Int = 0
     private var star = false
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,6 +83,7 @@ class RepositoryInfoActivity : AppCompatActivity() {
         getStar(apiInterface)
 
         buttonStar.setOnClickListener {
+            buttonStar.isClickable = false
             if (star){
                 removeStar(apiInterface)
             }
@@ -105,6 +108,7 @@ class RepositoryInfoActivity : AppCompatActivity() {
                         "error: ${t.message}",
                         Toast.LENGTH_LONG
                     ).show()
+                    buttonStar.isClickable = true
                 }
 
                 override fun onResponse(
@@ -114,13 +118,21 @@ class RepositoryInfoActivity : AppCompatActivity() {
 
                     try {
 
-
                         tvRepoName.text = response.body()!!.full_name
                         tvRepoDescription.text = response.body()!!.description
                         tvForksRepo.text = response.body()!!.forks_count.toString()
                         tvStaggersRepo.text = response.body()!!.stargazers_count.toString()
+                        starCount = response.body()!!.stargazers_count
                         tvWatchersRepo.text = response.body()!!.watchers_count.toString()
                         tvIssuesRepo.text = response.body()!!.open_issues_count.toString()
+
+                        if (buttonStar.visibility == View.GONE)
+                            buttonStar.visibility = View.VISIBLE
+
+                        if (userInfoCard.visibility == View.GONE)
+                            userInfoCard.visibility = View.VISIBLE
+
+                        buttonStar.isClickable = true
 
                         Glide.with(this@RepositoryInfoActivity)
                             .load(response.body()!!.owner.avatar_url)
@@ -129,11 +141,13 @@ class RepositoryInfoActivity : AppCompatActivity() {
 
                     } catch (e: Exception) {
                         Timber.e(e)
+                        buttonStar.isClickable = true
                     }
                 }
             })
         } catch (e: Exception) {
             Timber.e(e)
+            buttonStar.isClickable = true
         }
     }
 
@@ -164,9 +178,18 @@ class RepositoryInfoActivity : AppCompatActivity() {
 
                         repoWebView.setOnTouchListener(OnTouchListener { v, event -> event.action == MotionEvent.ACTION_MOVE })
                         repoWebView.isVerticalScrollBarEnabled = false
+                        repoWebView.settings.javaScriptEnabled = true;
+                        repoWebView.settings.domStorageEnabled = true
+                        repoWebView.settings.setAppCacheEnabled(true);
+                        repoWebView.settings.loadsImagesAutomatically = true;
+                        repoWebView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW;
+                        repoWebView.isCodeScrollEnabled = true
+//                        repoWebView.settings.
 
-                    } catch (e: Exception) {
+                    } catch (e: Exception)
+                    {
                         Timber.e(e)
+
                     }
                 }
             })
@@ -202,7 +225,7 @@ class RepositoryInfoActivity : AppCompatActivity() {
                             star = true
                             buttonStar.setImageResource(R.drawable.ic_star_black_24dp)
                             buttonStar.setColorFilter(
-                                ContextCompat.getColor(this@RepositoryInfoActivity, R.color.yellow_600),
+                                ContextCompat.getColor(this@RepositoryInfoActivity, R.color.white),
                                 android.graphics.PorterDuff.Mode.SRC_IN)
                         }
                         else {
@@ -236,6 +259,7 @@ class RepositoryInfoActivity : AppCompatActivity() {
                         "error: ${t.message}",
                         Toast.LENGTH_LONG
                     ).show()
+                    buttonStar.isClickable = true
                 }
 
                 override fun onResponse(
@@ -249,24 +273,31 @@ class RepositoryInfoActivity : AppCompatActivity() {
                             star = true
                             buttonStar.setImageResource(R.drawable.ic_star_black_24dp)
                             buttonStar.setColorFilter(
-                                ContextCompat.getColor(this@RepositoryInfoActivity, R.color.yellow_600),
-                                android.graphics.PorterDuff.Mode.SRC_IN)
-                        }
-                        else {
-                            star = false
-                            buttonStar.setImageResource(R.drawable.ic_star_border_black_24dp)
-                            buttonStar.setColorFilter(
                                 ContextCompat.getColor(this@RepositoryInfoActivity, R.color.white),
                                 android.graphics.PorterDuff.Mode.SRC_IN)
+                            starCount++
+                            tvStaggersRepo.text = starCount.toString()
+                            buttonStar.isClickable = true
+                        }
+                        else {
+                            Toast.makeText(this@RepositoryInfoActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
+                            buttonStar.isClickable = true
+//                            star = false
+//                            buttonStar.setImageResource(R.drawable.ic_star_border_black_24dp)
+//                            buttonStar.setColorFilter(
+//                                ContextCompat.getColor(this@RepositoryInfoActivity, R.color.white),
+//                                android.graphics.PorterDuff.Mode.SRC_IN)
                         }
 
                     } catch (e: Exception) {
                         Timber.e(e)
+                        buttonStar.isClickable = true
                     }
                 }
             })
         } catch (e: Exception) {
             Timber.e(e)
+            buttonStar.isClickable = true
         }
     }
 
@@ -283,6 +314,7 @@ class RepositoryInfoActivity : AppCompatActivity() {
                         "error: ${t.message}",
                         Toast.LENGTH_LONG
                     ).show()
+                    buttonStar.isClickable = true
                 }
 
                 override fun onResponse(
@@ -298,6 +330,9 @@ class RepositoryInfoActivity : AppCompatActivity() {
                             buttonStar.setColorFilter(
                                 ContextCompat.getColor(this@RepositoryInfoActivity, R.color.white),
                                 android.graphics.PorterDuff.Mode.SRC_IN)
+                            starCount--
+                            tvStaggersRepo.text = starCount.toString()
+                            buttonStar.isClickable = true
                         }
                         else {
                             Toast.makeText(this@RepositoryInfoActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
@@ -305,11 +340,13 @@ class RepositoryInfoActivity : AppCompatActivity() {
 
                     } catch (e: Exception) {
                         Timber.e(e)
+                        buttonStar.isClickable = true
                     }
                 }
             })
         } catch (e: Exception) {
             Timber.e(e)
+            buttonStar.isClickable = true
         }
     }
 

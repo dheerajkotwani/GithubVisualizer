@@ -28,6 +28,7 @@
             android:id="@+id/userInfoCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:orientation="vertical">
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -278,7 +279,7 @@
                                 android:layout_gravity="center"
                                 android:gravity="center"
                                 android:textColor="@color/black_90"
-                                android:text="0"
+                                android:text=""
                                 android:textAlignment="center"/>
 
                             <TextView
@@ -313,7 +314,7 @@
                                 android:layout_gravity="center"
                                 android:gravity="center"
                                 android:textColor="@color/black_90"
-                                android:text="0"
+                                android:text=""
                                 android:textAlignment="center"/>
 
                             <TextView
@@ -349,7 +350,7 @@
                                 android:layout_gravity="center"
                                 android:gravity="center"
                                 android:textColor="@color/black_90"
-                                android:text="0"
+                                android:text=""
                                 android:textAlignment="center"/>
 
                             <TextView
@@ -384,7 +385,7 @@
                                 android:layout_gravity="center"
                                 android:gravity="center"
                                 android:textColor="@color/black_90"
-                                android:text="0"
+                                android:text=""
                                 android:textAlignment="center"/>
 
                             <TextView

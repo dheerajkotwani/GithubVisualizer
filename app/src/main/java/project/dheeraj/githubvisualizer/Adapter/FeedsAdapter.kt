@@ -47,6 +47,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 import project.dheeraj.githubvisualizer.Activity.ProfileActivity
 import project.dheeraj.githubvisualizer.Activity.RepositoryInfoActivity
 import project.dheeraj.githubvisualizer.R
+import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -67,9 +68,7 @@ class FeedsAdapter(var context: Context,
 
     }
 
-    override fun getItemCount(): Int {
-        return eventsModel.size
-    }
+    override fun getItemCount() = eventsModel.size
 
 
     override fun onBindViewHolder(holder: FeedsAdapter.ViewHolder, position: Int) {
@@ -205,6 +204,43 @@ class FeedsAdapter(var context: Context,
                     .bold { append(eventsModel[position].repo.name) }
 
                 holder.feedUserTitle.text = s
+                holder.feedUserDescription.visibility = View.GONE
+
+            }
+            "ReleaseEvent" -> {
+
+                try {
+
+                    val s = SpannableStringBuilder()
+                    if (eventsModel[position].payload.release.tag_name != null) {
+                            s.append(
+                                "${eventsModel[position].payload.action.capitalize()} release " +
+                                        "${eventsModel[position].payload.release.tag_name} at "
+                            )
+                            .bold { append(eventsModel[position].repo.name) }
+                    }
+                    else if (eventsModel[position].payload.release.name != null){
+                        s.append(
+                            "${eventsModel[position].payload.action.capitalize()} release " +
+                                    "${eventsModel[position].payload.release.name} at "
+                        )
+                            .bold { append(eventsModel[position].repo.name) }
+                    }
+                    else {
+                        s.append(
+                            "${eventsModel[position].payload.action.capitalize()} release at ")
+                            .bold { append(eventsModel[position].repo.name) }
+                    }
+                    holder.feedUserTitle.text = s
+                }
+                catch (e: Exception) {
+                    Timber.e(e)
+                    val s = SpannableStringBuilder()
+                        .append("${eventsModel[position].payload.action.capitalize()} at")
+                        .bold { append(eventsModel[position].repo.name) }
+
+                    holder.feedUserTitle.text = s
+                }
                 holder.feedUserDescription.visibility = View.GONE
 
             }

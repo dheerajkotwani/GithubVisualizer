@@ -33,8 +33,8 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_organizations.*
 import project.dheeraj.githubvisualizer.Adapter.OrganizationsAdapter
 import project.dheeraj.githubvisualizer.AppConfig
-import project.dheeraj.githubvisualizer.GithubApiClient
-import project.dheeraj.githubvisualizer.GithubApiInterface
+import project.dheeraj.githubvisualizer.Network.GithubApiClient
+import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.R
 import retrofit2.Call
 import retrofit2.Callback

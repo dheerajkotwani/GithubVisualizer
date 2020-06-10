@@ -29,14 +29,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_issues.*
 import project.dheeraj.githubvisualizer.Adapter.IssuesAdapter
 import project.dheeraj.githubvisualizer.AppConfig
-import project.dheeraj.githubvisualizer.GithubApiClient
-import project.dheeraj.githubvisualizer.GithubApiInterface
+import project.dheeraj.githubvisualizer.Network.GithubApiClient
+import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.R
 import retrofit2.Call
 import retrofit2.Callback
@@ -72,6 +71,7 @@ class IssuesActivity : AppCompatActivity() {
             onBackPressed()
         }
 
+        // TODO implement different type of issues & Pull Request eg. all, create, open, closed, mentioned
 
     }
 
@@ -132,6 +132,7 @@ class IssuesActivity : AppCompatActivity() {
             noIssueFound.visibility = View.VISIBLE
         }
     }
+
 
 private fun fetchPulls(apiInterface: GithubApiInterface) {
 

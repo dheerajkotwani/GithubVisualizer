@@ -50,9 +50,7 @@ class OrganizationsAdapter(var context: Context,
 
     }
 
-    override fun getItemCount(): Int {
-        return organizationsModel.size
-    }
+    override fun getItemCount() = organizationsModel.size
 
 
     override fun onBindViewHolder(holder: OrganizationsAdapter.ViewHolder, position: Int) {

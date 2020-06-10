@@ -22,26 +22,26 @@
  * SOFTWARE.
  */
 
-import project.dheeraj.githubvisualizer.Model.EventsModel.Pull_request
 
-data class Payload (
 
-	val push_id : Number,
-	val size : Number,
-	val distinct_size : Number,
-	val ref : String,
-	val ref_type : String,
-	val description: String,
-	val head : String,
-	val before : String,
-	val commits : List<Commits>,
-	val action : String,
-	val number : Int,
-	val pull_request : Pull_request,
-	val issue : Issue,
-	val comment : Comment,
-	val forkee : Forkee,
-	val member : project.dheeraj.githubvisualizer.Model.EventsModel.Member,
-	val release: Release
+data class Uploader (
 
+	val login : String,
+	val id : Int,
+	val node_id : String,
+	val avatar_url : String,
+	val gravatar_id : String,
+	val url : String,
+	val html_url : String,
+	val followers_url : String,
+	val following_url : String,
+	val gists_url : String,
+	val starred_url : String,
+	val subscriptions_url : String,
+	val organizations_url : String,
+	val repos_url : String,
+	val events_url : String,
+	val received_events_url : String,
+	val type : String,
+	val site_admin : Boolean
 )

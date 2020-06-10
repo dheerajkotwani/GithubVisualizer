@@ -53,9 +53,7 @@ class RepositoryAdapter(var context: Context,
 
     }
 
-    override fun getItemCount(): Int {
-        return repoModel.size
-    }
+    override fun getItemCount() = repoModel.size
 
 
     override fun onBindViewHolder(holder: RepositoryAdapter.ViewHolder, position: Int) {

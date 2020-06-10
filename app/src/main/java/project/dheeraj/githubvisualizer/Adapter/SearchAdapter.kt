@@ -51,9 +51,7 @@ class SearchAdapter(var context: Context,
 
     }
 
-    override fun getItemCount(): Int {
-        return searchModel.size
-    }
+    override fun getItemCount() = searchModel.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 

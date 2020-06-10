@@ -30,24 +30,13 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_developer_info.*
-import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.activity_repository_info.*
-import kotlinx.android.synthetic.main.content_profile.*
-import kotlinx.android.synthetic.main.content_profile.llEmail
-import kotlinx.android.synthetic.main.content_profile.llLocation
-import kotlinx.android.synthetic.main.content_profile.llOrganisations
-import kotlinx.android.synthetic.main.content_profile.llTwitter
-import kotlinx.android.synthetic.main.content_profile.llWebsite
-import kotlinx.android.synthetic.main.content_profile.tvDisplayName
 import kotlinx.android.synthetic.main.fragment_profile.*
 import project.dheeraj.githubvisualizer.AppConfig
-import project.dheeraj.githubvisualizer.GithubApiClient
-import project.dheeraj.githubvisualizer.GithubApiInterface
+import project.dheeraj.githubvisualizer.Network.GithubApiClient
+import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.R
 import retrofit2.Call
 import retrofit2.Callback
@@ -60,6 +49,7 @@ class DeveloperInfoActivity : AppCompatActivity() {
     private lateinit var owner: String
     private lateinit var repo: String
     private var star = false
+    private var followCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,6 +105,10 @@ class DeveloperInfoActivity : AppCompatActivity() {
                 if (response.code() == 204){
                     Toast.makeText(this@DeveloperInfoActivity, "User Followed", Toast.LENGTH_SHORT).show()
                     followDheeraj.text = "Following"
+                    followCount++
+                    tvFollowers.text = followCount.toString()
+                    Toast.makeText(this@DeveloperInfoActivity, "Followed", Toast.LENGTH_SHORT).show()
+
                 }
                 else {
                     Toast.makeText(this@DeveloperInfoActivity, "Following", Toast.LENGTH_SHORT).show()
@@ -169,6 +163,9 @@ class DeveloperInfoActivity : AppCompatActivity() {
                 ) {
 
                     try {
+
+                        followCount= response.body()!!.followers
+
                         tvFollowersDheeraj.text = response.body()!!.followers.toString()
                         tvFollowingDheeraj.text = response.body()!!.following.toString()
                         tvRepositoriesDheeraj.text =

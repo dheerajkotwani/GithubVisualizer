@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package project.dheeraj.githubvisualizer
+package project.dheeraj.githubvisualizer.Network
 
 import EventsModel
 import FollowerModel
@@ -36,10 +36,26 @@ import Readme
 import RepositoryModel
 import SearchModel
 import StarredModel
+import project.dheeraj.githubvisualizer.AppConfig
+import retrofit2.Call
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
+import java.util.function.BinaryOperator
 import kotlin.collections.ArrayList
 
 interface GithubApiInterface {
+
+    companion object{
+        operator fun invoke(): GithubApiInterface {
+            return Retrofit.Builder()
+                .baseUrl(AppConfig.GITHUB_API_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(GithubApiClient.gson))
+                .build()
+                .create(GithubApiInterface::class.java)
+        }
+    }
 
 
     // Other User
@@ -54,64 +70,71 @@ interface GithubApiInterface {
     // UserLogin
     @Headers("Content-Type: application/json")
     @GET("/user")
-    fun getUserInfo(
-        @Header("Authorization") user: String
-    ): retrofit2.Call<GithubUserModel>
+    suspend fun getUserInfo(
+        @Header("Authorization") token: String
+    ): Response<GithubUserModel>
 
     @Headers("Content-Type: application/json")
-    @GET("/feeds")
-    fun getFeeds(
-        @Header("Authorization") user: String
-    ): retrofit2.Call<FeedModel>
-
+    @GET("/user")
+    fun getUserData(
+        @Header("Authorization") token: String
+    ): Call<GithubUserModel>
 
     // Notifications
-  @Headers("Content-Type: application/json")
+    @Headers("Content-Type: application/json")
     @GET("/notifications?per_page=100")
-    fun getNotifications(
-        @Header("Authorization") user: String,
+    suspend fun getNotification(
+        @Header("Authorization") token: String,
         @Query ("page") page: Int
-    ): retrofit2.Call<ArrayList<NotificationModel>>
+    ): Response<ArrayList<NotificationModel>>
 
 
     // Feeds
     @Headers("Content-Type: application/json")
     @GET("/users/{username}/received_events?per_page=100")
-    fun getEvents(
+    suspend fun getEvents(
         @Header("Authorization") user: String,
         @Path("username") username:String,
         @Query("page") page:Int
-    ): retrofit2.Call<ArrayList<EventsModel>>
+    ): Response<ArrayList<EventsModel>>
 
 
     // Search
     @Headers("Content-Type: application/json")
     @GET("/search/users?per_page=100")
-    fun searchUser(
+    suspend fun searchUser(
         @Header("Authorization") user: String,
         @Query("q") username:String
-    ): retrofit2.Call<SearchModel>
+    ): Response<SearchModel>
+
+    @Headers("Content-Type: application/json")
+    @GET("/search/users?per_page=100")
+    suspend fun searchRepo(
+        @Header("Authorization") user: String,
+        @Query("q") username:String
+    ): Response<SearchModel>
+
 
 
     // Repositories
-    @Headers("Content-Type: application/json")
+        @Headers("Content-Type: application/json")
     @GET("/user/repos?sort=updated&per_page=100")
-    fun getMyRepos(
+    suspend fun getMyRepositories(
         @Header("Authorization") user: String
-    ): retrofit2.Call<ArrayList<RepositoryModel>>
+    ): Response<ArrayList<RepositoryModel>>
 
     @Headers("Content-Type: application/json")
     @GET("/users/{username}/repos?sort=updated&per_page=100")
-    fun getUserRepos(
+    suspend fun getUserRepositories(
         @Header("Authorization") user: String,
         @Path("username") username:String
-    ): retrofit2.Call<ArrayList<RepositoryModel>>
+    ): Response<ArrayList<RepositoryModel>>
 
     @Headers("Content-Type: application/json")
     @GET("/user/repos?sort=updated&per_page=5")
-    fun topRepos(
+    suspend fun myTopRepositories(
         @Header("Authorization") user: String
-    ): retrofit2.Call<ArrayList<RepositoryModel>>
+    ): Response<ArrayList<RepositoryModel>>
 
     @Headers("Content-Type: application/json")
     @GET("/users/{username}/repos?sort=updated&per_page=5")
@@ -119,6 +142,13 @@ interface GithubApiInterface {
         @Header("Authorization") user: String,
         @Path("username") username:String
     ): retrofit2.Call<ArrayList<RepositoryModel>>
+
+    @Headers("Content-Type: application/json")
+    @GET("/users/{username}/repos?sort=updated&per_page=5")
+    fun topRepositoriesUser(
+        @Header("Authorization") user: String,
+        @Path("username") username:String
+    ): Response<ArrayList<RepositoryModel>>
 
     @Headers("Content-Type: application/json")
     @GET("/repos/{owner}/{repo}")
@@ -165,15 +195,32 @@ interface GithubApiInterface {
     @Headers("Content-Type: application/json")
     @GET("/user/starred?per_page=100")
     fun starredRepo(
-        @Header("Authorization") user: String
+        @Header("Authorization") user: String,
+        @Query ("page") page:Int
     ): retrofit2.Call<ArrayList<RepositoryModel>>
 
     @Headers("Content-Type: application/json")
-    @GET("/users/{username}/starred?per_page=100")
+    @GET("/user/starred?per_page=100")
+    suspend fun starredRepositoryLogin(
+        @Header("Authorization") user: String,
+        @Query ("page") page:Int
+    ): Response<ArrayList<RepositoryModel>>
+
+    @Headers("Content-Type: application/json")
+    @GET("/users/{username}/starred?per_page=100}")
     fun starredRepoOfUser(
         @Header("Authorization") user: String,
-        @Path("username") username:String
+        @Path("username") username:String,
+        @Query("page") page:Int
     ): retrofit2.Call<ArrayList<RepositoryModel>>
+
+    @Headers("Content-Type: application/json")
+    @GET("/users/{username}/starred?per_page=100}")
+    suspend fun starredRepositoryUser(
+        @Header("Authorization") user: String,
+        @Path("username") username:String,
+        @Query("page") page:Int
+    ): Response<ArrayList<RepositoryModel>>
 
     @Headers("Content-Length: 0")
     @PUT("/user/starred/{owner}/{repo}")
@@ -203,19 +250,19 @@ interface GithubApiInterface {
     // Followers and Following
     @Headers("Content-Type: application/json")
     @GET("/users/{username}/following?per_page=100")
-    fun getFollowing(
+    suspend fun getFollowing(
         @Header("Authorization") token: String,
         @Path("username") username:String,
         @Query("page") page:Int
-    ): retrofit2.Call<ArrayList<FollowerModel>>
+    ): Response<ArrayList<FollowerModel>>
 
     @Headers("Content-Type: application/json")
     @GET("/users/{username}/followers?per_page=100")
-    fun getFollowers(
+    suspend fun getFollowers(
         @Header("Authorization") token: String,
         @Path("username") username:String,
         @Query("page") page:Int
-    ): retrofit2.Call<ArrayList<FollowerModel>>
+    ): Response<ArrayList<FollowerModel>>
 
     @Headers("Content-Length: 0")
     @PUT("/user/following/{username}")

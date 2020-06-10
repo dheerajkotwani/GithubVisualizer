@@ -41,12 +41,13 @@ import project.dheeraj.githubvisualizer.Adapter.ViewPagerAdapter
 import project.dheeraj.githubvisualizer.AppConfig.ACCESS_TOKEN
 import project.dheeraj.githubvisualizer.AppConfig.SHARED_PREF
 import project.dheeraj.githubvisualizer.Fragment.Main.*
+import project.dheeraj.githubvisualizer.Network.GithubApiClient
+import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
-
 
     private lateinit var apiInterface: GithubApiInterface
     private lateinit var sharedPref: SharedPreferences
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initalizeViews()
+        initializeViews()
 
         setBottomNavigation()
 
@@ -95,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         apiInterface =
             GithubApiClient.getClient().create(GithubApiInterface::class.java);
         var call: Call<GithubUserModel> =
-            apiInterface.getUserInfo("token ${sharedPref.getString(ACCESS_TOKEN, "")}")
+            apiInterface.getUserData("token ${sharedPref.getString(ACCESS_TOKEN, "")}")
         call.enqueue(object : Callback<GithubUserModel> {
             override fun onFailure(call: Call<GithubUserModel>, t: Throwable) {
                 Toast.makeText(
@@ -132,16 +133,16 @@ class MainActivity : AppCompatActivity() {
 
         fragmentModel.add(HomeFragment())
         fragmentModel.add(SearchFragment())
-        fragmentModel.add(FeedFragment())
-        fragmentModel.add(NotificationFragment())
+        fragmentModel.add(FeedsFragment())
+        fragmentModel.add(NotificationsFragment())
         fragmentModel.add(ProfileFragment())
 
     }
 
-    private fun initalizeViews() {
+    private fun initializeViews() {
         sharedPref = getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE)
-        mainBottomNavigation = findViewById(R.id.main_bottom_navigation)
-        mainViewPager = findViewById(R.id.main_view_pager)
+        mainBottomNavigation = findViewById(R.id.mainBottomNavigation)
+        mainViewPager = findViewById(R.id.mainViewPager)
         fragmentModel = ArrayList()
 
         FirebaseApp.initializeApp(baseContext)

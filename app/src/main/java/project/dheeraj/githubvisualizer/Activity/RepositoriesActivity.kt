@@ -30,12 +30,16 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.activity_repositories.*
 import project.dheeraj.githubvisualizer.Adapter.RepositoryAdapter
 import project.dheeraj.githubvisualizer.AppConfig
-import project.dheeraj.githubvisualizer.GithubApiClient
-import project.dheeraj.githubvisualizer.GithubApiInterface
+import project.dheeraj.githubvisualizer.Network.GithubApiClient
+import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.R
+import project.dheeraj.githubvisualizer.ViewModel.RepositoriesViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -46,18 +50,19 @@ class RepositoriesActivity : AppCompatActivity() {
     private lateinit var sharedPref: SharedPreferences
     private lateinit var call: Call<ArrayList<RepositoryModel>>
     private lateinit var username: String
-
-
-
+    private lateinit var viewModel: RepositoriesViewModel
+    private lateinit var token: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_repositories)
 
         sharedPref = getSharedPreferences(AppConfig.SHARED_PREF, Context.MODE_PRIVATE)
+        token = "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}"
+
+        viewModel = ViewModelProviders.of(this).get(RepositoriesViewModel::class.java)
+
         userName.text = intent.getStringExtra(AppConfig.LOGIN)
-        var apiInterface =
-            GithubApiClient.getClient().create(GithubApiInterface::class.java);
 
         buttonBack.setOnClickListener {
             onBackPressed()
@@ -70,26 +75,14 @@ class RepositoriesActivity : AppCompatActivity() {
 
             if (intent.getStringExtra("USER_TYPE") == "user") {
 
-                // TODO
                 username = intent.getStringExtra(AppConfig.LOGIN)
-                call =
-                    apiInterface.starredRepoOfUser(
-                        "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}",
-                        username
-                    )
-                getStarredRepo(apiInterface, call)
+                viewModel.getOtherStarredRepositories(token, username,1)
+                getRepositories()
 
             } else {
 
-                call =
-                    apiInterface.starredRepo(
-                        "token ${sharedPref.getString(
-                            AppConfig.ACCESS_TOKEN,
-                            ""
-                        )}"
-                    )
-                getStarredRepo(apiInterface, call)
-
+                viewModel.getMyStarredRepositories(token, 1)
+                getStarredRepositories()
             }
         }
         else {
@@ -98,91 +91,56 @@ class RepositoriesActivity : AppCompatActivity() {
 
             if (intent.getStringExtra("USER_TYPE" ) == "user") {
 
-                // TODO
                 username = intent.getStringExtra(AppConfig.LOGIN)
-                call =
-                    apiInterface.getUserRepos("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}",
-                        username)
-                getRepositories(apiInterface, call)
+                viewModel.getOtherRepositories(token, username,1)
+                getRepositories()
 
             }
             else {
 
-                call =
-                    apiInterface.getMyRepos("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}")
-                getRepositories(apiInterface, call)
+                viewModel.getMyRepositories(token, 1)
+                getRepositories()
 
             }
         }
 
     }
 
-    private fun getRepositories(apiInterface: GithubApiInterface, call: Call<ArrayList<RepositoryModel>>) {
-        try {
 
-            call.enqueue(object : Callback<ArrayList<RepositoryModel>> {
-                override fun onFailure(call: Call<ArrayList<RepositoryModel>>, t: Throwable) {
-                    Timber.e(t)
-                }
+    private fun getRepositories() {
 
-                override fun onResponse(
-                    call: Call<ArrayList<RepositoryModel>>,
-                    response: Response<ArrayList<RepositoryModel>>
-                ) {
-                    var repos: ArrayList<RepositoryModel> = ArrayList()
+        viewModel.repoList.observe(this,  Observer {
+            if (it.isNullOrEmpty()) {
+                Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show()
+                if (repoProgressbar.visibility == View.VISIBLE)
+                    repoProgressbar.visibility = View.GONE
+            }
+            else {
+                repoRecyclerView.adapter = RepositoryAdapter(this, it)
+                if (repoProgressbar.visibility == View.VISIBLE)
+                    repoProgressbar.visibility = View.GONE
+            }
+        })
 
-                    repos = response.body()!!
-
-                    try {
-                        repoRecyclerView.adapter = RepositoryAdapter(this@RepositoriesActivity, repos)
-                        if (repoProgressbar.visibility == View.VISIBLE)
-                        repoProgressbar.visibility = View.GONE
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                    }
-
-                }
-
-            })
-
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
     }
 
+    private fun getStarredRepositories() {
 
-    private fun getStarredRepo(apiInterface: GithubApiInterface, call: Call<ArrayList<RepositoryModel>>) {
-        try {
+        viewModel.repoList.observe(this,  Observer {
+            if (it.isNullOrEmpty()) {
+                Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show()
+                if (repoProgressbar.visibility == View.VISIBLE)
+                    repoProgressbar.visibility = View.GONE
+            }
+            else {
+                repoRecyclerView.adapter = RepositoryAdapter(this, it)
+                if (repoProgressbar.visibility == View.VISIBLE)
+                    repoProgressbar.visibility = View.GONE
+            }
+        })
 
-            call.enqueue(object : Callback<ArrayList<RepositoryModel>> {
-                override fun onFailure(call: Call<ArrayList<RepositoryModel>>, t: Throwable) {
-                    Timber.e(t)
-                }
-
-                override fun onResponse(
-                    call: Call<ArrayList<RepositoryModel>>,
-                    response: Response<ArrayList<RepositoryModel>>
-                ) {
-                    var repos: ArrayList<RepositoryModel> = ArrayList()
-
-                    repos = response.body()!!
-
-                    try {
-                        repoRecyclerView.adapter = RepositoryAdapter(this@RepositoriesActivity, repos)
-                        if (repoProgressbar.visibility == View.VISIBLE)
-                            repoProgressbar.visibility = View.GONE
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                    }
-
-                }
-
-            })
-
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
     }
+
 
     override fun onBackPressed() {
         super.onBackPressed()

@@ -22,26 +22,43 @@
  * SOFTWARE.
  */
 
-import project.dheeraj.githubvisualizer.Model.EventsModel.Pull_request
+package project.dheeraj.githubvisualizer.Network
 
-data class Payload (
+import retrofit2.Response
+import java.io.IOException
 
-	val push_id : Number,
-	val size : Number,
-	val distinct_size : Number,
-	val ref : String,
-	val ref_type : String,
-	val description: String,
-	val head : String,
-	val before : String,
-	val commits : List<Commits>,
-	val action : String,
-	val number : Int,
-	val pull_request : Pull_request,
-	val issue : Issue,
-	val comment : Comment,
-	val forkee : Forkee,
-	val member : project.dheeraj.githubvisualizer.Model.EventsModel.Member,
-	val release: Release
+abstract class SafeApiRequest {
 
-)
+    suspend fun <T: Any> apiRequest(call: suspend() -> Response<T>) : T {
+
+        val response = call.invoke()
+
+        if (response.isSuccessful){
+
+            return response.body()!!
+
+        }
+        else {
+            // todo handle api exception
+            throw ApiException(response.code().toString())
+        }
+    }
+
+    suspend fun <T: Any> apiResponseCode(call: suspend() -> Response<T>) : T {
+
+        val response = call.invoke()
+
+        if (response.isSuccessful){
+
+            return response.body()!!
+
+        }
+        else {
+            // todo handle api exception
+            throw ApiException(response.code().toString())
+        }
+    }
+
+}
+
+class ApiException (messsage : String): IOException(messsage)

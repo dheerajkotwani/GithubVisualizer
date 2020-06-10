@@ -22,26 +22,37 @@
  * SOFTWARE.
  */
 
-import project.dheeraj.githubvisualizer.Model.EventsModel.Pull_request
+package project.dheeraj.githubvisualizer.ViewModel
 
-data class Payload (
+import NotificationModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import project.dheeraj.githubvisualizer.Network.GithubApiInterface
+import project.dheeraj.githubvisualizer.Repository.NetworkRepository
 
-	val push_id : Number,
-	val size : Number,
-	val distinct_size : Number,
-	val ref : String,
-	val ref_type : String,
-	val description: String,
-	val head : String,
-	val before : String,
-	val commits : List<Commits>,
-	val action : String,
-	val number : Int,
-	val pull_request : Pull_request,
-	val issue : Issue,
-	val comment : Comment,
-	val forkee : Forkee,
-	val member : project.dheeraj.githubvisualizer.Model.EventsModel.Member,
-	val release: Release
+class PullsViewModel: ViewModel() {
 
-)
+    private val repository = NetworkRepository(GithubApiInterface())
+
+    private var mutablePullsList = MutableLiveData<ArrayList<NotificationModel>>()
+    val pullsList: LiveData<ArrayList<NotificationModel>>
+
+    init {
+        pullsList = mutablePullsList
+    }
+
+    fun getPulls (token: String, page: Int) {
+        viewModelScope.launch(Dispatchers.Main) {
+            mutablePullsList.postValue(repository.getNotification(
+                token,
+                1
+            ) as ArrayList)
+        }
+    }
+
+
+}
