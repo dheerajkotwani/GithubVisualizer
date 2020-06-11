@@ -111,13 +111,15 @@
     </LinearLayout>
 
 
-    <ProgressBar
-        android:id="@+id/issueProgressbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/titleBar"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageView
+        android:id="@+id/gitProgressbar"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:src="@drawable/github_loader"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -61,10 +61,10 @@ interface GithubApiInterface {
     // Other User
     @Headers("Content-Type: application/json")
     @GET("users/{user}")
-    fun getPublicUser(
+    suspend fun getPublicUser(
         @Header("Authorization") token: String,
         @Path("user") user: String
-    ): retrofit2.Call<GithubUserModel>
+    ): Response<GithubUserModel>
 
 
     // UserLogin
@@ -115,19 +115,20 @@ interface GithubApiInterface {
     ): Response<SearchModel>
 
 
-
     // Repositories
-        @Headers("Content-Type: application/json")
+    @Headers("Content-Type: application/json")
     @GET("/user/repos?sort=updated&per_page=100")
     suspend fun getMyRepositories(
-        @Header("Authorization") user: String
+        @Header("Authorization") user: String,
+        @Query("page") page: Int
     ): Response<ArrayList<RepositoryModel>>
 
     @Headers("Content-Type: application/json")
     @GET("/users/{username}/repos?sort=updated&per_page=100")
     suspend fun getUserRepositories(
         @Header("Authorization") user: String,
-        @Path("username") username:String
+        @Path("username") username:String,
+        @Query("page") page: Int
     ): Response<ArrayList<RepositoryModel>>
 
     @Headers("Content-Type: application/json")
@@ -138,50 +139,50 @@ interface GithubApiInterface {
 
     @Headers("Content-Type: application/json")
     @GET("/users/{username}/repos?sort=updated&per_page=5")
-    fun topReposUser(
+    suspend fun topReposUser(
         @Header("Authorization") user: String,
         @Path("username") username:String
-    ): retrofit2.Call<ArrayList<RepositoryModel>>
+    ): Response<ArrayList<RepositoryModel>>
 
     @Headers("Content-Type: application/json")
     @GET("/users/{username}/repos?sort=updated&per_page=5")
-    fun topRepositoriesUser(
+    suspend fun topRepositoriesUser(
         @Header("Authorization") user: String,
         @Path("username") username:String
     ): Response<ArrayList<RepositoryModel>>
 
     @Headers("Content-Type: application/json")
     @GET("/repos/{owner}/{repo}")
-    fun getReposData(
-        @Header("Authorization") user: String,
+    suspend fun getReposData(
+        @Header("Authorization") token: String,
         @Path("owner") owner:String,
         @Path("repo") repo:String
-    ): retrofit2.Call<RepositoryModel>
+    ): Response<RepositoryModel>
 
     @Headers("Content-Type: application/json")
     @GET("/repos/{owner}/{repo}/readme")
-    fun getReposReadme(
+    suspend fun getReposReadme(
         @Header("Authorization") user: String,
         @Path("owner") owner:String,
         @Path("repo") repo:String
-    ): retrofit2.Call<Readme>
+    ): Response<Readme>
 
 
     // Gists
     @Headers("Content-Type: application/json")
     @GET("/users/{username}/gists?per_page=100")
-    fun getGist(
+    suspend fun getGist(
         @Header("Authorization") user: String,
         @Path("username") username:String
-    ): retrofit2.Call<ArrayList<GistModel>>
+    ): Response<ArrayList<GistModel>>
 
     // Organizations
     @Headers("Content-Type: application/json")
     @GET("/users/{username}/orgs")
-    fun getOrgs(
+    suspend fun getOrgs(
         @Header("Authorization") token: String,
         @Path("username") username: String
-    ): retrofit2.Call<ArrayList<OrganizationsModel>>
+    ): Response<ArrayList<OrganizationsModel>>
 
     // Issues
     @Headers("Content-Type: application/json")
@@ -224,27 +225,27 @@ interface GithubApiInterface {
 
     @Headers("Content-Length: 0")
     @PUT("/user/starred/{owner}/{repo}")
-    fun starTheRepo(
+    suspend fun starTheRepo(
         @Header("Authorization") user: String,
         @Path("owner") owner:String,
         @Path("repo") repo:String
-    ): retrofit2.Call<String>
+    ): Response<Int>
 
     @Headers("Content-Length: 0")
     @GET("/user/starred/{owner}/{repo}")
-    fun getStar(
+    suspend fun getStar(
         @Header("Authorization") user: String,
         @Path("owner") owner:String,
         @Path("repo") repo:String
-    ): retrofit2.Call<String>
+    ): Response<Int>
 
     @Headers("Content-Length: 0")
     @DELETE("/user/starred/{owner}/{repo}")
-    fun removeStar(
+    suspend fun removeStar(
         @Header("Authorization") user: String,
         @Path("owner") owner:String,
         @Path("repo") repo:String
-    ): retrofit2.Call<String>
+    ): Response<Int>
 
 
     // Followers and Following
@@ -266,24 +267,24 @@ interface GithubApiInterface {
 
     @Headers("Content-Length: 0")
     @PUT("/user/following/{username}")
-    fun followUser(
+    suspend fun followUser(
         @Header("Authorization") token: String,
         @Path("username") username:String
-    ): retrofit2.Call<String>
+    ): Response<Int>
 
     @Headers("Content-Length: 0")
     @GET("/user/following/{username}")
-    fun checkFollow(
+    suspend fun checkFollow(
         @Header("Authorization") token: String,
         @Path("username") username:String
-    ):retrofit2.Call<String>
+    ): Response<Int>
 
     @Headers("Content-Length: 0")
     @DELETE("/user/following/{username}")
-    fun unfollowUser(
+    suspend fun unfollowUser(
         @Header("Authorization") token: String,
         @Path("username") username:String
-    ):retrofit2.Call<String>
+    ): Response<String>
 
 
 

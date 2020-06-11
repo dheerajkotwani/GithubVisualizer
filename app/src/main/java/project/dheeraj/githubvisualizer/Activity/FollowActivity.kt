@@ -33,25 +33,14 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_follow.*
 import kotlinx.android.synthetic.main.activity_repositories.buttonBack
 import kotlinx.android.synthetic.main.activity_repositories.userName
-import kotlinx.android.synthetic.main.fragment_notification.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 import project.dheeraj.githubvisualizer.Adapter.FollowAdapter
-import project.dheeraj.githubvisualizer.Adapter.RepositoryAdapter
-import project.dheeraj.githubvisualizer.Adapter.SearchAdapter
 import project.dheeraj.githubvisualizer.AppConfig
-import project.dheeraj.githubvisualizer.Network.GithubApiClient
-import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.R
 import project.dheeraj.githubvisualizer.ViewModel.FollowViewModel
-import project.dheeraj.githubvisualizer.ViewModel.ProfileViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import timber.log.Timber
 
 class FollowActivity : AppCompatActivity() {
@@ -80,7 +69,7 @@ class FollowActivity : AppCompatActivity() {
 
         Glide.with(this)
             .load(R.drawable.github_loader)
-            .into(followProgressBar)
+            .into(gitProgressBar)
 
         buttonBack.setOnClickListener {
             onBackPressed()
@@ -102,25 +91,23 @@ class FollowActivity : AppCompatActivity() {
         else {
 
             pageTitle.text = "Following"
-            viewModel.getFollowers(token, userName.text.toString(), page)
+            viewModel.getFollowing(token, userName.text.toString(), page)
             getFollow()
 
         }
 
-        buttonLoadMore.setOnClickListener {
+        buttonLoadMoreFollow.setOnClickListener {
 
-            buttonLoadMore.isClickable = false
+            buttonLoadMoreFollow.isClickable = false
             page++
             if (followerPage) {
 
                 viewModel.getFollowers(token, userName.text.toString(), page)
-                getFollow()
 
             }
             else {
 
-                viewModel.getFollowers(token, userName.text.toString(), page)
-                getFollow()
+                viewModel.getFollowing(token, userName.text.toString(), page)
 
             }
 
@@ -132,28 +119,26 @@ class FollowActivity : AppCompatActivity() {
 
         viewModel.followList.observe(this, Observer {
             if (it.isNullOrEmpty()) {
-                Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show()
-                if (followProgressBar.visibility == View.VISIBLE)
-                    followProgressBar.visibility = View.GONE
-            }
-            else {
+                Toast.makeText(this, "No items", Toast.LENGTH_SHORT).show()
+                if (gitProgressBar.visibility == View.VISIBLE)
+                    gitProgressBar.visibility = View.GONE
+                if (buttonLoadMoreFollow.visibility == View.VISIBLE)
+                    buttonLoadMoreFollow.visibility = View.GONE
+            } else {
 
-                if (it.size==100){
-
-                    buttonLoadMore.visibility = View.VISIBLE
-                    buttonLoadMore.isClickable = true
-                }
+                    if (buttonLoadMoreFollow.visibility == View.GONE)
+                        buttonLoadMoreFollow.visibility = View.VISIBLE
 
                 followList.addAll(it)
+                buttonLoadMoreFollow.isClickable = true
 
-                if (followProgressBar.visibility == View.VISIBLE)
-                    followProgressBar.visibility = View.GONE
+                if (gitProgressBar.visibility == View.VISIBLE)
+                    gitProgressBar.visibility = View.GONE
 
                 adapter.notifyDataSetChanged()
 
             }
         })
-
 
     }
 

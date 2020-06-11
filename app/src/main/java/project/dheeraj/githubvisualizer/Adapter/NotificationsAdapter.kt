@@ -65,7 +65,7 @@ class NotificationsAdapter(var context: Context,
     @SuppressLint("SimpleDateFormat")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.notificationTitle.text = notifications[position].subject.title
-        holder.notificationName.text = notifications[position].repository.name
+        holder.notificationName.text = notifications[position].repository.full_name
 //        holder.notificationTime.text = notifications[position].updated_at
         if (notifications.get(position).subject.type == "PullRequest") {
 
@@ -107,12 +107,6 @@ class NotificationsAdapter(var context: Context,
             e.printStackTrace()
         }
 
-
-        // Test data
-//        holder.notificationTitle.text = "hey"
-//        holder.notificationTime.text = "notifications[position].updated_at"0-12
-//        if (notifications.get(position).subject.type == "PullRequest")
-//            holder.notificationImage.setImageResource(R.drawable.git_pull_request)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

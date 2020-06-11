@@ -145,6 +145,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     .apply()
 
 
+
+
                 val apiInterface =
                         GithubApiClient.getClient().create(GithubApiInterface::class.java);
                     var call: Call<GithubUserModel> =

@@ -49,7 +49,7 @@ class NotificationsViewModel: ViewModel() {
         viewModelScope.launch(Dispatchers.Main) {
             mutableNotificationsList.postValue(repository.getNotification(
                 token,
-                1
+                page
             ) as ArrayList)
         }
     }

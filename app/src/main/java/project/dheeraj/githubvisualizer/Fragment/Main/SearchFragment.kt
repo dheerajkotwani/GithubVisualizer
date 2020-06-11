@@ -39,8 +39,11 @@ import android.widget.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.fragment_feed.*
 import kotlinx.android.synthetic.main.fragment_notification.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.fragment_search.*
 import project.dheeraj.githubvisualizer.Adapter.RepositoryAdapter
 import project.dheeraj.githubvisualizer.Adapter.SearchAdapter
 import project.dheeraj.githubvisualizer.AppConfig
@@ -48,6 +51,7 @@ import project.dheeraj.githubvisualizer.Network.GithubApiClient
 import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 
 import project.dheeraj.githubvisualizer.R
+import project.dheeraj.githubvisualizer.Util.AppUtils
 import project.dheeraj.githubvisualizer.ViewModel.ProfileViewModel
 import project.dheeraj.githubvisualizer.ViewModel.SearchViewModel
 import retrofit2.Call
@@ -64,6 +68,7 @@ class SearchFragment : Fragment() {
     private lateinit var etSearch: EditText
     private lateinit var imageSearch: ImageView
     private lateinit var viewModel: SearchViewModel
+    private lateinit var gitSearchProgressbar: ImageView
     private lateinit var token: String
 
     override fun onCreateView(
@@ -78,19 +83,29 @@ class SearchFragment : Fragment() {
         token = "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}"
         etSearch = view.findViewById(R.id.search_bar)
         searchReclerView = view.findViewById(R.id.search_recyclerView)
-        progressBar = view.findViewById(R.id.search_progressbar)
+        gitSearchProgressbar = view.findViewById(R.id.gitSearchProgressbar)
         imageSearch = view.findViewById(R.id.search_icon)
         search = ArrayList()
 
         if (etSearch.text.isNotEmpty())
             getSearchResult()
 
+            Glide.with(this)
+                .load(R.drawable.github_loader)
+                .into(gitSearchProgressbar)
+
         imageSearch.setOnClickListener{
 
-            viewModel.getSearchRepo(token, etSearch.text.toString())
-            getSearchResult()
+            if (!etSearch.text.toString().isNullOrEmpty()) {
+                viewModel.getSearchRepo(token, etSearch.text.toString())
+                getSearchResult()
+                AppUtils.hideSoftKeyBoard(context!!, view)
+                if(gitSearchProgressbar.visibility == View.GONE)
+                    gitSearchProgressbar.visibility = View.VISIBLE
+            }
 
         }
+
 
         etSearch.setOnEditorActionListener { _, actionId, event ->
 
@@ -98,8 +113,15 @@ class SearchFragment : Fragment() {
                 actionId == EditorInfo.IME_ACTION_DONE ||
                 event != null &&
                 event.action == KeyEvent.ACTION_DOWN &&
-                event.keyCode == KeyEvent.KEYCODE_ENTER)
-                getSearchResult()
+                event.keyCode == KeyEvent.KEYCODE_ENTER){
+                if (!etSearch.text.toString().isNullOrEmpty()) {
+                    viewModel.getSearchRepo(token, etSearch.text.toString())
+                    getSearchResult()
+                    AppUtils.hideSoftKeyBoard(context!!, view)
+                    if(gitSearchProgressbar.visibility == View.GONE)
+                        gitSearchProgressbar.visibility = View.VISIBLE
+                }
+            }
             true
 
         }
@@ -114,53 +136,15 @@ class SearchFragment : Fragment() {
                 Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show()
                 if (NotificationsProgressBar.visibility == View.VISIBLE)
                     NotificationsProgressBar.visibility = View.GONE
+                if(gitSearchProgressbar.visibility == View.VISIBLE)
+                    gitSearchProgressbar.visibility = View.GONE
             }
             else {
                 searchReclerView.adapter = SearchAdapter(context!!, it.items)
+                if(gitSearchProgressbar.visibility == View.VISIBLE)
+                    gitSearchProgressbar.visibility = View.GONE
             }
         })
 
     }
-/*
-    private fun getSearchResult() {
-
-        if (!etSearch.text.isNullOrEmpty()) {
-            progressBar.visibility = View.VISIBLE
-
-            var apiInterface =
-                GithubApiClient.getClient().create(GithubApiInterface::class.java)
-
-            var call: Call<SearchModel> =
-                apiInterface.searchUser(
-                    "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}",
-                    etSearch.text.toString()
-                )
-            call.enqueue(object : Callback<SearchModel> {
-                override fun onFailure(call: Call<SearchModel>, t: Throwable) {
-                    Toast.makeText(
-                        context,
-                        "error: ${t.message}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    progressBar.visibility = View.GONE
-                }
-
-                override fun onResponse(call: Call<SearchModel>, response: Response<SearchModel>) {
-                    //                            Toast.makeText(context, "feed: ${response.body()!!.}", Toast.LENGTH_LONG).show()
-                    progressBar.visibility = View.GONE
-                    search = response.body()!!.items
-                    searchReclerView.adapter = SearchAdapter(context!!, search)
-                }
-            })
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (etSearch.text.isNotEmpty())
-            getSearchResult()
-    }
-
-
- */
 }

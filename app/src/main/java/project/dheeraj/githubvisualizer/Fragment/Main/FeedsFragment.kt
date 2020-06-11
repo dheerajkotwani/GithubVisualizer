@@ -36,6 +36,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.activity_follow.*
 import kotlinx.android.synthetic.main.fragment_feed.*
 import kotlinx.android.synthetic.main.fragment_notification.*
 import project.dheeraj.githubvisualizer.Adapter.FeedsAdapter
@@ -76,7 +78,11 @@ class FeedsFragment : Fragment() {
         viewModel = ViewModelProviders.of(this).get(FeedsViewModel::class.java)
 
         viewModel.getFeeds(token, username, page)
-        feedsProgressBar.isRefreshing = true
+//        feedsProgressBar.isRefreshing = true
+
+        Glide.with(this)
+            .load(R.drawable.github_loader)
+            .into(gitFeedsProgressbar)
 
         adapter = FeedsAdapter(context!!, feedsList)
 
@@ -88,19 +94,38 @@ class FeedsFragment : Fragment() {
                 Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show()
                 if (feedsProgressBar.isRefreshing)
                     feedsProgressBar.isRefreshing = false
-
+                if(gitFeedsProgressbar.visibility == View.VISIBLE)
+                    gitFeedsProgressbar.visibility = View.GONE
+                buttonFeedsLoadMore.visibility = View.GONE
             }
             else {
-
+//                feedsRecyclerView.adapter = FeedsAdapter(context!!, feeds)
                 feedsList.addAll(it)
                 adapter.notifyDataSetChanged()
+
+                buttonFeedsLoadMore.isClickable = true
+                buttonFeedsLoadMore.visibility = View.VISIBLE
+
                 if (feedsProgressBar.isRefreshing)
                     feedsProgressBar.isRefreshing = false
-
+                if(gitFeedsProgressbar.visibility == View.VISIBLE)
+                    gitFeedsProgressbar.visibility = View.GONE
             }
         })
 
         feedsProgressBar.setOnRefreshListener {
+
+            viewModel.getFeeds(token, username, page)
+
+        }
+
+        buttonFeedsLoadMore.setOnClickListener {
+
+            page++
+            buttonFeedsLoadMore.isClickable = false
+
+            if (!feedsProgressBar.isRefreshing)
+                feedsProgressBar.isRefreshing = true
 
             viewModel.getFeeds(token, username, page)
 

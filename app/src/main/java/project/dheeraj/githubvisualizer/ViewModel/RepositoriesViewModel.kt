@@ -47,24 +47,26 @@ class RepositoriesViewModel: ViewModel() {
     }
 
     fun getMyRepositories (token: String, page: Int) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             mutableRepoList.postValue(repository.getMyRepositories(
-                token
+                token,
+                page
             ) as ArrayList)
         }
     }
 
     fun getOtherRepositories (token: String, username:String, page: Int) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             mutableRepoList.postValue(repository.getOtherRepositories(
                 token,
-                username
+                username,
+                page
             ) as ArrayList)
         }
     }
 
     fun getMyStarredRepositories (token: String, page: Int) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             mutableRepoList.postValue(repository.getMyStarredRepositories(
                 token,
                 page
@@ -73,7 +75,7 @@ class RepositoriesViewModel: ViewModel() {
     }
 
     fun getOtherStarredRepositories (token: String, username:String, page: Int) {
-        viewModelScope.launch(Dispatchers.Main) {
+        viewModelScope.launch {
             mutableRepoList.postValue(repository.getOtherStarredRepositories(
                 token,
                 username,

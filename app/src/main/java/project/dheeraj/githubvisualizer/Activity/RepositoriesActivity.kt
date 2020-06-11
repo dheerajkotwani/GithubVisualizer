@@ -31,27 +31,31 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.activity_follow.*
 import kotlinx.android.synthetic.main.activity_repositories.*
+import kotlinx.android.synthetic.main.activity_repositories.buttonBack
+import kotlinx.android.synthetic.main.activity_repositories.pageTitle
+import kotlinx.android.synthetic.main.activity_repositories.userName
 import project.dheeraj.githubvisualizer.Adapter.RepositoryAdapter
 import project.dheeraj.githubvisualizer.AppConfig
-import project.dheeraj.githubvisualizer.Network.GithubApiClient
-import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.R
 import project.dheeraj.githubvisualizer.ViewModel.RepositoriesViewModel
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import timber.log.Timber
 
 class RepositoriesActivity : AppCompatActivity() {
 
     private lateinit var sharedPref: SharedPreferences
-    private lateinit var call: Call<ArrayList<RepositoryModel>>
     private lateinit var username: String
     private lateinit var viewModel: RepositoriesViewModel
+    private lateinit var repoList: ArrayList<RepositoryModel>
+//    private lateinit var adapter: RepositoryAdapter
     private lateinit var token: String
+    private var page: Int = 1
+    private var pageType: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,30 +63,40 @@ class RepositoriesActivity : AppCompatActivity() {
 
         sharedPref = getSharedPreferences(AppConfig.SHARED_PREF, Context.MODE_PRIVATE)
         token = "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}"
+        repoList = ArrayList()
+//        adapter = RepositoryAdapter(this, repoList)
+//        repoRecyclerView.adapter = adapter
+        userName.text = intent.getStringExtra(AppConfig.LOGIN)
 
         viewModel = ViewModelProviders.of(this).get(RepositoriesViewModel::class.java)
 
-        userName.text = intent.getStringExtra(AppConfig.LOGIN)
+        Glide.with(this)
+            .load(R.drawable.github_loader)
+            .into(gitProgressbar)
 
         buttonBack.setOnClickListener {
             onBackPressed()
             finish()
         }
+        if (intent.hasExtra(AppConfig.LOGIN))
+            username = intent.getStringExtra(AppConfig.LOGIN)
+        else
+            username = "${sharedPref.getString(AppConfig.LOGIN, "")}"
+
+        getRepositories()
 
         if (intent.hasExtra("PAGE") && intent.getStringExtra("PAGE")=="STARS") {
 
             pageTitle.text = "Starred Repositories"
 
             if (intent.getStringExtra("USER_TYPE") == "user") {
+                pageType = 1
 
-                username = intent.getStringExtra(AppConfig.LOGIN)
-                viewModel.getOtherStarredRepositories(token, username,1)
-                getRepositories()
+                viewModel.getOtherStarredRepositories(token, username,page)
 
             } else {
-
-                viewModel.getMyStarredRepositories(token, 1)
-                getStarredRepositories()
+                pageType = 2
+                viewModel.getMyStarredRepositories(token, page)
             }
         }
         else {
@@ -90,19 +104,28 @@ class RepositoriesActivity : AppCompatActivity() {
             pageTitle.text = "Repositories"
 
             if (intent.getStringExtra("USER_TYPE" ) == "user") {
+                pageType = 3
 
-                username = intent.getStringExtra(AppConfig.LOGIN)
-                viewModel.getOtherRepositories(token, username,1)
-                getRepositories()
+                viewModel.getOtherRepositories(token, username, page)
 
             }
             else {
 
-                viewModel.getMyRepositories(token, 1)
-                getRepositories()
+                pageType = 4
+                viewModel.getMyRepositories(token, page)
 
             }
         }
+
+//        buttonLoadMoreRepos.setOnClickListener {
+//            page++
+//            when (pageType){
+//                1 -> viewModel.getOtherStarredRepositories(token, username,page)
+//                2 -> viewModel.getMyStarredRepositories(token, page)
+//                3 -> viewModel.getOtherRepositories(token, username, page)
+//                4 -> viewModel.getMyRepositories(token, page)
+//            }
+//        }
 
     }
 
@@ -112,35 +135,23 @@ class RepositoriesActivity : AppCompatActivity() {
         viewModel.repoList.observe(this,  Observer {
             if (it.isNullOrEmpty()) {
                 Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show()
-                if (repoProgressbar.visibility == View.VISIBLE)
-                    repoProgressbar.visibility = View.GONE
+                if (gitProgressbar.visibility == View.VISIBLE)
+                    gitProgressbar.visibility = View.GONE
+//                if (buttonLoadMoreRepos.isVisible)
+//                    buttonLoadMoreRepos.visibility = View.GONE
             }
             else {
                 repoRecyclerView.adapter = RepositoryAdapter(this, it)
-                if (repoProgressbar.visibility == View.VISIBLE)
-                    repoProgressbar.visibility = View.GONE
+//                repoList.addAll(it)
+//                adapter.notifyDataSetChanged()
+//                if (!buttonLoadMoreRepos.isVisible)
+//                    buttonLoadMoreRepos.visibility = View.VISIBLE
+                if (gitProgressbar.visibility == View.VISIBLE)
+                    gitProgressbar.visibility = View.GONE
             }
         })
 
     }
-
-    private fun getStarredRepositories() {
-
-        viewModel.repoList.observe(this,  Observer {
-            if (it.isNullOrEmpty()) {
-                Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show()
-                if (repoProgressbar.visibility == View.VISIBLE)
-                    repoProgressbar.visibility = View.GONE
-            }
-            else {
-                repoRecyclerView.adapter = RepositoryAdapter(this, it)
-                if (repoProgressbar.visibility == View.VISIBLE)
-                    repoProgressbar.visibility = View.GONE
-            }
-        })
-
-    }
-
 
     override fun onBackPressed() {
         super.onBackPressed()

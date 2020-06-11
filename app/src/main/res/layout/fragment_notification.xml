@@ -46,18 +46,24 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/notificationRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
-<!--            <ProgressBar-->
-<!--                android:id="@+id/NotificationsProgressBar"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"/>-->
+            <TextView
+                android:id="@+id/buttonNotificationLoadMore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Load More"
+                android:textStyle="bold"
+                android:textSize="16dp"
+                android:visibility="gone"
+                android:textColor="@color/blue_800"
+                android:fontFamily="@font/roboto_regular"
+                android:padding="16dp"
+                android:textAlignment="center"/>
 
             <View
                 android:layout_width="match_parent"
@@ -69,5 +75,14 @@
     </androidx.core.widget.NestedScrollView>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <ImageView
+        android:id="@+id/gitNotificationsProgressbar"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

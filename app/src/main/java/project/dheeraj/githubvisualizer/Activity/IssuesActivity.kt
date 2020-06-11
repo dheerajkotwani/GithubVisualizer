@@ -31,7 +31,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.activity_follow.*
 import kotlinx.android.synthetic.main.activity_issues.*
+import kotlinx.android.synthetic.main.activity_issues.buttonBack
+import kotlinx.android.synthetic.main.activity_issues.gitProgressbar
+import kotlinx.android.synthetic.main.activity_issues.pageTitle
+import kotlinx.android.synthetic.main.fragment_feed.*
 import project.dheeraj.githubvisualizer.Adapter.IssuesAdapter
 import project.dheeraj.githubvisualizer.AppConfig
 import project.dheeraj.githubvisualizer.Network.GithubApiClient
@@ -59,6 +65,10 @@ class IssuesActivity : AppCompatActivity() {
         issues = ArrayList()
         issuesAdapter = IssuesAdapter(this, issues)
 
+        Glide.with(this)
+            .load(R.drawable.github_loader)
+            .into(gitProgressbar)
+
         if (intent.hasExtra("PAGE"))
             if (intent.getStringExtra("PAGE") == "Issues")
                 fetchIssues(apiInterface)
@@ -79,7 +89,7 @@ class IssuesActivity : AppCompatActivity() {
 
         pageTitle.text = "Issues"
 
-        issueProgressbar.visibility = View.VISIBLE
+        gitProgressbar.visibility = View.VISIBLE
 
         var call: Call<ArrayList<IssuesModel>> =
             apiInterface.getIssues(
@@ -96,7 +106,7 @@ class IssuesActivity : AppCompatActivity() {
                         "error: ${t.message}",
                         Toast.LENGTH_LONG
                     ).show()
-                    issueProgressbar.visibility = View.GONE
+                    gitProgressbar.visibility = View.GONE
                 }
 
                 override fun onResponse(
@@ -117,10 +127,10 @@ class IssuesActivity : AppCompatActivity() {
                             noIssueFound.visibility = View.VISIBLE
                         issuesRecyclerView.adapter = issuesAdapter
                         issuesAdapter.notifyDataSetChanged()
-                        issueProgressbar.visibility = View.GONE
+                        gitProgressbar.visibility = View.GONE
                     } catch (e: Exception) {
                         Timber.e(e)
-                        issueProgressbar.visibility = View.GONE
+                        gitProgressbar.visibility = View.GONE
                         noIssueFound.visibility = View.VISIBLE
                     }
 
@@ -128,7 +138,7 @@ class IssuesActivity : AppCompatActivity() {
             })
         } catch (e: Exception) {
             Timber.e(e)
-            issueProgressbar.visibility = View.GONE
+            gitProgressbar.visibility = View.GONE
             noIssueFound.visibility = View.VISIBLE
         }
     }
@@ -138,7 +148,7 @@ private fun fetchPulls(apiInterface: GithubApiInterface) {
 
     pageTitle.text = "Pull Request"
 
-        issueProgressbar.visibility = View.VISIBLE
+        gitProgressbar.visibility = View.VISIBLE
 
         var call: Call<ArrayList<IssuesModel>> =
             apiInterface.getIssues(
@@ -155,7 +165,7 @@ private fun fetchPulls(apiInterface: GithubApiInterface) {
                         "error: ${t.message}",
                         Toast.LENGTH_LONG
                     ).show()
-                    issueProgressbar.visibility = View.GONE
+                    gitProgressbar.visibility = View.GONE
                 }
 
                 override fun onResponse(
@@ -179,10 +189,10 @@ private fun fetchPulls(apiInterface: GithubApiInterface) {
                             noIssueFound.visibility = View.VISIBLE
                         issuesRecyclerView.adapter = issuesAdapter
                         issuesAdapter.notifyDataSetChanged()
-                        issueProgressbar.visibility = View.GONE
+                        gitProgressbar.visibility = View.GONE
                     } catch (e: Exception) {
                         Timber.e(e)
-                        issueProgressbar.visibility = View.GONE
+                        gitProgressbar.visibility = View.GONE
                         noIssueFound.visibility = View.VISIBLE
                     }
 
@@ -190,7 +200,7 @@ private fun fetchPulls(apiInterface: GithubApiInterface) {
             })
         } catch (e: Exception) {
             Timber.e(e)
-            issueProgressbar.visibility = View.GONE
+            gitProgressbar.visibility = View.GONE
             noIssueFound.visibility = View.VISIBLE
         }
     }

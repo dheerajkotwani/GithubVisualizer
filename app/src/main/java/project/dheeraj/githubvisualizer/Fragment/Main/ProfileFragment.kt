@@ -79,7 +79,6 @@ class ProfileFragment : Fragment() {
     private var starPage: Int = 1
     private var starRepo: ArrayList<RepositoryModel> = ArrayList()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -94,17 +93,6 @@ class ProfileFragment : Fragment() {
         mainView = view
         sharedPref = context!!.getSharedPreferences(AppConfig.SHARED_PREF, Context.MODE_PRIVATE)
         token ="token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}"
-
-
-        var apiInterface =
-            GithubApiClient.getClient().create(GithubApiInterface::class.java);
-
-        fetchStars(apiInterface)
-
-//        getUserData()
-
-//        getTopRepos(apiInterface)
-
 
         view.llFollowers.setOnClickListener {
 
@@ -159,17 +147,19 @@ class ProfileFragment : Fragment() {
 
         getUserData()
 
+        fetchStars()
+        viewModel.getMyStarredRepo(token, starPage)
+
         getTopRepos()
 
     }
 
     private fun getTopRepos(){
 
-        viewModel.getTopRepositories(token)
+        viewModel.getMyTopRepositories(token)
 
         viewModel.topRepositoryList.observe(viewLifecycleOwner, Observer {
             if (it.isNullOrEmpty()) {
-                Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show()
                 if (NotificationsProgressBar.visibility == View.VISIBLE)
                     NotificationsProgressBar.visibility = View.GONE
             }
@@ -249,52 +239,18 @@ class ProfileFragment : Fragment() {
 
     }
 
-    private fun fetchStars(
-        apiInterface: GithubApiInterface
-    ) {
+    private fun fetchStars() {
 
-        var call: Call<ArrayList<RepositoryModel>> =
-            apiInterface.starredRepo(
-                "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}", starPage
-            )
-        try {
+        viewModel.starList.observe(viewLifecycleOwner, Observer {
+            if (it.size > 0) {
+                starRepo.addAll(it)
+                starPage++
+                tvStars.text = "${starRepo.size}"
+                viewModel.getMyStarredRepo(token, starPage)
+            } else
+                tvStars.text = "${starRepo.size}"
+        })
 
-
-            call.enqueue(object : Callback<ArrayList<RepositoryModel>> {
-                override fun onFailure(call: Call<ArrayList<RepositoryModel>>, t: Throwable) {
-                    Toast.makeText(
-                        context,
-                        "error: ${t.message}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    tvStars.text = "${starRepo.size}"
-                }
-
-                override fun onResponse(
-                    call: Call<ArrayList<RepositoryModel>>,
-                    response: Response<ArrayList<RepositoryModel>>
-                ) {
-                    try {
-
-                        if (response.body()!!.size > 0) {
-                            for (i in response.body()!!) {
-                                starRepo.add(i)
-                            }
-                            starPage++
-                            tvStars.text = "${starRepo.size}"
-                            fetchStars(apiInterface)
-                        } else
-                            tvStars.text = "${starRepo.size}"
-
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                    }
-                }
-            })
-        } catch (e: Exception) {
-            Timber.e(e)
-            tvStars.text = "${starRepo.size}"
-        }
     }
 
 }

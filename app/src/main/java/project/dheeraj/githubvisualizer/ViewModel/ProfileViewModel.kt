@@ -39,15 +39,23 @@ class ProfileViewModel : ViewModel() {
 
     private val repository = NetworkRepository(GithubApiInterface())
 
+    private var mutableStarList = MutableLiveData<ArrayList<RepositoryModel>>()
+    val starList: LiveData<ArrayList<RepositoryModel>>
+
     private var mutableUserList = MutableLiveData<GithubUserModel>()
     val userList: LiveData<GithubUserModel>
 
     private var mutableTopRepositoryList = MutableLiveData<ArrayList<RepositoryModel>>()
     val topRepositoryList: LiveData<ArrayList<RepositoryModel>>
 
+    private var mutableFollowData = MutableLiveData<Int>()
+    val followData: LiveData<Int>
+
     init {
         userList = mutableUserList
         topRepositoryList = mutableTopRepositoryList
+        followData = mutableFollowData
+        starList = mutableStarList
     }
 
     fun getLoginProfile (token: String) {
@@ -58,13 +66,71 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
+    fun getUserProfile (token: String, username: String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            mutableUserList.postValue(
+                repository.getUserProfile(token,
+                    username)
+            )
+        }
+    }
 
-    fun getTopRepositories (token: String) {
+
+    fun getMyTopRepositories (token: String) {
         viewModelScope.launch(Dispatchers.Main) {
             mutableTopRepositoryList.postValue(
                 repository.getMyTopRepositories(token)
             )
         }
     }
+
+    fun getUserTopRepositories (token: String, username: String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            mutableTopRepositoryList.postValue(
+                repository.getUserTopRepositories(token, username)
+            )
+        }
+    }
+
+    fun getMyStarredRepo (token: String, page: Int) {
+        viewModelScope.launch(Dispatchers.Main) {
+            mutableStarList.postValue(
+                repository.getMyStarredRepositories(token, page)
+            )
+        }
+    }
+
+    fun getUserStarredRepo (token: String, username: String, page: Int) {
+        viewModelScope.launch(Dispatchers.Main) {
+            mutableStarList.postValue(
+                repository.getOtherStarredRepositories(token, username, page)
+            )
+        }
+    }
+
+    fun getFollow (token: String, username:String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            mutableFollowData.postValue(
+                repository.getFollow(token, username)
+            )
+        }
+    }
+
+    fun putFollow (token: String, username:String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            mutableFollowData.postValue(
+                repository.putFollow(token, username)
+            )
+        }
+    }
+
+    fun deleteFollow (token: String, username:String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            mutableFollowData.postValue(
+                repository.deleteFollow(token, username)
+            )
+        }
+    }
+
 
 }

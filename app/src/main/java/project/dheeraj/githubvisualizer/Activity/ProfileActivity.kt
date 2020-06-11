@@ -31,24 +31,32 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_profile.toolbar
 import kotlinx.android.synthetic.main.content_profile.*
+import kotlinx.android.synthetic.main.fragment_notification.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.llEmail
 import kotlinx.android.synthetic.main.fragment_profile.llLocation
 import kotlinx.android.synthetic.main.fragment_profile.llOrganisations
 import kotlinx.android.synthetic.main.fragment_profile.llTwitter
 import kotlinx.android.synthetic.main.fragment_profile.llWebsite
 import kotlinx.android.synthetic.main.fragment_profile.tvDisplayName
-import kotlinx.android.synthetic.main.fragment_profile.tvFollowers
 import project.dheeraj.githubvisualizer.Adapter.RepositoryAdapter
 import project.dheeraj.githubvisualizer.AppConfig
 import project.dheeraj.githubvisualizer.Network.GithubApiClient
 import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.R
+import project.dheeraj.githubvisualizer.ViewModel.ProfileViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -61,6 +69,9 @@ class ProfileActivity : AppCompatActivity() {
     private var followersCount: Int = 0
     private var starPage: Int = 1
     private var starRepo: ArrayList<RepositoryModel> = ArrayList()
+    private lateinit var token: String
+    private lateinit var viewModel: ProfileViewModel
+    private var follow = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +82,10 @@ class ProfileActivity : AppCompatActivity() {
         username = intent.getStringExtra("login")
         supportActionBar!!.title = username
         sharedPref = getSharedPreferences(AppConfig.SHARED_PREF, Context.MODE_PRIVATE)
+        token = "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}"
+        viewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
+
+//        tvFollowers = findViewById(R.id.tvFollowersUser)
 
         // TODO implement clicks for different fields in desc eg. twitter, website
 
@@ -78,20 +93,27 @@ class ProfileActivity : AppCompatActivity() {
             GithubApiClient.getClient().create(GithubApiInterface::class.java);
 
         fetchStars(apiInterface)
-        getUserData(apiInterface, username)
-        getTopRepos(username)
+        getUserData()
+        getTopRepos()
 
-        if (sharedPref.getString(AppConfig.LOGIN, "") == username)
+        if (sharedPref.getString(AppConfig.LOGIN, "") == username) {
             buttonFollow.visibility = View.GONE
-        else
-            checkFollow(apiInterface, username)
+            viewModel.getLoginProfile(token)
+            viewModel.getMyTopRepositories(token)
+        }
+        else {
+            observeFollow()
+            viewModel.getUserProfile(token, username)
+            viewModel.getUserTopRepositories(token, username)
+        }
+        viewModel.getFollow(token, username)
 
         buttonFollow.setOnClickListener {
             buttonFollow.isClickable = false
             if (buttonFollow.text == "FOLLOWING")
-                unfollowUser (apiInterface, username)
+                viewModel.deleteFollow(token, username)
             else
-                followUser (apiInterface, username)
+                viewModel.putFollow(token, username)
         }
 
 
@@ -130,226 +152,125 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-
     }
 
-    private fun followUser(apiInterface: GithubApiInterface,
-                           username: String){
+    private fun observeFollow(){
 
-        var call =
-            apiInterface.followUser("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}", username)
+        viewModel.followData.observe(this, Observer {
 
-        call.enqueue(object : Callback<String>{
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                buttonFollow.isClickable = true
-                Toast.makeText(this@ProfileActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                buttonFollow.isClickable = true
-                if (response.code() == 204){
-                    Toast.makeText(this@ProfileActivity, "User Followed", Toast.LENGTH_SHORT).show()
-                    buttonFollow.text = "FOLLOWING"
-                    followersCount++
-                    tvFollowers.text = followersCount.toString()
-                    Toast.makeText(this@ProfileActivity, "Followed", Toast.LENGTH_SHORT).show()
-                }
-                else {
-                    Toast.makeText(this@ProfileActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
-                    buttonFollow.isClickable = true
-
-                }
-            }
-
-        })
-    }
-
-    private fun unfollowUser(apiInterface: GithubApiInterface,
-                             username: String){
-
-        var call =
-            apiInterface.unfollowUser("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}", username)
-
-        call.enqueue(object : Callback<String>{
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                buttonFollow.isClickable = true
-                Toast.makeText(this@ProfileActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                buttonFollow.isClickable = true
-                if (response.code() == 204){
-                    Toast.makeText(this@ProfileActivity, "User Unfollowed", Toast.LENGTH_SHORT).show()
-                    buttonFollow.text = "FOLLOW"
-                    followersCount--
-                    tvFollowers.text = followersCount.toString()
-                    Toast.makeText(this@ProfileActivity, "Unfollowed", Toast.LENGTH_SHORT).show()
-                }
-                else {
-                    buttonFollow.isClickable = true
-                    Toast.makeText(this@ProfileActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-        })
-    }
-
-    private fun checkFollow(apiInterface: GithubApiInterface,
-                            username: String){
-
-        var call =
-            apiInterface.checkFollow("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}", username)
-
-        call.enqueue(object : Callback<String>{
-            override fun onFailure(call: Call<String>, t: Throwable) {
-            }
-
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-
+            if (it == 404 && !buttonFollow.isVisible){
+                buttonFollow.text = "FOLLOW"
+                follow = false
                 if (buttonFollow.visibility == View.GONE)
                     buttonFollow.visibility = View.VISIBLE
-
-                if (response.code() == 404){
-                    buttonFollow.text = "FOLLOW"
-
-
-                }
-                else if (response.code() == 204){
-                    buttonFollow.text = "FOLLOWING"
-                }
             }
+
+            else if (it == 204 && !buttonFollow.isVisible){
+                buttonFollow.text = "FOLLOWING"
+                follow = true
+                if (buttonFollow.visibility == View.GONE)
+                    buttonFollow.visibility = View.VISIBLE
+            }
+
+            else if (it == 204 && buttonFollow.isVisible && follow) {
+                follow = false
+                Toast.makeText(this@ProfileActivity, "User Unfollowed", Toast.LENGTH_SHORT).show()
+                buttonFollow.text = "FOLLOW"
+                followersCount--
+                tvFollowersUser.text = followersCount.toString()
+            }
+
+            else if (it == 204 && buttonFollow.isVisible && !follow) {
+                follow = true
+                Toast.makeText(this@ProfileActivity, "User Followed", Toast.LENGTH_SHORT).show()
+                buttonFollow.text = "FOLLOWING"
+                followersCount++
+                tvFollowersUser.text = followersCount.toString()
+            }
+
+            else {
+                Toast.makeText(this@ProfileActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
+            }
+
+            buttonFollow.isClickable = true
 
         })
     }
 
-    private fun getUserData(
-        apiInterface: GithubApiInterface,
-        username: String
-    ) {
-        var call: Call<GithubUserModel> =
-            apiInterface.getPublicUser("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}", username)
-        try {
-            call.enqueue(object : Callback<GithubUserModel> {
-                override fun onFailure(call: Call<GithubUserModel>, t: Throwable) {
-                    Toast.makeText(
-                        baseContext,
-                        "error: ${t.message}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+    private fun getUserData() {
 
-                override fun onResponse(
-                    call: Call<GithubUserModel>,
-                    response: Response<GithubUserModel>
-                ) {
-
-                    try {
-
-                        if (userInfoCard.visibility == View.GONE)
-                            userInfoCard.visibility = View.VISIBLE
+        viewModel.userList.observe(this, Observer {
+            if (userInfoCard.visibility == View.GONE)
+                userInfoCard.visibility = View.VISIBLE
 
 
-                        if (profileProgressBar.visibility == View.VISIBLE)
-                            profileProgressBar.visibility = View.GONE
+            if (profileProgressBar.visibility == View.VISIBLE)
+                profileProgressBar.visibility = View.GONE
 
-                        if (response.body()!!.name.isNullOrEmpty())
-                            tvDisplayName.text = "Github User"
-                        else
-                            tvDisplayName.text = response.body()!!.name
+            if (it.name.isNullOrEmpty())
+                tvDisplayName.text = "Github User"
+            else
+                tvDisplayName.text = it.name
 
-                        if (response.body()!!.email.isNullOrEmpty())
-                            llEmail.visibility = View.GONE
-                        else
-                            tvEmailUser.text = response.body()!!.email
+            if (it.email.isNullOrEmpty())
+                llEmail.visibility = View.GONE
+            else
+                tvEmailUser.text = it.email
 
-                        if (response.body()!!.bio.isNullOrEmpty())
-                            tvBioUser.visibility = View.GONE
-                        else
-                            tvBioUser.text = response.body()!!.bio
+            if (it.bio.isNullOrEmpty())
+                tvBioUser.visibility = View.GONE
+            else
+                tvBioUser.text = it.bio
 
-                        if (response.body()!!.company.isNullOrEmpty())
-                            llOrganisations.visibility = View.GONE
-                        else
-                            tvOrganizationsUser.text = response.body()!!.company
+            if (it.company.isNullOrEmpty())
+                llOrganisations.visibility = View.GONE
+            else
+                tvOrganizationsUser.text = it.company
 
-                        if (response.body()!!.twitter_username.isNullOrEmpty())
-                            llTwitter.visibility = View.GONE
-                        else
-                            tvTwitterUser.text = response.body()!!.twitter_username
+            if (it.twitter_username.isNullOrEmpty())
+                llTwitter.visibility = View.GONE
+            else
+                tvTwitterUser.text = it.twitter_username
 
-                        if (response.body()!!.blog.isNullOrEmpty())
-                            llWebsite.visibility = View.GONE
-                        else
-                            tvWebsitesUser.text = response.body()!!.blog
+            if (it.blog.isNullOrEmpty())
+                llWebsite.visibility = View.GONE
+            else
+                tvWebsitesUser.text = it.blog
 
-                        if (response.body()!!.location.isNullOrEmpty())
-                            llLocation.visibility = View.GONE
-                        else
-                            tvLocationUser.text = response.body()!!.location
+            if (it.location.isNullOrEmpty())
+                llLocation.visibility = View.GONE
+            else
+                tvLocationUser.text = it.location
 
-                        tvJoinedUser.text = "Joined: ${response.body()!!.created_at.subSequence(0, 10)}"
-                        tvFollowersUser.text = response.body()!!.followers.toString()
-                        followersCount = response.body()!!.followers
-                        tvFollowingUser.text = response.body()!!.following.toString()
-//                        tvGistsUser.text =
-//                            "${response.body()!!.public_gists}"
-                        tvRepositoriesUser.text =
-                            (response.body()!!.public_repos).toString()
+            tvJoinedUser.text = "Joined: ${it.created_at.subSequence(0, 10)}"
+            tvFollowersUser.text = it.followers.toString()
+            followersCount = it.followers
+            tvFollowingUser.text = it.following.toString()
+            tvRepositoriesUser.text =
+                (it.public_repos).toString()
 
-                        Glide.with(baseContext)
-                            .load(response.body()!!.avatar_url)
-                            .into(userAvatar)
+            Glide.with(baseContext)
+                .load(it.avatar_url)
+                .into(userAvatar)
 
-                        Glide.with(baseContext)
-                            .load(response.body()!!.avatar_url)
-                            .into(userBackgroundImage)
-
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                    }
-                }
-            })
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
+            Glide.with(baseContext)
+                .load(it.avatar_url)
+                .into(userBackgroundImage)
+        })
     }
 
-    private fun getTopRepos(
-    username: String) {
-        try {
-            val apiInterface =
-                GithubApiClient.getClient().create(GithubApiInterface::class.java);
+    private fun getTopRepos() {
 
-            var call =
-                apiInterface.topReposUser("token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}", username)
-            call.enqueue(object : Callback<ArrayList<RepositoryModel>> {
-                override fun onFailure(call: Call<ArrayList<RepositoryModel>>, t: Throwable) {
-                    Timber.e(t)
-                }
+        viewModel.topRepositoryList.observe(this, Observer {
+            if (it.isNullOrEmpty()) {
+                if (NotificationsProgressBar.visibility == View.VISIBLE)
+                    NotificationsProgressBar.visibility = View.GONE
+            }
+            else {
+                topRepoRecyclerViewUser.adapter = RepositoryAdapter(this, it)
+            }
+        })
 
-                override fun onResponse(
-                    call: Call<ArrayList<RepositoryModel>>,
-                    response: Response<ArrayList<RepositoryModel>>
-                ) {
-                    var repos: ArrayList<RepositoryModel> = ArrayList()
-
-
-                    try {
-
-                        repos = response.body()!!
-
-                        topRepoRecyclerViewUser.adapter = RepositoryAdapter(this@ProfileActivity, repos)
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                    }
-
-                }
-
-            })
-
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
     }
 
     private fun fetchStars(

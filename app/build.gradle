@@ -122,6 +122,12 @@ dependencies {
     implementation 'org.kodein.di:kodein-di-generic-jvm:6.2.1'
     implementation 'org.kodein.di:kodein-di-framework-android-x:6.2.1'
 
+    // Scale Tab Layout
+    implementation 'com.github.iwgang:scaletablayout:1.2'
+
+    // Smart Tab Layout
+//    implementation 'om.ogaclejapan.smarttablayout:library:2.0.0'
+
     implementation "com.google.dagger:dagger:${DAGGER_VERSION}"
     annotationProcessor "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
 
@@ -131,7 +137,6 @@ dependencies {
     annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
 
     implementation "de.hdodenhof:circleimageview:${CIRCLE_IMAGEVIEW_VERSION}"
-
 
     implementation "org.jsoup:jsoup:${JSOUP_VERSION}"
 

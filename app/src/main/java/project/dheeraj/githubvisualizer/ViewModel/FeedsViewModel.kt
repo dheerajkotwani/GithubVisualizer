@@ -51,7 +51,7 @@ class FeedsViewModel: ViewModel() {
                 repository.getFeeds(
                     token,
                     username,
-                    1
+                    page
                 ) as ArrayList
             )
         }

@@ -25,38 +25,31 @@
 package project.dheeraj.githubvisualizer.Network
 
 import retrofit2.Response
+import timber.log.Timber
 import java.io.IOException
 
 abstract class SafeApiRequest {
 
     suspend fun <T: Any> apiRequest(call: suspend() -> Response<T>) : T {
 
-        val response = call.invoke()
 
-        if (response.isSuccessful){
+            val response = call.invoke()
 
-            return response.body()!!
+            if (response.isSuccessful) {
 
-        }
-        else {
-            // todo handle api exception
-            throw ApiException(response.code().toString())
-        }
+                return response.body()!!
+
+            } else {
+                // todo handle api exception
+                throw ApiException(response.code().toString())
+            }
     }
 
-    suspend fun <T: Any> apiResponseCode(call: suspend() -> Response<T>) : T {
+    suspend fun <T: Any> apiResponseCode(call: suspend() -> Response<T>) : Int {
 
         val response = call.invoke()
 
-        if (response.isSuccessful){
-
-            return response.body()!!
-
-        }
-        else {
-            // todo handle api exception
-            throw ApiException(response.code().toString())
-        }
+        return response.code()
     }
 
 }

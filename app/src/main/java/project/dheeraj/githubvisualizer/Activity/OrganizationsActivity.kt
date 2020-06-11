@@ -27,25 +27,26 @@ package project.dheeraj.githubvisualizer.Activity
 import OrganizationsModel
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_organizations.*
+import kotlinx.android.synthetic.main.activity_organizations.buttonBack
+import kotlinx.android.synthetic.main.activity_repositories.*
 import project.dheeraj.githubvisualizer.Adapter.OrganizationsAdapter
 import project.dheeraj.githubvisualizer.AppConfig
-import project.dheeraj.githubvisualizer.Network.GithubApiClient
-import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.R
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import timber.log.Timber
+import project.dheeraj.githubvisualizer.ViewModel.OrganizationsViewModel
 
 class OrganizationsActivity : AppCompatActivity() {
 
     private lateinit var sharedPref: SharedPreferences
     private lateinit var orgs: ArrayList<OrganizationsModel>
-
+    private lateinit var viewModel: OrganizationsViewModel
+    private lateinit var token: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,57 +54,35 @@ class OrganizationsActivity : AppCompatActivity() {
 
         sharedPref = getSharedPreferences(AppConfig.SHARED_PREF, Context.MODE_PRIVATE)
         orgs = ArrayList()
-        var apiInterface =
-            GithubApiClient.getClient().create(GithubApiInterface::class.java);
         val username = "${sharedPref.getString(AppConfig.LOGIN, "")}"
+        viewModel = ViewModelProviders.of(this).get(OrganizationsViewModel::class.java)
+        token = "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}"
 
         buttonBack.setOnClickListener {
             onBackPressed()
         }
 
-        getOrganizations(apiInterface, username)
+        Glide.with(this)
+            .load(R.drawable.github_loader)
+            .into(orgProgressbar)
+
+        observeOrganizations()
+        viewModel.getOrganizations(token, username)
     }
 
-    private fun getOrganizations(apiInterface: GithubApiInterface, username:String) {
+    private fun observeOrganizations() {
 
-        val call = apiInterface.getOrgs(
-            "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}", username
-        )
+        viewModel.orgsList.observe(this, Observer {
 
-        try {
+            orgs = it
+            orgRecyclerView.adapter = OrganizationsAdapter(this@OrganizationsActivity, orgs)
+            if (orgProgressbar.visibility == View.VISIBLE)
+                orgProgressbar.visibility = View.GONE
+            if (noOrgFound.visibility == View.VISIBLE)
+                noOrgFound.visibility = View.GONE
 
-            call.enqueue(object : Callback<ArrayList<OrganizationsModel>> {
-                override fun onFailure(call: Call<ArrayList<OrganizationsModel>>, t: Throwable) {
-                    Timber.e(t)
-                    if (noOrgFound.visibility == View.VISIBLE)
-                        noOrgFound.visibility = View.GONE
-                }
+        })
 
-                override fun onResponse(
-                    call: Call<ArrayList<OrganizationsModel>>,
-                    response: Response<ArrayList<OrganizationsModel>>
-                ) {
-
-                    try {
-                        orgs = response.body()!!
-                        orgRecyclerView.adapter = OrganizationsAdapter(this@OrganizationsActivity, orgs)
-                        if (orgProgressbar.visibility == View.VISIBLE)
-                            orgProgressbar.visibility = View.GONE
-                        if (noOrgFound.visibility == View.VISIBLE)
-                            noOrgFound.visibility = View.GONE
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                        if (noOrgFound.visibility == View.VISIBLE)
-                            noOrgFound.visibility = View.GONE
-                    }
-
-                }
-
-            })
-
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
     }
 
     override fun onBackPressed() {
