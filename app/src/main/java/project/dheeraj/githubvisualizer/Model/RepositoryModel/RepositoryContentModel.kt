@@ -22,37 +22,17 @@
  * SOFTWARE.
  */
 
-package project.dheeraj.githubvisualizer.Network
+package project.dheeraj.githubvisualizer.Model.RepositoryModel
 
-import retrofit2.Response
-import timber.log.Timber
-import java.io.IOException
-
-abstract class SafeApiRequest {
-
-    suspend fun <T: Any> apiRequest(call: suspend() -> Response<T>) : T {
-
-
-            val response = call.invoke()
-
-                if (response.body() != null) {
-
-                    return response.body()!!
-
-                } else {
-                    // todo handle api exception
-                    throw ApiException(response.code().toString())
-                }
-
-    }
-
-    suspend fun <T: Any> apiResponseCode(call: suspend() -> Response<T>) : Int {
-
-        val response = call.invoke()
-
-        return response.code()
-    }
-
-}
-
-class ApiException (message : String): IOException(message)
+data class RepositoryContentModel(
+    val _links: Links,
+    val download_url: String,
+    val git_url: String,
+    val html_url: String,
+    val name: String,
+    val path: String,
+    val sha: String,
+    val size: Int,
+    val type: String,
+    val url: String
+)

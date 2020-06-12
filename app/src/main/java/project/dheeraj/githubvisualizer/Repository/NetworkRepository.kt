@@ -43,6 +43,8 @@ class NetworkRepository(
 
     suspend fun getUserTopRepositories (token:String, username: String) = apiRequest { api.topReposUser(token, username) }
 
+    suspend fun getRepoEvents (token:String, owner: String, repo: String, page: Int) = apiRequest { api.getRepoEvents(token, owner, repo, page) }
+
     suspend fun getMyRepositories (token:String, page: Int) = apiRequest { api.getMyRepositories(token, page) }
 
     suspend fun getOtherRepositories (token:String, username: String, page:Int) = apiRequest { api.getUserRepositories(token, username, page) }
@@ -62,6 +64,9 @@ class NetworkRepository(
     suspend fun getFollowing(token:String, username: String, page: Int) = apiRequest { api.getFollowing(token, username, page) }
 
     suspend fun getRepoDetails(token:String, username: String, repo: String) = apiRequest { api.getReposData(token, username, repo) }
+
+    suspend fun getRepoContent(token:String, username: String, repo: String, path: String)
+            = apiRequest { api.getReposContent(token, username, repo, path) }
 
     suspend fun getRepoReadme(token:String, username: String, repo: String) = apiRequest { api.getReposReadme(token, username, repo) }
 

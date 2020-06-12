@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ MIT License
   ~
@@ -23,27 +22,13 @@
   ~ SOFTWARE.
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:padding="3dp">
-
-    <TextView
-        android:id="@+id/dirName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="DirName"
-        android:layout_gravity="center"
-        android:fontFamily="@font/roboto_regular"
-        android:textColor="@color/grey_900"/>
-
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
-        android:layout_gravity="center"
-        android:fontFamily="@font/roboto_regular"
-        android:textColor="@color/grey_900"/>
-
-</LinearLayout>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="project.dheeraj.githubvisualizer.Activity.TestRepoActivity">
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+</menu>

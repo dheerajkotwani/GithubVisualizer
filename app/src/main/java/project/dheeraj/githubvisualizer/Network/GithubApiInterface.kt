@@ -37,6 +37,7 @@ import RepositoryModel
 import SearchModel
 import StarredModel
 import project.dheeraj.githubvisualizer.AppConfig
+import project.dheeraj.githubvisualizer.Model.RepositoryModel.RepositoryContentModel
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -98,6 +99,14 @@ interface GithubApiInterface {
         @Query("page") page:Int
     ): Response<ArrayList<EventsModel>>
 
+    @Headers("Content-Type: application/json")
+    @GET("/repos/{owner}/{repo}/events?per_page=100")
+    suspend fun getRepoEvents(
+        @Header("Authorization") user: String,
+        @Path("owner") owner:String,
+        @Path("repo") repo:String,
+        @Query("page") page:Int
+    ): Response<ArrayList<EventsModel>>
 
     // Search
     @Headers("Content-Type: application/json")
@@ -158,6 +167,16 @@ interface GithubApiInterface {
         @Path("owner") owner:String,
         @Path("repo") repo:String
     ): Response<RepositoryModel>
+
+    @Headers("Content-Type: application/json")
+    @GET("/repos/{owner}/{repo}/contents/{path}")
+    suspend fun getReposContent(
+        @Header("Authorization") token: String,
+        @Path("owner") owner:String,
+        @Path("repo") repo:String,
+        @Path("path") path:String
+    ): Response<ArrayList<RepositoryContentModel>>
+
 
     @Headers("Content-Type: application/json")
     @GET("/repos/{owner}/{repo}/readme")

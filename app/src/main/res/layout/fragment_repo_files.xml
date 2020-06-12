@@ -23,7 +23,8 @@
   ~ SOFTWARE.
   -->
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -40,13 +41,19 @@
         tools:itemCount="5"
         tools:listitem="@layout/layout_repo_dir_name"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="horizontal"/>
+        android:orientation="horizontal"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:scrollbars="horizontal"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/repoFilesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        tools:itemCount="5"
+        tools:listitem="@layout/layout_file_item"
         app:layout_constraintTop_toBottomOf="@id/repoDirRecyclerView"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

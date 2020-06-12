@@ -23,27 +23,29 @@
   ~ SOFTWARE.
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:padding="3dp">
+    tools:context=".Activity.CodeViewerActivity">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="2dp"
+        android:elevation="10dp">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:background="@color/white">
+            <WebView
+                android:id="@+id/webView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:padding="4dp"/>
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/dirName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="DirName"
-        android:layout_gravity="center"
-        android:fontFamily="@font/roboto_regular"
-        android:textColor="@color/grey_900"/>
-
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
-        android:layout_gravity="center"
-        android:fontFamily="@font/roboto_regular"
-        android:textColor="@color/grey_900"/>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

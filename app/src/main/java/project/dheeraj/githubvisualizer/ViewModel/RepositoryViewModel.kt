@@ -24,6 +24,7 @@
 
 package project.dheeraj.githubvisualizer.ViewModel
 
+import EventsModel
 import Readme
 import RepositoryModel
 import androidx.lifecycle.LiveData
@@ -32,6 +33,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import project.dheeraj.githubvisualizer.Model.RepositoryModel.RepositoryContentModel
 import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.Repository.NetworkRepository
 
@@ -42,15 +44,21 @@ class RepositoryViewModel: ViewModel() {
     private var mutableRepoData = MutableLiveData<RepositoryModel>()
     private var mutableStarData = MutableLiveData<Int>()
     private var mutableReadmeData = MutableLiveData<Readme>()
+    private var mutableRepoContent = MutableLiveData<ArrayList<RepositoryContentModel>>()
+    private var mutableRepoEvents = MutableLiveData<ArrayList<EventsModel>>()
 
     val repoData: LiveData<RepositoryModel>
     val starData: LiveData<Int>
     val readmeData: LiveData<Readme>
+    val repoContent: LiveData<ArrayList<RepositoryContentModel>>
+    val repoEvents: LiveData<ArrayList<EventsModel>>
 
     init {
         repoData = mutableRepoData
         starData = mutableStarData
         readmeData = mutableReadmeData
+        repoContent = mutableRepoContent
+        repoEvents = mutableRepoEvents
     }
 
     fun getStar (token: String, username:String, repo: String) {
@@ -103,6 +111,30 @@ class RepositoryViewModel: ViewModel() {
             ))
         }
     }
+
+    fun repoContent (token: String, username:String, repo: String, path: String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            mutableRepoContent.postValue(repository.getRepoContent(
+                token,
+                username,
+                repo,
+                path
+            ))
+        }
+    }
+
+    fun repoEvents (token: String, owner:String, repo: String, page: Int) {
+        viewModelScope.launch(Dispatchers.Main) {
+            mutableRepoEvents.postValue(repository.getRepoEvents(
+                token,
+                owner,
+                repo,
+                page
+            ))
+        }
+    }
+
+
 
 
 }

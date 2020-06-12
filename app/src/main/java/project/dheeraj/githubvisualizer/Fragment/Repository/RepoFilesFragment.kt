@@ -24,36 +24,47 @@
 
 package project.dheeraj.githubvisualizer.Fragment.Repository
 
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import kotlinx.android.synthetic.main.fragment_repo_files.*
+import project.dheeraj.githubvisualizer.Activity.CodeViewerActivity
+import project.dheeraj.githubvisualizer.Adapter.RepoDirInterface
+import project.dheeraj.githubvisualizer.Adapter.RepositoryContentAdapter
+import project.dheeraj.githubvisualizer.Adapter.RepositoryDirAdapter
+import project.dheeraj.githubvisualizer.AppConfig
+import project.dheeraj.githubvisualizer.Model.RepositoryModel.RepoDirModel
+import project.dheeraj.githubvisualizer.Model.RepositoryModel.RepositoryContentModel
 import project.dheeraj.githubvisualizer.R
+import project.dheeraj.githubvisualizer.ViewModel.RepositoryViewModel
+import java.util.*
+import java.util.Collections.sort
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [RepoFilesFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class RepoFilesFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class RepoFilesFragment : Fragment(), RepoDirInterface {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var sharedPref: SharedPreferences
+    private lateinit var token: String
+    private lateinit var username: String
+    private lateinit var repo: String
+    private lateinit var viewModel: RepositoryViewModel
+    private lateinit var repoDirList: ArrayList<RepoDirModel>
+    private lateinit var repoDirFiles: ArrayList<RepositoryContentModel>
+    private lateinit var adapter: RepositoryContentAdapter
+    private lateinit var adapterDir: RepositoryDirAdapter
+    private lateinit var path: String
+    private var canClick: Boolean = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,23 +74,107 @@ class RepoFilesFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_repo_files, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RepoFilesFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RepoFilesFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        sharedPref = context!!.getSharedPreferences(AppConfig.SHARED_PREF, Context.MODE_PRIVATE)
+        viewModel = ViewModelProviders.of(this).get(RepositoryViewModel::class.java)
+
+        repoDirList = ArrayList()
+        repoDirFiles = ArrayList()
+
+        adapterDir = RepositoryDirAdapter(context!!, repoDirList, this)
+        adapter = RepositoryContentAdapter(context!!, repoDirFiles, this)
+
+//        repoFilesRecyclerView.adapter = adapter
+        repoDirRecyclerView.adapter = adapterDir
+
+        token = "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}"
+        username = arguments!!.getString("owner", "")
+        repo = arguments!!.getString("repo", "")
+        path=""
+
+        observeFiles()
+        viewModel.repoContent(token, username, repo, path)
+
+        view!!.isFocusableInTouchMode = true
+        view!!.requestFocus()
+        view!!.setOnKeyListener(object: View.OnKeyListener{
+            override fun onKey(p0: View?, p1: Int, p2: KeyEvent?): Boolean {
+
+                if (p1 == KeyEvent.KEYCODE_BACK && p2!!.action == KeyEvent.ACTION_UP) {
+
+                    if (repoDirList.size == 1) {
+                        return false
+                    }
+                    else {
+                        repoDirFiles = repoDirList[repoDirList.size-2].content
+                        repoDirList.removeAt(repoDirList.size-1)
+                        repoFilesRecyclerView.adapter = RepositoryContentAdapter(context!!, repoDirFiles, this@RepoFilesFragment)
+                        adapterDir.notifyDataSetChanged()
+                        return true
+                    }
                 }
+                return false
             }
+        })
+
+
     }
+
+    private fun observeFiles() {
+
+        viewModel.repoContent.observe(viewLifecycleOwner, Observer {
+
+            canClick = true
+            repoDirFiles = it
+            repoDirFiles.sortBy { contentModel ->
+                contentModel.type
+            }
+            if (repoDirList.size == 0)
+               repoDirList.add(RepoDirModel(".", "", repoDirFiles))
+            else {
+                repoDirList.add(RepoDirModel("${path.substringAfterLast("/")}", path, repoDirFiles))
+                adapterDir.notifyDataSetChanged()
+                repoDirRecyclerView.layoutManager!!.scrollToPosition(repoDirList.size-1)
+            }
+            adapterDir.notifyDataSetChanged()
+//            adapter.notifyDataSetChanged()
+
+            repoFilesRecyclerView.adapter = RepositoryContentAdapter(context!!, repoDirFiles, this)
+
+        })
+
+    }
+
+    override fun onFileItemClick(position: Int) {
+        if (canClick) {
+            if (repoDirFiles[position].type == "dir") {
+
+                path = "${repoDirFiles[position].path}"
+                viewModel.repoContent(token, username, repo, path)
+                canClick = false
+
+            }
+            else {
+
+                var intent = Intent(context!!, CodeViewerActivity::class.java)
+                intent.putExtra("url", repoDirFiles[position].download_url)
+                startActivity(intent)
+
+            }
+        }
+    }
+
+    override fun onDirItemClick(position: Int) {
+
+        repoDirFiles = repoDirList[position].content
+        repoFilesRecyclerView.adapter = RepositoryContentAdapter(context!!, repoDirFiles, this)
+        repoDirList.subList(position+1, repoDirList.size).clear()
+        adapterDir.notifyDataSetChanged()
+
+    }
+
+
+
 }

@@ -22,37 +22,9 @@
  * SOFTWARE.
  */
 
-package project.dheeraj.githubvisualizer.Network
+package project.dheeraj.githubvisualizer.Adapter
 
-import retrofit2.Response
-import timber.log.Timber
-import java.io.IOException
-
-abstract class SafeApiRequest {
-
-    suspend fun <T: Any> apiRequest(call: suspend() -> Response<T>) : T {
-
-
-            val response = call.invoke()
-
-                if (response.body() != null) {
-
-                    return response.body()!!
-
-                } else {
-                    // todo handle api exception
-                    throw ApiException(response.code().toString())
-                }
-
-    }
-
-    suspend fun <T: Any> apiResponseCode(call: suspend() -> Response<T>) : Int {
-
-        val response = call.invoke()
-
-        return response.code()
-    }
-
+interface RepoDirInterface {
+    fun onFileItemClick(position: Int)
+    fun onDirItemClick(position: Int)
 }
-
-class ApiException (message : String): IOException(message)

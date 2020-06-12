@@ -87,15 +87,15 @@ class DeveloperViewModel: ViewModel() {
         }
     }
 
-    fun repoDetails (token: String, username:String, repo: String) {
-        viewModelScope.launch(Dispatchers.Main) {
-            mutableRepoData.postValue(repository.getRepoDetails(
-                token,
-                username,
-                repo
-            ))
-        }
-    }
+//    fun repoDetails (token: String, username:String, repo: String) {
+//        viewModelScope.launch(Dispatchers.Main) {
+//            mutableRepoData.postValue(repository.getRepoDetails(
+//                token,
+//                username,
+//                repo
+//            ))
+//        }
+//    }
 
 
     fun getFollow (token: String, username:String) {

@@ -25,6 +25,7 @@
 package project.dheeraj.githubvisualizer.Activity
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.MotionEvent
@@ -35,14 +36,24 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
+import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_repository_info.*
-import kotlinx.android.synthetic.main.content_repository_info.*
+import kotlinx.android.synthetic.main.activity_repository_info.toolbar
+import kotlinx.android.synthetic.main.fragment_repo_info.*
+import project.dheeraj.githubvisualizer.Adapter.ViewPagerAdapter
 import project.dheeraj.githubvisualizer.AppConfig
+import project.dheeraj.githubvisualizer.Fragment.Main.FeedsFragment
+import project.dheeraj.githubvisualizer.Fragment.Repository.RepoActivityFragment
+import project.dheeraj.githubvisualizer.Fragment.Repository.RepoFilesFragment
+import project.dheeraj.githubvisualizer.Fragment.Repository.RepoInfoFragment
 import project.dheeraj.githubvisualizer.R
 import project.dheeraj.githubvisualizer.ViewModel.RepositoryViewModel
+import timber.log.Timber
+import java.lang.Exception
 
 
 class RepositoryInfoActivity : AppCompatActivity() {
@@ -54,8 +65,7 @@ class RepositoryInfoActivity : AppCompatActivity() {
     private lateinit var token: String
     private var starCount: Int = 0
     private var star = false
-
-
+    private lateinit var fragmentModel: ArrayList<Fragment>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +75,7 @@ class RepositoryInfoActivity : AppCompatActivity() {
         sharedPref = getSharedPreferences(AppConfig.SHARED_PREF, Context.MODE_PRIVATE)
 
         owner = "${sharedPref.getString(AppConfig.LOGIN, "")}"
-        repo = "${sharedPref.getString(AppConfig.LOGIN, "")}"
+        repo = "GithubVisualizer"
         token = "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}"
         viewModel = ViewModelProviders.of(this).get(RepositoryViewModel::class.java)
 
@@ -76,8 +86,9 @@ class RepositoryInfoActivity : AppCompatActivity() {
             supportActionBar!!.title = repo
         }
 
+        setupViewPager()
         getRepoData()
-        observeReadme()
+//        observeReadme()
         observeStar()
         viewModel.getStar(token, owner, repo)
 
@@ -90,25 +101,32 @@ class RepositoryInfoActivity : AppCompatActivity() {
                 viewModel.putStar(token, owner, repo)
         }
 
+//        tvWatchersRepo.setOnClickListener {
+//            val intent = Intent(this@RepositoryInfoActivity, TestRepoActivity::class.java)
+//            intent.putExtra("repo", repo)
+//            intent.putExtra("owner", owner)
+//            startActivity(intent)
+//        }
+
     }
 
 
     private fun getRepoData() {
 
         viewModel.repoData.observe(this, Observer {
-            tvRepoName.text = it.full_name
-            tvRepoDescription.text = it.description
-            tvForksRepo.text = it.forks_count.toString()
-            tvStaggersRepo.text = it.stargazers_count.toString()
+//            tvRepoName.text = it.full_name
+//            tvRepoDescription.text = it.description
+//            tvForksRepo.text = it.forks_count.toString()
+//            tvStaggersRepo.text = it.stargazers_count.toString()
             starCount = it.stargazers_count
-            tvWatchersRepo.text = it.watchers_count.toString()
-            tvIssuesRepo.text = it.open_issues_count.toString()
-
+//            tvWatchersRepo.text = it.watchers_count.toString()
+//            tvIssuesRepo.text = it.open_issues_count.toString()
+//
             if (buttonStar.visibility == View.GONE)
                 buttonStar.visibility = View.VISIBLE
-
-            if (userInfoCard.visibility == View.GONE)
-                userInfoCard.visibility = View.VISIBLE
+//
+//            if (userInfoCard.visibility == View.GONE)
+//                userInfoCard.visibility = View.VISIBLE
 
             buttonStar.isClickable = true
 
@@ -121,35 +139,44 @@ class RepositoryInfoActivity : AppCompatActivity() {
         viewModel.repoDetails(token, owner, repo)
 
     }
-
+/*
     private fun observeReadme() {
 
-        viewModel.getReadme(token, owner, repo)
+        try {
+            viewModel.getReadme(token, owner, repo)
+        }
+        catch (e: Exception) {
+            Timber.e(e)
+        }
 
         viewModel.readmeData.observe(this, Observer {
 
-            profileProgressBar.visibility = View.GONE
-            if (!it.download_url.isNullOrEmpty()) {
 
-                repoWebView.loadFromUrl(it.download_url)
+                profileProgressBar.visibility = View.GONE
+                if (!it.download_url.isNullOrEmpty()) {
+
+                    repoWebView.loadFromUrl(it.download_url)
 
 //                repoWebView.setOnTouchListener(OnTouchListener { v, event -> event.action == MotionEvent.ACTION_MOVE })
-                repoWebView.isVerticalScrollBarEnabled = false
-                repoWebView.settings.javaScriptEnabled = true;
-                repoWebView.settings.domStorageEnabled = true
-                repoWebView.settings.setAppCacheEnabled(true);
-                repoWebView.settings.loadsImagesAutomatically = true;
-                repoWebView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW;
-                repoWebView.isCodeScrollEnabled = true
-                repoWebView.settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING
-                repoWebView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
-                repoWebView.settings.setSupportZoom(true)
-                repoWebView.settings.builtInZoomControls = true
-                repoWebView.settings.displayZoomControls = false
-            }
+                    repoWebView.isVerticalScrollBarEnabled = false
+                    repoWebView.settings.javaScriptEnabled = true;
+                    repoWebView.settings.domStorageEnabled = true
+                    repoWebView.settings.setAppCacheEnabled(true);
+                    repoWebView.settings.loadsImagesAutomatically = true;
+                    repoWebView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW;
+                    repoWebView.isCodeScrollEnabled = true
+                    repoWebView.settings.layoutAlgorithm =
+                        WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING
+                    repoWebView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
+                    repoWebView.settings.setSupportZoom(true)
+                    repoWebView.settings.builtInZoomControls = true
+                    repoWebView.settings.displayZoomControls = true
+                }
 
         })
     }
+
+ */
 
     private fun observeStar() {
         viewModel.starData.observe(this, Observer {
@@ -195,6 +222,48 @@ class RepositoryInfoActivity : AppCompatActivity() {
                     buttonStar.isVisible = false
                 Toast.makeText(this@RepositoryInfoActivity, "Something went wrong", Toast.LENGTH_SHORT).show()
             }
+        })
+    }
+
+    private fun setupViewPager() {
+
+        val bundle = Bundle()
+        bundle.putString("owner", owner)
+        bundle.putString("repo", repo)
+        val repoFilesFragment = RepoFilesFragment()
+        val repoInfoFragment = RepoInfoFragment()
+        val repoActivityFragment = RepoActivityFragment()
+
+        repoFilesFragment.arguments = bundle
+        repoInfoFragment.arguments = bundle
+        repoActivityFragment.arguments = bundle
+
+        repoTabLayout.addTab(repoTabLayout.newTab().setText("Info"))
+        repoTabLayout.addTab(repoTabLayout.newTab().setText("Files"))
+        repoTabLayout.addTab(repoTabLayout.newTab().setText("Activity"))
+
+        fragmentModel = ArrayList()
+        fragmentModel.add(repoInfoFragment)
+        fragmentModel.add(repoFilesFragment)
+        fragmentModel.add(repoActivityFragment)
+
+        val pagerAdapter = ViewPagerAdapter(supportFragmentManager, fragmentModel)
+        repoViewPager.adapter = pagerAdapter
+        repoViewPager.currentItem = 0
+
+        repoViewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(repoTabLayout))
+
+        repoTabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                repoViewPager.currentItem = tab!!.position
+            }
+
         })
     }
 
