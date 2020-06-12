@@ -28,7 +28,6 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_book_1"
             android:layout_margin="10dp"/>
 
         <TextView
@@ -66,7 +65,7 @@
                     android:text="Language"
                     android:fontFamily="@font/alata_regular"
                     android:textSize="12dp"
-                    android:layout_gravity="top"/>
+                    android:layout_gravity="center"/>
 
 
             </LinearLayout>

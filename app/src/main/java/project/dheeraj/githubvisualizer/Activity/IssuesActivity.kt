@@ -27,19 +27,27 @@ package project.dheeraj.githubvisualizer.Activity
 import IssuesModel
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.activity_follow.*
+import com.ogaclejapan.smarttablayout.SmartTabLayout
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
+import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
 import kotlinx.android.synthetic.main.activity_issues.*
-import kotlinx.android.synthetic.main.activity_issues.buttonBack
-import kotlinx.android.synthetic.main.activity_issues.gitProgressbar
-import kotlinx.android.synthetic.main.activity_issues.pageTitle
-import kotlinx.android.synthetic.main.fragment_feed.*
 import project.dheeraj.githubvisualizer.Adapter.IssuesAdapter
 import project.dheeraj.githubvisualizer.AppConfig
+import project.dheeraj.githubvisualizer.Fragment.Issues.AllIssuesFragment
+import project.dheeraj.githubvisualizer.Fragment.Issues.AssignedIssuesFragment
+import project.dheeraj.githubvisualizer.Fragment.Issues.CreatedIssuesFragment
+import project.dheeraj.githubvisualizer.Fragment.Issues.MentionedIssuesFragment
+import project.dheeraj.githubvisualizer.Fragment.Main.FeedsFragment
+import project.dheeraj.githubvisualizer.Fragment.Main.HomeFragment
+import project.dheeraj.githubvisualizer.Fragment.Main.NotificationsFragment
+import project.dheeraj.githubvisualizer.Fragment.Main.ProfileFragment
+import project.dheeraj.githubvisualizer.Model.IssuesPagerModel
 import project.dheeraj.githubvisualizer.Network.GithubApiClient
 import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.R
@@ -48,163 +56,45 @@ import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 
+
 class IssuesActivity : AppCompatActivity() {
 
     private lateinit var sharedPref: SharedPreferences
-    private lateinit var issues: ArrayList<IssuesModel>
-    private lateinit var issuesAdapter: IssuesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_issues)
 
         sharedPref = getSharedPreferences(AppConfig.SHARED_PREF, Context.MODE_PRIVATE)
-        var apiInterface =
-            GithubApiClient.getClient().create(GithubApiInterface::class.java);
 
-        issues = ArrayList()
-        issuesAdapter = IssuesAdapter(this, issues)
+        var fragments: ArrayList<IssuesPagerModel> = ArrayList()
+        fragments.add(IssuesPagerModel("All", HomeFragment()))
+        fragments.add(IssuesPagerModel("All", HomeFragment()))
+        fragments.add(IssuesPagerModel("All", HomeFragment()))
+        fragments.add(IssuesPagerModel("All", HomeFragment()))
 
-        Glide.with(this)
-            .load(R.drawable.github_loader)
-            .into(gitProgressbar)
 
-        if (intent.hasExtra("PAGE"))
-            if (intent.getStringExtra("PAGE") == "Issues")
-                fetchIssues(apiInterface)
-            else
-                fetchPulls(apiInterface)
-        else
-            fetchIssues(apiInterface)
+        val adapter = FragmentPagerItemAdapter(supportFragmentManager, FragmentPagerItems.with(this)
+            .add("All", AllIssuesFragment::class.java)
+            .add("Created", CreatedIssuesFragment::class.java)
+            .add("Assigned", AssignedIssuesFragment::class.java)
+            .add("Mentioned", MentionedIssuesFragment::class.java)
+            .create());
+
+        val viewPager = findViewById<View>(R.id.viewpager) as ViewPager
+        viewPager.adapter = adapter
+
+        val viewPagerTab =
+            findViewById<View>(R.id.scaleTabLayoutIssues) as SmartTabLayout
+        viewPagerTab.setViewPager(viewPager)
+
 
         buttonBack.setOnClickListener {
             onBackPressed()
         }
 
-        // TODO implement different type of issues & Pull Request eg. all, create, open, closed, mentioned
 
     }
-
-    private fun fetchIssues(apiInterface: GithubApiInterface) {
-
-        pageTitle.text = "Issues"
-
-        gitProgressbar.visibility = View.VISIBLE
-
-        var call: Call<ArrayList<IssuesModel>> =
-            apiInterface.getIssues(
-                "token ${sharedPref.getString(
-                    AppConfig.ACCESS_TOKEN,
-                    ""
-                )}"
-            )
-        try {
-            call.enqueue(object : Callback<ArrayList<IssuesModel>> {
-                override fun onFailure(call: Call<ArrayList<IssuesModel>>, t: Throwable) {
-                    Toast.makeText(
-                        this@IssuesActivity,
-                        "error: ${t.message}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    gitProgressbar.visibility = View.GONE
-                }
-
-                override fun onResponse(
-                    call: Call<ArrayList<IssuesModel>>,
-                    response: Response<ArrayList<IssuesModel>>
-                ) {
-                    try {
-
-                        for (i in response.body()!!) {
-                            try {
-                                val d = i.pull_request.url
-                            }
-                            catch (e: Exception) {
-                                issues.add(i)
-                            }
-                        }
-                        if (response.body()!!.size == 0)
-                            noIssueFound.visibility = View.VISIBLE
-                        issuesRecyclerView.adapter = issuesAdapter
-                        issuesAdapter.notifyDataSetChanged()
-                        gitProgressbar.visibility = View.GONE
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                        gitProgressbar.visibility = View.GONE
-                        noIssueFound.visibility = View.VISIBLE
-                    }
-
-                }
-            })
-        } catch (e: Exception) {
-            Timber.e(e)
-            gitProgressbar.visibility = View.GONE
-            noIssueFound.visibility = View.VISIBLE
-        }
-    }
-
-
-private fun fetchPulls(apiInterface: GithubApiInterface) {
-
-    pageTitle.text = "Pull Request"
-
-        gitProgressbar.visibility = View.VISIBLE
-
-        var call: Call<ArrayList<IssuesModel>> =
-            apiInterface.getIssues(
-                "token ${sharedPref.getString(
-                    AppConfig.ACCESS_TOKEN,
-                    ""
-                )}"
-            )
-        try {
-            call.enqueue(object : Callback<ArrayList<IssuesModel>> {
-                override fun onFailure(call: Call<ArrayList<IssuesModel>>, t: Throwable) {
-                    Toast.makeText(
-                        this@IssuesActivity,
-                        "error: ${t.message}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    gitProgressbar.visibility = View.GONE
-                }
-
-                override fun onResponse(
-                    call: Call<ArrayList<IssuesModel>>,
-                    response: Response<ArrayList<IssuesModel>>
-                ) {
-                    try {
-
-                        for (i in response.body()!!) {
-                            try {
-                                val d = i.pull_request.url
-                            }
-                            catch (e: Exception) {
-                                Timber.e(e)
-                            }
-                            finally {
-                                issues.add(i)
-                            }
-                        }
-                        if (response.body()!!.size == 0)
-                            noIssueFound.visibility = View.VISIBLE
-                        issuesRecyclerView.adapter = issuesAdapter
-                        issuesAdapter.notifyDataSetChanged()
-                        gitProgressbar.visibility = View.GONE
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                        gitProgressbar.visibility = View.GONE
-                        noIssueFound.visibility = View.VISIBLE
-                    }
-
-                }
-            })
-        } catch (e: Exception) {
-            Timber.e(e)
-            gitProgressbar.visibility = View.GONE
-            noIssueFound.visibility = View.VISIBLE
-        }
-    }
-
     override fun onBackPressed() {
         super.onBackPressed()
         finish()

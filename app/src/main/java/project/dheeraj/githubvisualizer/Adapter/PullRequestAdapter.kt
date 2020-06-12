@@ -37,6 +37,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.text.bold
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import project.dheeraj.githubvisualizer.Activity.RepositoryInfoActivity
 import project.dheeraj.githubvisualizer.Adapter.NotificationsAdapter.*
@@ -47,11 +48,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class IssuesAdapter(var context: Context,
-                    var issues: ArrayList<IssuesModel>):
-    RecyclerView.Adapter<IssuesAdapter.ViewHolder>() {
+class PullRequestAdapter(var context: Context,
+                         var issues: ArrayList<IssuesModel>):
+    RecyclerView.Adapter<PullRequestAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IssuesAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PullRequestAdapter.ViewHolder {
         var view = LayoutInflater.from(context).inflate(R.layout.layout_issues, parent, false)
         return ViewHolder(view)
 
@@ -60,69 +61,84 @@ class IssuesAdapter(var context: Context,
     override fun getItemCount() = issues.size
 
 
-    override fun onBindViewHolder(holder: IssuesAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PullRequestAdapter.ViewHolder, position: Int) {
+
+        var catching = true;
+
+        val s = SpannableStringBuilder()
+        try {
+            val d = issues[position].pull_request.url
+        }
+        catch (e: Exception) {
+
+            catching = false;
+
+            Glide.with(context)
+                .load(R.drawable.issue)
+                .into(holder.notificationImage)
+
+            s.append("${issues[position].state.capitalize()} issue ${issues[position].number} (")
+                .bold { append ("${issues[position].title}") }
+                .append(") in ")
+                .bold { append("${issues[position].repository.name}") }
+
+            if (issues[position].state == "open")
+                holder.notificationImage.
+                    setColorFilter(ContextCompat.getColor(context, R.color.green_400),
+                        android.graphics.PorterDuff.Mode.SRC_IN)
+            else
+                holder.notificationImage.
+                    setColorFilter(ContextCompat.getColor(context, R.color.red_500),
+                        android.graphics.PorterDuff.Mode.SRC_IN)
+
+
+            Timber.e(e)
+        }
+        finally {
+
+            if (catching) {
+
+                Glide.with(context)
+                    .load(R.drawable.git_pull_request)
+                    .into(holder.notificationImage)
+
+
+                s.append("${issues[position].state.capitalize()} issue ${issues[position].number} (")
+                    .bold { append("${issues[position].title}") }
+                    .append(") in ")
+                    .bold { append("${issues[position].repository.name}") }
+
+                if (issues[position].state == "open")
+                    holder.notificationImage.setColorFilter(
+                        ContextCompat.getColor(context, R.color.green_400),
+                        android.graphics.PorterDuff.Mode.SRC_IN
+                    )
+                else
+                    holder.notificationImage.setColorFilter(
+                        ContextCompat.getColor(context, R.color.red_500),
+                        android.graphics.PorterDuff.Mode.SRC_IN
+                    )
+
+            }
+        }
 
 
 //        val s = SpannableStringBuilder()
-//        try {
-//            val d = issues[position].pull_request.url
-//        }
-//        catch (e: Exception) {
+//        holder.notificationImage.setImageResource(R.drawable.issue)
 //
-//            holder.notificationImage.setImageResource(R.drawable.issue)
+//        s.append("${issues[position].state.capitalize()} issue ${issues[position].number} (")
+//            .bold { append ("${issues[position].title}") }
+//            .append(") in ")
+//            .bold { append("${issues[position].repository.name}") }
 //
-//            s.append("${issues[position].state.capitalize()} issue ${issues[position].number} (")
-//                .bold { append ("${issues[position].title}") }
-//                .append(") in ")
-//                .bold { append("${issues[position].repository.name}") }
-//
-//            if (issues[position].state == "open")
-//                holder.notificationImage.
-//                    setColorFilter(ContextCompat.getColor(context, R.color.green_400),
-//                        android.graphics.PorterDuff.Mode.SRC_IN)
-//            else
-//                holder.notificationImage.
-//                    setColorFilter(ContextCompat.getColor(context, R.color.red_500),
-//                        android.graphics.PorterDuff.Mode.SRC_IN)
-//
-//
-//            Timber.e(e)
-//        }
-//        finally {
-//            holder.notificationImage.setImageResource(R.drawable.git_pull_request)
-//
-//            s.append("${issues[position].state.capitalize()} issue ${issues[position].number} (")
-//                .bold { append ("${issues[position].title}") }
-//                .append(") in ")
-//                .bold { append("${issues[position].repository.name}") }
-//
-//            if (issues[position].state == "open")
-//                holder.notificationImage.
-//                    setColorFilter(ContextCompat.getColor(context, R.color.green_400),
-//                        android.graphics.PorterDuff.Mode.SRC_IN)
-//            else
-//                holder.notificationImage.
-//                    setColorFilter(ContextCompat.getColor(context, R.color.red_500),
-//                        android.graphics.PorterDuff.Mode.SRC_IN)
-//        }
-
-
-        val s = SpannableStringBuilder()
-        holder.notificationImage.setImageResource(R.drawable.issue)
-
-        s.append("${issues[position].state.capitalize()} issue ${issues[position].number} (")
-            .bold { append ("${issues[position].title}") }
-            .append(") in ")
-            .bold { append("${issues[position].repository.name}") }
-
-        if (issues[position].state == "open")
-            holder.notificationImage.
-                setColorFilter(ContextCompat.getColor(context, R.color.green_400),
-                    android.graphics.PorterDuff.Mode.SRC_IN)
-        else
-            holder.notificationImage.
-                setColorFilter(ContextCompat.getColor(context, R.color.red_500),
-                    android.graphics.PorterDuff.Mode.SRC_IN)
+//        if (issues[position].state == "open")
+//            holder.notificationImage.
+//                setColorFilter(ContextCompat.getColor(context, R.color.green_400),
+//                    android.graphics.PorterDuff.Mode.SRC_IN)
+//        else
+//            holder.notificationImage.
+//                setColorFilter(ContextCompat.getColor(context, R.color.red_500),
+//                    android.graphics.PorterDuff.Mode.SRC_IN)
 
 
         holder.notificationTitle.text = s
@@ -153,12 +169,6 @@ class IssuesAdapter(var context: Context,
             e.printStackTrace()
         }
 
-
-        // Test data
-//        holder.notificationTitle.text = "hey"
-//        holder.notificationTime.text = "notifications[position].updated_at"0-12
-//        if (notifications.get(position).subject.type == "PullRequest")
-//            holder.notificationImage.setImageResource(R.drawable.git_pull_request)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

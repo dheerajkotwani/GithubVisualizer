@@ -24,8 +24,6 @@
 
 package project.dheeraj.githubvisualizer.Activity
 
-import Readme
-import RepositoryModel
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -43,14 +41,8 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_repository_info.*
 import kotlinx.android.synthetic.main.content_repository_info.*
 import project.dheeraj.githubvisualizer.AppConfig
-import project.dheeraj.githubvisualizer.Network.GithubApiClient
-import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.R
 import project.dheeraj.githubvisualizer.ViewModel.RepositoryViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import timber.log.Timber
 
 
 class RepositoryInfoActivity : AppCompatActivity() {
@@ -135,17 +127,27 @@ class RepositoryInfoActivity : AppCompatActivity() {
         viewModel.getReadme(token, owner, repo)
 
         viewModel.readmeData.observe(this, Observer {
-            profileProgressBar.visibility = View.GONE
-            repoWebView.loadFromUrl(it.download_url)
 
-            repoWebView.setOnTouchListener(OnTouchListener { v, event -> event.action == MotionEvent.ACTION_MOVE })
-            repoWebView.isVerticalScrollBarEnabled = false
-            repoWebView.settings.javaScriptEnabled = true;
-            repoWebView.settings.domStorageEnabled = true
-            repoWebView.settings.setAppCacheEnabled(true);
-            repoWebView.settings.loadsImagesAutomatically = true;
-            repoWebView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW;
-            repoWebView.isCodeScrollEnabled = true
+            profileProgressBar.visibility = View.GONE
+            if (!it.download_url.isNullOrEmpty()) {
+
+                repoWebView.loadFromUrl(it.download_url)
+
+//                repoWebView.setOnTouchListener(OnTouchListener { v, event -> event.action == MotionEvent.ACTION_MOVE })
+                repoWebView.isVerticalScrollBarEnabled = false
+                repoWebView.settings.javaScriptEnabled = true;
+                repoWebView.settings.domStorageEnabled = true
+                repoWebView.settings.setAppCacheEnabled(true);
+                repoWebView.settings.loadsImagesAutomatically = true;
+                repoWebView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW;
+                repoWebView.isCodeScrollEnabled = true
+                repoWebView.settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING
+                repoWebView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
+                repoWebView.settings.setSupportZoom(true)
+                repoWebView.settings.builtInZoomControls = true
+                repoWebView.settings.displayZoomControls = false
+            }
+
         })
     }
 

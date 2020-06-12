@@ -52,7 +52,7 @@ class RepositoriesActivity : AppCompatActivity() {
     private lateinit var username: String
     private lateinit var viewModel: RepositoriesViewModel
     private lateinit var repoList: ArrayList<RepositoryModel>
-//    private lateinit var adapter: RepositoryAdapter
+    private lateinit var adapter: RepositoryAdapter
     private lateinit var token: String
     private var page: Int = 1
     private var pageType: Int = 0
@@ -64,8 +64,8 @@ class RepositoriesActivity : AppCompatActivity() {
         sharedPref = getSharedPreferences(AppConfig.SHARED_PREF, Context.MODE_PRIVATE)
         token = "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}"
         repoList = ArrayList()
-//        adapter = RepositoryAdapter(this, repoList)
-//        repoRecyclerView.adapter = adapter
+        adapter = RepositoryAdapter(this, repoList)
+        repoRecyclerView.adapter = adapter
         userName.text = intent.getStringExtra(AppConfig.LOGIN)
 
         viewModel = ViewModelProviders.of(this).get(RepositoriesViewModel::class.java)
@@ -117,15 +117,15 @@ class RepositoriesActivity : AppCompatActivity() {
             }
         }
 
-//        buttonLoadMoreRepos.setOnClickListener {
-//            page++
-//            when (pageType){
-//                1 -> viewModel.getOtherStarredRepositories(token, username,page)
-//                2 -> viewModel.getMyStarredRepositories(token, page)
-//                3 -> viewModel.getOtherRepositories(token, username, page)
-//                4 -> viewModel.getMyRepositories(token, page)
-//            }
-//        }
+        buttonLoadMoreRepos.setOnClickListener {
+            page++
+            when (pageType){
+                1 -> viewModel.getOtherStarredRepositories(token, username,page)
+                2 -> viewModel.getMyStarredRepositories(token, page)
+                3 -> viewModel.getOtherRepositories(token, username, page)
+                4 -> viewModel.getMyRepositories(token, page)
+            }
+        }
 
     }
 
@@ -134,18 +134,18 @@ class RepositoriesActivity : AppCompatActivity() {
 
         viewModel.repoList.observe(this,  Observer {
             if (it.isNullOrEmpty()) {
-                Toast.makeText(this, "Something went wrong!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "No more items", Toast.LENGTH_SHORT).show()
                 if (gitProgressbar.visibility == View.VISIBLE)
                     gitProgressbar.visibility = View.GONE
-//                if (buttonLoadMoreRepos.isVisible)
-//                    buttonLoadMoreRepos.visibility = View.GONE
+                if (buttonLoadMoreRepos.isVisible)
+                    buttonLoadMoreRepos.visibility = View.GONE
             }
             else {
-                repoRecyclerView.adapter = RepositoryAdapter(this, it)
-//                repoList.addAll(it)
-//                adapter.notifyDataSetChanged()
-//                if (!buttonLoadMoreRepos.isVisible)
-//                    buttonLoadMoreRepos.visibility = View.VISIBLE
+//                repoRecyclerView.adapter = RepositoryAdapter(this@RepositoriesActivity, it)
+                repoList.addAll(it)
+                adapter.notifyDataSetChanged()
+                if (!buttonLoadMoreRepos.isVisible)
+                    buttonLoadMoreRepos.visibility = View.VISIBLE
                 if (gitProgressbar.visibility == View.VISIBLE)
                     gitProgressbar.visibility = View.GONE
             }

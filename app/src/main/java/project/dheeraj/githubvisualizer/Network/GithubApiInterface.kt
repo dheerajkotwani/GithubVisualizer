@@ -185,11 +185,15 @@ interface GithubApiInterface {
     ): Response<ArrayList<OrganizationsModel>>
 
     // Issues
+//    @Headers("performed_via_github_app")
     @Headers("Content-Type: application/json")
-    @GET("/issues?filter=assigned&filter=subscribed&state=all")
-    fun getIssues(
-        @Header("Authorization") user: String
-    ): retrofit2.Call<ArrayList<IssuesModel>>
+    @GET("/issues?state=all")
+    suspend fun getIssues(
+        @Header("Authorization") user: String,
+        @Header("Accept") accept: String,
+        @Query("filter") filter: String,
+        @Query("per_page") per_page: Int
+    ): Response<ArrayList<IssuesModel>>
 
 
     // Stars

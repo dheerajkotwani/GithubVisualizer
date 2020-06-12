@@ -25,6 +25,7 @@
 package project.dheeraj.githubvisualizer.ViewModel
 
 import EventsModel
+import IssuesModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -38,20 +39,19 @@ class IssuesViewModel: ViewModel() {
 
     private val repository = NetworkRepository(GithubApiInterface())
 
-    private var mutableIssuesList = MutableLiveData<ArrayList<EventsModel>>()
-    val issuesList: LiveData<ArrayList<EventsModel>>
+    private var mutableIssuesList = MutableLiveData<ArrayList<IssuesModel>>()
+    val issuesList: LiveData<ArrayList<IssuesModel>>
 
     init {
         issuesList = mutableIssuesList
     }
 
-    fun getFeeds (token: String, username: String, page: Int) {
+    fun getIssues (token: String, filter: String) {
         viewModelScope.launch(Dispatchers.Main) {
             mutableIssuesList.postValue(
-                repository.getFeeds(
+                repository.getIssues(
                     token,
-                    username,
-                    1
+                    filter
                 ) as ArrayList
             )
         }

@@ -51,6 +51,8 @@ class NetworkRepository(
 
     suspend fun getOtherStarredRepositories (token:String, username: String, page: Int) = apiRequest { api.starredRepositoryUser(token, username, page) }
 
+    suspend fun getIssues (token:String, filter: String) = apiRequest { api.getIssues(token,"application/vnd.github.html,application/vnd.github.VERSION.raw" , filter, 80) }
+
     suspend fun getSearchUser(token:String, username: String) = apiRequest { api.searchUser(token, username) }
 
     suspend fun getSearchRepo(token:String, username: String) = apiRequest { api.searchRepo(token, username) }

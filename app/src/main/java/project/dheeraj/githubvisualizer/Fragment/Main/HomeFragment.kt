@@ -34,10 +34,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import kotlinx.android.synthetic.main.fragment_home.view.*
-import project.dheeraj.githubvisualizer.Activity.DeveloperInfoActivity
-import project.dheeraj.githubvisualizer.Activity.IssuesActivity
-import project.dheeraj.githubvisualizer.Activity.OrganizationsActivity
-import project.dheeraj.githubvisualizer.Activity.RepositoriesActivity
+import project.dheeraj.githubvisualizer.Activity.*
 import project.dheeraj.githubvisualizer.AppConfig
 import project.dheeraj.githubvisualizer.AppConfig.LOGIN
 import project.dheeraj.githubvisualizer.AppConfig.NAME
@@ -77,13 +74,12 @@ class HomeFragment : Fragment(), FragmentLifecycle {
         // TODO
         view.cardPullRequest.setOnClickListener {
 //            DynamicToast.makeWarning(context!!, "Developing").show()
-            val intent = Intent(context, IssuesActivity::class.java)
+            val intent = Intent(context, PullRequestActivity::class.java)
             intent.putExtra(AppConfig.LOGIN, sharedPreferences.getString(LOGIN, "User"))
             intent.putExtra("PAGE", "Pull Requests")
             startActivity(intent)
         }
 
-        // TODO
         view.cardRepo.setOnClickListener {
 
 //            DynamicToast.makeWarning(context!!, "Developing").show()
@@ -94,13 +90,11 @@ class HomeFragment : Fragment(), FragmentLifecycle {
 
         }
 
-        // TODO
         view.cardOrganizations.setOnClickListener {
             startActivity(Intent(context, OrganizationsActivity::class.java))
 //            DynamicToast.makeWarning(context!!, "Developing").show()
         }
 
-        // TODO
         view.appInfoIcon.setOnClickListener {
             context!!.startActivity(Intent(context, DeveloperInfoActivity::class.java))
         }

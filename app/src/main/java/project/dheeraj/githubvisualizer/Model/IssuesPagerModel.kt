@@ -22,38 +22,11 @@
  * SOFTWARE.
  */
 
-package project.dheeraj.githubvisualizer.Network
+package project.dheeraj.githubvisualizer.Model
 
-import retrofit2.Response
-import java.io.IOException
+import androidx.fragment.app.Fragment
 
-abstract class SafeApiRequest {
-
-    suspend fun <T: Any> apiRequest(call: suspend() -> Response<T>) : T {
-
-
-            val response = call.invoke()
-//               return response.body()!!
-
-            if (response.body() != null) {
-
-                return response.body()!!
-
-            } else {
-                // todo handle api exception
-                throw ApiException(response.code().toString())
-//                return response.body()
-            }
-
-    }
-
-    suspend fun <T: Any> apiResponseCode(call: suspend() -> Response<T>) : Int {
-
-        val response = call.invoke()
-
-        return response.code()
-    }
-
-}
-
-class ApiException (message : String): IOException(message)
+class IssuesPagerModel (
+    name: String,
+    fragment: Fragment
+)
