@@ -75,9 +75,11 @@ class NotificationsFragment : Fragment() {
         viewModel = ViewModelProviders.of(this).get(NotificationsViewModel::class.java)
         // TODO: Use the ViewModel
 
+
+        page = 1
+        notificationsList = ArrayList()
         viewModel.getNotifications(token, page)
 //        NotificationsProgressBar.isRefreshing = true
-        notificationsList = ArrayList()
         adapter = NotificationsAdapter(context!!, notificationsList)
         notificationRecyclerView.adapter = adapter
 

@@ -26,6 +26,8 @@ package project.dheeraj.githubvisualizer.ViewModel
 
 import EventsModel
 import IssuesModel
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -47,13 +49,19 @@ class IssuesViewModel: ViewModel() {
     }
 
     fun getIssues (token: String, filter: String) {
+
         viewModelScope.launch(Dispatchers.Main) {
-            mutableIssuesList.postValue(
-                repository.getIssues(
-                    token,
-                    filter
-                ) as ArrayList
-            )
+            try {
+                mutableIssuesList.postValue(
+                    repository.getIssues(
+                        token,
+                        filter
+                    ) as ArrayList
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get Issues", e.message)
+            }
         }
     }
 

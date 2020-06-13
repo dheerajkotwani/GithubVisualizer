@@ -28,8 +28,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.view.animation.AlphaAnimation
 import androidx.core.os.postDelayed
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_splash_screen.*
 import project.dheeraj.githubvisualizer.R
 
 class SplashScreenActivity : AppCompatActivity() {
@@ -56,7 +58,18 @@ class SplashScreenActivity : AppCompatActivity() {
             }
             // close this activity
             finish()
-        }, 3000)
+        }, 2500)
+
+
+        val alphaAnimation = AlphaAnimation(0.2f,1.0f)
+        val alphaAnimation2 = AlphaAnimation(0.0f,1.0f)
+        alphaAnimation.startOffset = 200
+        alphaAnimation.duration = 800
+        icon.animation = alphaAnimation
+
+        alphaAnimation2.startOffset = 900
+        alphaAnimation2.duration = 800
+        text.animation = alphaAnimation2
 
     }
 }

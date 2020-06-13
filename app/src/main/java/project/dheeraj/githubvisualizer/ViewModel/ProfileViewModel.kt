@@ -26,6 +26,8 @@ package project.dheeraj.githubvisualizer.ViewModel
 
 import GithubUserModel
 import RepositoryModel
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -60,75 +62,123 @@ class ProfileViewModel : ViewModel() {
 
     fun getLoginProfile (token: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableUserList.postValue(
-                repository.getLoginProfile(token)
-            )
+            try {
+                mutableUserList.postValue(
+                    repository.getLoginProfile(token)
+                )
+            }
+            catch (e: Exception) {
+//                Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
+                Log.e("Get Login Profile", e.message)
+            }
         }
     }
 
     fun getUserProfile (token: String, username: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableUserList.postValue(
-                repository.getUserProfile(token,
-                    username)
-            )
+            try {
+                mutableUserList.postValue(
+                    repository.getUserProfile(
+                        token,
+                        username
+                    )
+                )
+            }
+            catch (e: Exception) {
+                Log.e("get User Profile", e.message)
+            }
         }
     }
 
 
     fun getMyTopRepositories (token: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableTopRepositoryList.postValue(
-                repository.getMyTopRepositories(token)
-            )
+            try {
+                mutableTopRepositoryList.postValue(
+                    repository.getMyTopRepositories(token)
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get My Repo", e.message)
+            }
         }
     }
 
     fun getUserTopRepositories (token: String, username: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableTopRepositoryList.postValue(
-                repository.getUserTopRepositories(token, username)
-            )
+            try {
+                mutableTopRepositoryList.postValue(
+                    repository.getUserTopRepositories(token, username)
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get User top repo", e.message)
+            }
         }
     }
 
     fun getMyStarredRepo (token: String, page: Int) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableStarList.postValue(
-                repository.getMyStarredRepositories(token, page)
-            )
+            try {
+                mutableStarList.postValue(
+                    repository.getMyStarredRepositories(token, page)
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get my Starred Repo", e.message)
+            }
         }
     }
 
     fun getUserStarredRepo (token: String, username: String, page: Int) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableStarList.postValue(
-                repository.getOtherStarredRepositories(token, username, page)
-            )
+            try {
+                mutableStarList.postValue(
+                    repository.getOtherStarredRepositories(token, username, page)
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get User Starred", e.message)
+            }
         }
     }
 
     fun getFollow (token: String, username:String) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableFollowData.postValue(
-                repository.getFollow(token, username)
-            )
+            try {
+                mutableFollowData.postValue(
+                    repository.getFollow(token, username)
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get Follow", e.message)
+            }
         }
     }
 
     fun putFollow (token: String, username:String) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableFollowData.postValue(
-                repository.putFollow(token, username)
-            )
+            try {
+                mutableFollowData.postValue(
+                    repository.putFollow(token, username)
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Put Follow", e.message)
+            }
         }
     }
 
     fun deleteFollow (token: String, username:String) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableFollowData.postValue(
-                repository.deleteFollow(token, username)
-            )
+            try {
+                mutableFollowData.postValue(
+                    repository.deleteFollow(token, username)
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Delete Follow", e.message)
+            }
         }
     }
 

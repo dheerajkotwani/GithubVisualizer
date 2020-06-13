@@ -73,8 +73,15 @@ class RepositoryContentAdapter(var context: Context,
                 .into(holder.listIcon)
         }
 
+
+
         holder.itemView.setOnClickListener {
             repoInterface.onFileItemClick(position)
+        }
+
+        holder.itemView.setOnLongClickListener {
+            repoInterface.onItemLongClick(position)
+            return@setOnLongClickListener true
         }
 
 

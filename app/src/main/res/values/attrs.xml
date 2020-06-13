@@ -9,30 +9,30 @@
          ?android:attr/buttonBarStyle is new as of API 11 so this is
          necessary to support previous API levels. -->
     <declare-styleable name="ButtonBarContainerTheme">
-        <attr name="metaButtonBarStyle" format="reference"/>
-        <attr name="metaButtonBarButtonStyle" format="reference"/>
+        <attr name="metaButtonBarStyle" format="reference" />
+        <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
 
-    <attr name="color_primary_blur" format="color|reference"/>
-    <attr name="icon_color" format="color|reference"/>
-    <attr name="card_background" format="color|reference"/>
-    <attr name="title_color" format="color|reference"/>
-    <attr name="subtitle_color" format="color|reference"/>
-    <attr name="selected_color" format="color|reference"/>
-    <attr name="appbar_theme" format="reference"/>
-    <attr name="popup_theme" format="reference"/>
-    <attr name="popup_menu_theme" format="reference"/>
+    <attr name="color_primary_blur" format="color|reference" />
+    <attr name="icon_color" format="color|reference" />
+    <attr name="card_background" format="color|reference" />
+    <attr name="title_color" format="color|reference" />
+    <attr name="subtitle_color" format="color|reference" />
+    <attr name="selected_color" format="color|reference" />
+    <attr name="appbar_theme" format="reference" />
+    <attr name="popup_theme" format="reference" />
+    <attr name="popup_menu_theme" format="reference" />
 
     <declare-styleable name="CodeWebView">
-        <attr name="webview_background" format="color"/>
+        <attr name="webview_background" format="color" />
     </declare-styleable>
 
     <declare-styleable name="ToastAbleImageButton">
-        <attr name="toast_text" format="string"/>
+        <attr name="toast_text" format="string" />
     </declare-styleable>
 
     <declare-styleable name="CircleBackgroundImageView">
-        <attr name="background_color" format="color"/>
+        <attr name="background_color" format="color" />
     </declare-styleable>
 
 </resources>

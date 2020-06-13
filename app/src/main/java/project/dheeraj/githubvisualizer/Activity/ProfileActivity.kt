@@ -24,33 +24,28 @@
 
 package project.dheeraj.githubvisualizer.Activity
 
-import GithubUserModel
 import RepositoryModel
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.activity_profile.toolbar
 import kotlinx.android.synthetic.main.content_profile.*
-import kotlinx.android.synthetic.main.fragment_notification.*
+import kotlinx.android.synthetic.main.content_profile.llEmail
+import kotlinx.android.synthetic.main.content_profile.llLocation
+import kotlinx.android.synthetic.main.content_profile.llOrganisations
+import kotlinx.android.synthetic.main.content_profile.llTwitter
+import kotlinx.android.synthetic.main.content_profile.llWebsite
+import kotlinx.android.synthetic.main.content_profile.tvDisplayName
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.fragment_profile.llEmail
-import kotlinx.android.synthetic.main.fragment_profile.llLocation
-import kotlinx.android.synthetic.main.fragment_profile.llOrganisations
-import kotlinx.android.synthetic.main.fragment_profile.llTwitter
-import kotlinx.android.synthetic.main.fragment_profile.llWebsite
-import kotlinx.android.synthetic.main.fragment_profile.tvDisplayName
 import project.dheeraj.githubvisualizer.Adapter.RepositoryAdapter
 import project.dheeraj.githubvisualizer.AppConfig
 import project.dheeraj.githubvisualizer.Network.GithubApiClient
@@ -61,6 +56,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
+
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -85,16 +81,14 @@ class ProfileActivity : AppCompatActivity() {
         token = "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}"
         viewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
 
-//        tvFollowers = findViewById(R.id.tvFollowersUser)
-
         // TODO implement clicks for different fields in desc eg. twitter, website
 
-        var apiInterface =
-            GithubApiClient.getClient().create(GithubApiInterface::class.java);
-
-        fetchStars(apiInterface)
+        fetchStars()
         getUserData()
         getTopRepos()
+
+        viewModel.getUserStarredRepo(token, username, starPage)
+
 
         if (sharedPref.getString(AppConfig.LOGIN, "") == username) {
             buttonFollow.visibility = View.GONE
@@ -116,8 +110,41 @@ class ProfileActivity : AppCompatActivity() {
                 viewModel.putFollow(token, username)
         }
 
+        llTwitter.setOnClickListener {
+            var intent: Intent? = null
+            try { // get the Twitter app if possible
+                this.packageManager.getPackageInfo("com.twitter.android", 0)
+                intent = Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?user_id=${tvTwitterUser.text.toString()}"))
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            } catch (e: Exception) { // no Twitter app, revert to browser
+                intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://twitter.com/${tvTwitterUser.text.toString()}")
+                )
+            }
+            this.startActivity(intent)
+        }
 
-        // TODO
+        llWebsite.setOnClickListener {
+            val url = "${tvWebsitesUser.text}"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(url)
+            startActivity(i)
+        }
+
+        llEmail.setOnClickListener {
+            val emailIntent = Intent(
+                Intent.ACTION_SENDTO, Uri.fromParts(
+                    "mailto", "${tvEmailUser.text}", null
+                )
+            )
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject")
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "Body")
+            startActivity(Intent.createChooser(emailIntent, "Send email..."))
+        }
+
+
+
         llFollowersUser.setOnClickListener {
             //            DynamicToast.makeWarning(context!!, "Developing").show()
             val intent = Intent(this@ProfileActivity, FollowActivity::class.java)
@@ -142,7 +169,6 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // TODO
         llGistsUser.setOnClickListener {
 //            DynamicToast.makeWarning(this@ProfileActivity, "Developing").show()
             val intent = Intent(this@ProfileActivity, RepositoriesActivity::class.java)
@@ -150,6 +176,10 @@ class ProfileActivity : AppCompatActivity() {
             intent.putExtra("USER_TYPE", "user")
             intent.putExtra("PAGE", "STARS")
             startActivity(intent)
+        }
+
+        tvDisplayName.setOnClickListener {
+            shareUser()
         }
 
     }
@@ -263,8 +293,8 @@ class ProfileActivity : AppCompatActivity() {
 
         viewModel.topRepositoryList.observe(this, Observer {
             if (it.isNullOrEmpty()) {
-                if (NotificationsProgressBar.visibility == View.VISIBLE)
-                    NotificationsProgressBar.visibility = View.GONE
+//                if (NotificationsProgressBar.visibility == View.VISIBLE)
+//                    NotificationsProgressBar.visibility = View.GONE
             }
             else {
                 topRepoRecyclerViewUser.adapter = RepositoryAdapter(this, it)
@@ -273,55 +303,33 @@ class ProfileActivity : AppCompatActivity() {
 
     }
 
-    private fun fetchStars(
-        apiInterface: GithubApiInterface
-    ) {
+    private fun fetchStars() {
 
-        var call: Call<ArrayList<RepositoryModel>> =
-            apiInterface.starredRepoOfUser(
-                "token ${sharedPref.getString(AppConfig.ACCESS_TOKEN, "")}",
-                username, starPage
-            )
-        try {
-
-
-            call.enqueue(object : Callback<ArrayList<RepositoryModel>> {
-                override fun onFailure(call: Call<ArrayList<RepositoryModel>>, t: Throwable) {
-                    Toast.makeText(
-                        this@ProfileActivity,
-                        "error: ${t.message}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-
-                override fun onResponse(
-                    call: Call<ArrayList<RepositoryModel>>,
-                    response: Response<ArrayList<RepositoryModel>>
-                ) {
-                    try {
-
-                        if (response.body()!!.size > 0) {
-                            for (i in response.body()!!) {
-                                starRepo.add(i)
-                            }
-                            starPage++
-                            fetchStars(apiInterface)
-                            tvGistsUser.text = "${starRepo.size}"
-                        }
-                        else
-                            tvGistsUser.text = "${starRepo.size}"
-
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                        tvGistsUser.text = "${starRepo.size}"
-                    }
-                }
-            })
-        } catch (e: Exception) {
-            Timber.e(e)
-            tvGistsUser.text = "${starRepo.size}"
-        }
+        viewModel.starList.observe(this, Observer {
+            if (it.size > 0) {
+                starRepo.addAll(it)
+                starPage++
+                tvGistsUser.text = "${starRepo.size}"
+                viewModel.getUserStarredRepo(token, username, starPage)
+            } else
+                tvGistsUser.text = "${starRepo.size}"
+        })
 
     }
+
+    fun shareUser() {
+
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "Hey, check this profile of *${tvDisplayName.text}* on Github github.com/${username}\n\nShared via *Github Visualizer App*\n " +
+                    "https://play.google.com/store/apps/details?id=project.dheeraj.githubvisualizer")
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+
+    }
+
 
 }

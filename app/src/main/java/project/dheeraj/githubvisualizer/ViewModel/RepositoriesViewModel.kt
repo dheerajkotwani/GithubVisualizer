@@ -26,6 +26,7 @@ package project.dheeraj.githubvisualizer.ViewModel
 
 import NotificationModel
 import RepositoryModel
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -48,39 +49,66 @@ class RepositoriesViewModel: ViewModel() {
 
     fun getMyRepositories (token: String, page: Int) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableRepoList.postValue(repository.getMyRepositories(
-                token,
-                page
-            ) as ArrayList)
+            try {
+                mutableRepoList.postValue(
+                    repository.getMyRepositories(
+                        token,
+                        page
+                    ) as ArrayList
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get My Repo", e.message)
+            }
         }
     }
 
     fun getOtherRepositories (token: String, username:String, page: Int) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableRepoList.postValue(repository.getOtherRepositories(
-                token,
-                username,
-                page
-            ) as ArrayList)
+            try {
+                mutableRepoList.postValue(
+                    repository.getOtherRepositories(
+                        token,
+                        username,
+                        page
+                    ) as ArrayList
+                )
+            }catch (e: Exception){
+                Log.e("Get other Repo", e.message)
+            }
         }
     }
 
     fun getMyStarredRepositories (token: String, page: Int) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableRepoList.postValue(repository.getMyStarredRepositories(
-                token,
-                page
-            ) as ArrayList)
+            try {
+                mutableRepoList.postValue(
+                    repository.getMyStarredRepositories(
+                        token,
+                        page
+                    ) as ArrayList
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get my Starred", e.message)
+            }
         }
     }
 
     fun getOtherStarredRepositories (token: String, username:String, page: Int) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableRepoList.postValue(repository.getOtherStarredRepositories(
-                token,
-                username,
-                page
-            ) as ArrayList)
+            try {
+                mutableRepoList.postValue(
+                    repository.getOtherStarredRepositories(
+                        token,
+                        username,
+                        page
+                    ) as ArrayList
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get other starred repo", e.message)
+            }
         }
     }
 

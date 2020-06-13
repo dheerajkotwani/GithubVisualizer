@@ -117,15 +117,15 @@ class RepositoriesActivity : AppCompatActivity() {
             }
         }
 
-        buttonLoadMoreRepos.setOnClickListener {
-            page++
-            when (pageType){
-                1 -> viewModel.getOtherStarredRepositories(token, username,page)
-                2 -> viewModel.getMyStarredRepositories(token, page)
-                3 -> viewModel.getOtherRepositories(token, username, page)
-                4 -> viewModel.getMyRepositories(token, page)
-            }
-        }
+//        buttonLoadMoreRepos.setOnClickListener {
+//            page++
+//            when (pageType){
+//                1 -> viewModel.getOtherStarredRepositories(token, username,page)
+//                2 -> viewModel.getMyStarredRepositories(token, page)
+//                3 -> viewModel.getOtherRepositories(token, username, page)
+//                4 -> viewModel.getMyRepositories(token, page)
+//            }
+//        }
 
     }
 
@@ -137,15 +137,15 @@ class RepositoriesActivity : AppCompatActivity() {
                 Toast.makeText(this, "No more items", Toast.LENGTH_SHORT).show()
                 if (gitProgressbar.visibility == View.VISIBLE)
                     gitProgressbar.visibility = View.GONE
-                if (buttonLoadMoreRepos.isVisible)
-                    buttonLoadMoreRepos.visibility = View.GONE
+//                if (buttonLoadMoreRepos.isVisible)
+//                    buttonLoadMoreRepos.visibility = View.GONE
             }
             else {
 //                repoRecyclerView.adapter = RepositoryAdapter(this@RepositoriesActivity, it)
                 repoList.addAll(it)
                 adapter.notifyDataSetChanged()
-                if (!buttonLoadMoreRepos.isVisible)
-                    buttonLoadMoreRepos.visibility = View.VISIBLE
+//                if (!buttonLoadMoreRepos.isVisible)
+//                    buttonLoadMoreRepos.visibility = View.VISIBLE
                 if (gitProgressbar.visibility == View.VISIBLE)
                     gitProgressbar.visibility = View.GONE
             }

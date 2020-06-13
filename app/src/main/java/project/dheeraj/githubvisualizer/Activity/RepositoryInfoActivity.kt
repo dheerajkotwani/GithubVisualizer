@@ -101,12 +101,6 @@ class RepositoryInfoActivity : AppCompatActivity() {
                 viewModel.putStar(token, owner, repo)
         }
 
-//        tvWatchersRepo.setOnClickListener {
-//            val intent = Intent(this@RepositoryInfoActivity, TestRepoActivity::class.java)
-//            intent.putExtra("repo", repo)
-//            intent.putExtra("owner", owner)
-//            startActivity(intent)
-//        }
 
     }
 
@@ -114,72 +108,29 @@ class RepositoryInfoActivity : AppCompatActivity() {
     private fun getRepoData() {
 
         viewModel.repoData.observe(this, Observer {
-//            tvRepoName.text = it.full_name
-//            tvRepoDescription.text = it.description
-//            tvForksRepo.text = it.forks_count.toString()
-//            tvStaggersRepo.text = it.stargazers_count.toString()
-            starCount = it.stargazers_count
-//            tvWatchersRepo.text = it.watchers_count.toString()
-//            tvIssuesRepo.text = it.open_issues_count.toString()
-//
-            if (buttonStar.visibility == View.GONE)
-                buttonStar.visibility = View.VISIBLE
-//
-//            if (userInfoCard.visibility == View.GONE)
-//                userInfoCard.visibility = View.VISIBLE
 
-            buttonStar.isClickable = true
+            if (it != null) {
 
-            Glide.with(this@RepositoryInfoActivity)
-                .load(it.owner.avatar_url)
-                .into(repoBackgroundImage)
+                if (buttonStar.visibility == View.GONE)
+                    buttonStar.visibility = View.VISIBLE
+
+                buttonStar.isClickable = true
+
+                Glide.with(this@RepositoryInfoActivity)
+                    .load(it.owner.avatar_url)
+                    .into(repoBackgroundImage)
+            }
         })
 
 
         viewModel.repoDetails(token, owner, repo)
 
     }
-/*
-    private fun observeReadme() {
-
-        try {
-            viewModel.getReadme(token, owner, repo)
-        }
-        catch (e: Exception) {
-            Timber.e(e)
-        }
-
-        viewModel.readmeData.observe(this, Observer {
-
-
-                profileProgressBar.visibility = View.GONE
-                if (!it.download_url.isNullOrEmpty()) {
-
-                    repoWebView.loadFromUrl(it.download_url)
-
-//                repoWebView.setOnTouchListener(OnTouchListener { v, event -> event.action == MotionEvent.ACTION_MOVE })
-                    repoWebView.isVerticalScrollBarEnabled = false
-                    repoWebView.settings.javaScriptEnabled = true;
-                    repoWebView.settings.domStorageEnabled = true
-                    repoWebView.settings.setAppCacheEnabled(true);
-                    repoWebView.settings.loadsImagesAutomatically = true;
-                    repoWebView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW;
-                    repoWebView.isCodeScrollEnabled = true
-                    repoWebView.settings.layoutAlgorithm =
-                        WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING
-                    repoWebView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
-                    repoWebView.settings.setSupportZoom(true)
-                    repoWebView.settings.builtInZoomControls = true
-                    repoWebView.settings.displayZoomControls = true
-                }
-
-        })
-    }
-
- */
 
     private fun observeStar() {
+
         viewModel.starData.observe(this, Observer {
+
             if (it == 204 && !buttonStar.isVisible) {
                 star = true
                 buttonStar.setImageResource(R.drawable.ic_star_black_24dp)

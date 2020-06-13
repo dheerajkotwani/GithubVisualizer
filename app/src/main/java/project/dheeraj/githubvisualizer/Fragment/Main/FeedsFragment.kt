@@ -55,7 +55,8 @@ class FeedsFragment : Fragment() {
     private lateinit var viewModel: FeedsViewModel
     private lateinit var sharedPref: SharedPreferences
     private var page: Int = 1
-    private var feedsList: ArrayList<EventsModel> = ArrayList()
+    private var pageDone: Int = 0
+    private lateinit var feedsList: ArrayList<EventsModel>
     private lateinit var adapter: FeedsAdapter
     private lateinit var token: String
     private lateinit var username: String
@@ -77,13 +78,13 @@ class FeedsFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(FeedsViewModel::class.java)
 
+        feedsList = ArrayList()
+        page = 0
         viewModel.getFeeds(token, username, page)
-//        feedsProgressBar.isRefreshing = true
 
         Glide.with(this)
             .load(R.drawable.github_loader)
             .into(gitFeedsProgressbar)
-
         adapter = FeedsAdapter(context!!, feedsList)
 
         feedsRecyclerView.adapter = adapter
@@ -91,7 +92,7 @@ class FeedsFragment : Fragment() {
         viewModel.feedsList.observe(viewLifecycleOwner, Observer {
             if (it.isNullOrEmpty()) {
 
-                Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "No more items", Toast.LENGTH_SHORT).show()
                 if (feedsProgressBar.isRefreshing)
                     feedsProgressBar.isRefreshing = false
                 if(gitFeedsProgressbar.visibility == View.VISIBLE)
@@ -99,6 +100,7 @@ class FeedsFragment : Fragment() {
                 buttonFeedsLoadMore.visibility = View.GONE
             }
             else {
+
 //                feedsRecyclerView.adapter = FeedsAdapter(context!!, feeds)
                 feedsList.addAll(it)
                 adapter.notifyDataSetChanged()
@@ -131,27 +133,10 @@ class FeedsFragment : Fragment() {
 
         }
 
-/*
-        feedsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                    if (!recyclerView.canScrollVertically(1)
-                        && !(feedsProgressBar.isRefreshing)
-                        && newState== RecyclerView.SCROLL_STATE_IDLE) {
-                        if (!feedsProgressBar.isRefreshing)
-                            feedsProgressBar.isRefreshing = true
-                        page++
-                        viewModel.getFeeds(token, username, page)
-                    }
-                else if ((feedsProgressBar.isRefreshing)
-                        && newState== RecyclerView.SCROLL_STATE_DRAGGING){
-                        feedsProgressBar.isRefreshing = false
-                    }
+    }
 
-            }
-        })
-*/
-
+    override fun onResume() {
+        super.onResume()
     }
 
 }

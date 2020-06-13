@@ -8,6 +8,37 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppThemeLogin" parent="Theme.MaterialComponents">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppMaterialDialog" parent="Theme.MaterialComponents.Light">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="material_dialog_background">#FFFFFF</item>
+        <item name="material_dialog_title_text_color">@color/grey_900</item>
+        <item name="material_dialog_message_text_color">@color/black_90</item>
+        <item name="material_dialog_positive_button_color">@color/green_400</item>
+        <item name="material_dialog_positive_button_text_color">@color/white</item>
+        <item name="material_dialog_negative_button_text_color">@color/red_600</item>
+
+    </style>
+
+    <style name="AppTheme.RoundedCornerMaterialButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:background">@drawable/button_login</item>
+    </style>
+
     <style name="DividerLine">
         <item name="android:background">@color/grey_700</item>
     </style>
@@ -70,6 +101,18 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
 
 
 </resources>

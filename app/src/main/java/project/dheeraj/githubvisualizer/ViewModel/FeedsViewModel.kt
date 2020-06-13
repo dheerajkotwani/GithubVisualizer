@@ -25,6 +25,7 @@
 package project.dheeraj.githubvisualizer.ViewModel
 
 import EventsModel
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -33,6 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.Repository.NetworkRepository
+import java.io.IOException
 
 class FeedsViewModel: ViewModel() {
 
@@ -47,13 +49,18 @@ class FeedsViewModel: ViewModel() {
 
     fun getFeeds (token: String, username: String, page: Int) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableFeedsList.postValue(
-                repository.getFeeds(
-                    token,
-                    username,
-                    page
-                ) as ArrayList
-            )
+            try {
+                mutableFeedsList.postValue(
+                    repository.getFeeds(
+                        token,
+                        username,
+                        page
+                    ) as ArrayList
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get Feeds", e.message)
+            }
         }
     }
 

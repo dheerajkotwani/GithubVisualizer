@@ -109,6 +109,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_gravity="center"
+                            android:tint="@color/grey_800"
                             android:src="@drawable/ic_organization"
                             android:layout_marginEnd="4dp"/>
 
@@ -120,7 +121,7 @@
                             android:text="Organisations"
                             android:singleLine="true"
                             android:layout_gravity="center"
-                            android:textColor="@color/black_90"
+                            android:textColor="@color/grey_800"
                             android:fontFamily="@font/roboto_regular"/>
 
                     </LinearLayout>
@@ -135,6 +136,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_gravity="center"
+                            android:tint="@color/grey_800"
                             android:src="@drawable/ic_location_on_black_24dp"
                             android:layout_marginEnd="4dp"/>
 
@@ -146,7 +148,7 @@
                             android:text="Location"
                             android:singleLine="true"
                             android:layout_gravity="center"
-                            android:textColor="@color/black_90"
+                            android:textColor="@color/grey_800"
                             android:fontFamily="@font/roboto_regular"/>
 
                     </LinearLayout>
@@ -161,6 +163,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_gravity="center"
+                            android:tint="@color/grey_800"
                             android:src="@drawable/ic_email_black_24dp"
                             android:layout_marginEnd="4dp"/>
 
@@ -187,6 +190,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_gravity="center"
+                            android:tint="@color/grey_800"
                             android:src="@drawable/ic_insert_link_black_24dp"
                             android:layout_marginEnd="4dp"/>
 
@@ -213,6 +217,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_gravity="center"
+                            android:tint="@color/grey_800"
                             android:src="@drawable/ic_twitter"
                             android:layout_marginEnd="4dp"/>
 
@@ -238,6 +243,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_gravity="center"
+                            android:tint="@color/grey_800"
                             android:src="@drawable/ic_date_range_black_24dp"
                             android:layout_marginEnd="4dp"/>
 
@@ -249,7 +255,7 @@
                             android:text="Joined"
                             android:singleLine="true"
                             android:layout_gravity="center"
-                            android:textColor="@color/black_90"
+                            android:textColor="@color/grey_800"
                             android:fontFamily="@font/roboto_regular"/>
 
                     </LinearLayout>
@@ -415,21 +421,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="Contributions"-->
-<!--                    android:textSize="20dp"-->
-<!--                    android:fontFamily="@font/alata_regular"-->
-<!--                    android:layout_marginTop="14dp"-->
-<!--                    android:layout_marginStart="16dp"-->
-<!--                    android:layout_marginBottom="10dp"-->
-<!--                    android:textColor="@color/black_90"/>-->
+                <!--                <TextView-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:text="Contributions"-->
+                <!--                    android:textSize="20dp"-->
+                <!--                    android:fontFamily="@font/alata_regular"-->
+                <!--                    android:layout_marginTop="14dp"-->
+                <!--                    android:layout_marginStart="16dp"-->
+                <!--                    android:layout_marginBottom="10dp"-->
+                <!--                    android:textColor="@color/black_90"/>-->
 
-<!--                <com.github.javierugarte.GitHubContributionsView-->
-<!--                    android:id="@+id/githubContributions"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"/>-->
+                <!--                <com.github.javierugarte.GitHubContributionsView-->
+                <!--                    android:id="@+id/githubContributions"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"/>-->
 
 
                 <TextView

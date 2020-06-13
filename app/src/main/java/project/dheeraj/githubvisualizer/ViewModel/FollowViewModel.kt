@@ -26,6 +26,7 @@ package project.dheeraj.githubvisualizer.ViewModel
 
 import FollowerModel
 import NotificationModel
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -48,22 +49,36 @@ class FollowViewModel: ViewModel() {
 
     fun getFollowers (token: String, username:String, page: Int) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableFollowList.postValue(repository.getFollowers(
-                token,
-                username,
-                page
-            ) as ArrayList)
+            try {
+                mutableFollowList.postValue(
+                    repository.getFollowers(
+                        token,
+                        username,
+                        page
+                    ) as ArrayList
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get followers", e.message)
+            }
         }
     }
 
 
     fun getFollowing (token: String, username:String, page: Int) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableFollowList.postValue(repository.getFollowing(
-                token,
-                username,
-                page
-            ) as ArrayList)
+            try {
+                mutableFollowList.postValue(
+                    repository.getFollowing(
+                        token,
+                        username,
+                        page
+                    ) as ArrayList
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get following", e.message)
+            }
         }
     }
 

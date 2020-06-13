@@ -31,7 +31,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <EditText
-        android:id="@+id/search_bar"
+        android:id="@+id/etSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/page_title"
@@ -40,7 +40,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/status_back"
         android:textSize="18dp"
-        android:hint="username"
+        android:hint="Username/Repository"
         android:layout_margin="16dp"
         android:singleLine="true"
         android:imeOptions="actionSearch"
@@ -51,20 +51,20 @@
         />
 
     <ImageView
-        android:id="@+id/search_icon"
+        android:id="@+id/imageSearch"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/ic_search_black_24dp"
-        app:layout_constraintTop_toTopOf="@id/search_bar"
-        app:layout_constraintBottom_toBottomOf="@id/search_bar"
-        app:layout_constraintEnd_toEndOf="@id/search_bar"
+        app:layout_constraintTop_toTopOf="@id/etSearch"
+        app:layout_constraintBottom_toBottomOf="@id/etSearch"
+        app:layout_constraintEnd_toEndOf="@id/etSearch"
         android:layout_marginEnd="10dp"
         android:padding="4dp"/>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/search_bar"
+        app:layout_constraintTop_toBottomOf="@id/etSearch"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -76,10 +76,63 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/search_recyclerView"
+                android:id="@+id/allSearchRecyclerView"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+            <LinearLayout
+                android:id="@+id/categorySearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/userSearchRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/layout_search"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+                <TextView
+                    android:id="@+id/tvShowAllUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Show all users"
+                    android:textColor="@color/grey_800"
+                    android:padding="10dp"
+                    android:textSize="16dp"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/roboto_regular"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/repoSearchRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/layout_repo"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+                <TextView
+                    android:id="@+id/tvShowAllRepo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Show all Repositories"
+                    android:textColor="@color/grey_800"
+                    android:padding="10dp"
+                    android:textSize="16dp"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/roboto_regular"/>
+
+
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"

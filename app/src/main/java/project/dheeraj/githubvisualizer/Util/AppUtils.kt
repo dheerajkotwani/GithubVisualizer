@@ -24,9 +24,14 @@
 
 package project.dheeraj.githubvisualizer.Util
 
+import android.R.id
 import android.content.Context
+import android.graphics.Color
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
+import com.google.android.material.snackbar.Snackbar
+
 
 object AppUtils {
 
@@ -39,6 +44,21 @@ object AppUtils {
             e.printStackTrace()
         }
 
+    }
+
+    // Showing the status in Snackbar
+    fun showSnack(isConnected: Boolean, view: View, context: Context) {
+        val message: String
+        val color: Int
+        if (isConnected) {
+            message = "Good! Connected to Internet"
+        } else {
+            message = "Sorry! Not connected to internet"
+        }
+        val snackbar = Snackbar
+            .make(view, message, Snackbar.LENGTH_LONG)
+            .setTextColor(Color.RED)
+        snackbar.show()
     }
 
 }

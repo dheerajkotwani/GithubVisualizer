@@ -27,6 +27,8 @@ package project.dheeraj.githubvisualizer.ViewModel
 import EventsModel
 import Readme
 import RepositoryModel
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -36,6 +38,8 @@ import kotlinx.coroutines.launch
 import project.dheeraj.githubvisualizer.Model.RepositoryModel.RepositoryContentModel
 import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.Repository.NetworkRepository
+import timber.log.Timber
+import java.lang.Exception
 
 class RepositoryViewModel: ViewModel() {
 
@@ -63,78 +67,120 @@ class RepositoryViewModel: ViewModel() {
 
     fun getStar (token: String, username:String, repo: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableStarData.postValue(repository.getStar(
-                token,
-                username,
-                repo
-            ))
+            try {
+                mutableStarData.postValue(
+                    repository.getStar(
+                        token,
+                        username,
+                        repo
+                    )
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Star", e.message)
+            }
         }
     }
 
 
     fun putStar (token: String, username:String, repo: String) {
+
         viewModelScope.launch(Dispatchers.Main) {
+            try{
             mutableStarData.postValue(repository.putStar(
                 token,
                 username,
                 repo
             ))
+            }
+            catch (e: Exception) {
+                Log.e("Star", e.message)
+            }
         }
     }
 
     fun removeStar (token: String, username:String, repo: String) {
+
         viewModelScope.launch(Dispatchers.Main) {
+            try{
             mutableStarData.postValue(repository.deleteStar(
                 token,
                 username,
                 repo
             ))
+            }
+            catch (e: Exception) {
+                Log.e("Star", e.message)
+            }
         }
     }
 
     fun repoDetails (token: String, username:String, repo: String) {
         viewModelScope.launch(Dispatchers.Main) {
+            try {
             mutableRepoData.postValue(repository.getRepoDetails(
                 token,
                 username,
                 repo
             ))
+            }
+            catch (e: Exception) {
+                Log.e("Repo", e.message)
+            }
         }
     }
 
     fun getReadme (token: String, username:String, repo: String) {
-        viewModelScope.launch(Dispatchers.Main) {
-            mutableReadmeData.postValue(repository.getRepoReadme(
-                token,
-                username,
-                repo
-            ))
+        viewModelScope.launch(Dispatchers.Default) {
+            try{
+                mutableReadmeData.postValue(repository.getRepoReadme(
+                    token,
+                    username,
+                    repo
+                ))
+            }
+            catch (e: Exception) {
+                mutableRepoData.postValue(null)
+                Log.e("Readme", e.message)
+            }
+
         }
     }
 
     fun repoContent (token: String, username:String, repo: String, path: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableRepoContent.postValue(repository.getRepoContent(
-                token,
-                username,
-                repo,
-                path
-            ))
+            try {
+                mutableRepoContent.postValue(
+                    repository.getRepoContent(
+                        token,
+                        username,
+                        repo,
+                        path
+                    )
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Repo content", e.message)
+            }
         }
     }
 
     fun repoEvents (token: String, owner:String, repo: String, page: Int) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableRepoEvents.postValue(repository.getRepoEvents(
-                token,
-                owner,
-                repo,
-                page
-            ))
+            try {
+                mutableRepoEvents.postValue(
+                    repository.getRepoEvents(
+                        token,
+                        owner,
+                        repo,
+                        page
+                    )
+                )
+            }
+            catch(e: Exception) {
+                Log.e("Repo Events", e.message)
+            }
         }
     }
-
-
-
 
 }

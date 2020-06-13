@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/grey_100"
     android:layout_marginBottom="24dp">
 
@@ -73,6 +74,7 @@
                             android:layout_height="wrap_content"
                             android:text="Developer Name"
                             android:singleLine="true"
+                            android:ellipsize="end"
                             android:textColor="@android:color/black"
                             android:textSize="18dp"
                             android:textStyle="bold"
@@ -82,6 +84,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="userName"
+                            android:ellipsize="end"
                             android:singleLine="true"
                             android:textColor="@color/grey_800"
                             android:textSize="14dp"
@@ -89,36 +92,16 @@
 
                     </LinearLayout>
 
-                </LinearLayout>
-
-                <!--<LinearLayout
-                    android:layout_margin="16dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/status_back"
-                    android:padding="6dp">
-
                     <ImageView
-                        android:id="@+id/image_status"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:id="@+id/buttonLogout"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_logout"
                         android:layout_gravity="center"
-                        android:src="@drawable/github_logo"
-                        android:layout_marginStart="4dp"
-                        android:layout_marginEnd="4dp"/>
+                        android:layout_marginEnd="10dp"
+                        android:padding="8dp"/>
 
-                    <TextView
-                        android:id="@+id/text_status"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="14dp"
-                        android:text="Contributing"
-                        android:layout_gravity="center"
-                        android:textColor="@android:color/black"
-                        android:fontFamily="@font/roboto_light"
-                        android:textStyle="bold"/>
-
-                </LinearLayout>-->
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tvBio"
@@ -450,6 +433,7 @@
 
                 </LinearLayout>
 
+
             </LinearLayout>
 
             <LinearLayout
@@ -473,6 +457,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/layout_repo"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
             </LinearLayout>

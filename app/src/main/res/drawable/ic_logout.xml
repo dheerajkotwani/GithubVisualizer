@@ -1,0 +1,39 @@
+<!--
+  ~ MIT License
+  ~
+  ~ Copyright (c) 2020 Dheeraj Kotwani
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="490dp"
+    android:height="490dp"
+    android:viewportWidth="490.66666"
+    android:viewportHeight="490">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="m474.668,261h-309.336c-8.832,0 -16,-7.168 -16,-16s7.168,-16 16,-16h309.336c8.832,0 16,7.168 16,16s-7.168,16 -16,16zM474.668,261"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="m250.668,346.332c-4.098,0 -8.191,-1.555 -11.309,-4.691l-85.332,-85.332c-6.25,-6.254 -6.25,-16.387 0,-22.637l85.332,-85.332c6.25,-6.25 16.383,-6.25 22.637,0 6.25,6.25 6.25,16.383 0,22.633l-74.027,74.027 74.027,74.027c6.25,6.25 6.25,16.383 0,22.633 -3.137,3.117 -7.234,4.672 -11.328,4.672zM250.668,346.332"/>
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="m234.668,479.668c-129.387,0 -234.668,-105.281 -234.668,-234.668s105.281,-234.668 234.668,-234.668c97.086,0 182.805,58.41 218.41,148.824 3.242,8.211 -0.813,17.492 -9.023,20.754 -8.215,3.203 -17.496,-0.789 -20.758,-9.043 -30.742,-78.082 -104.789,-128.535 -188.629,-128.535 -111.746,0 -202.668,90.926 -202.668,202.668s90.922,202.668 202.668,202.668c83.84,0 157.887,-50.453 188.629,-128.512 3.242,-8.258 12.523,-12.246 20.758,-9.047 8.211,3.242 12.266,12.543 9.023,20.758 -35.605,90.391 -121.324,148.801 -218.41,148.801zM234.668,479.668"/>
+</vector>

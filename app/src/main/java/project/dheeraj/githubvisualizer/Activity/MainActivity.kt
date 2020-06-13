@@ -27,25 +27,30 @@ package project.dheeraj.githubvisualizer.Activity
 import GithubUserModel
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation
 import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.messaging.FirebaseMessaging
-import project.dheeraj.githubvisualizer.*
 import project.dheeraj.githubvisualizer.Adapter.ViewPagerAdapter
+import project.dheeraj.githubvisualizer.AppConfig
 import project.dheeraj.githubvisualizer.AppConfig.ACCESS_TOKEN
 import project.dheeraj.githubvisualizer.AppConfig.SHARED_PREF
 import project.dheeraj.githubvisualizer.Fragment.Main.*
+import project.dheeraj.githubvisualizer.Network.ConnectivityReceiver
 import project.dheeraj.githubvisualizer.Network.GithubApiClient
 import project.dheeraj.githubvisualizer.Network.GithubApiInterface
+import project.dheeraj.githubvisualizer.R
+import project.dheeraj.githubvisualizer.Util.AppUtils
+import project.dheeraj.githubvisualizer.Util.AppUtils.showSnack
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -155,4 +160,8 @@ class MainActivity : AppCompatActivity() {
         super.onBackPressed()
         finish()
     }
+
+
+
+
 }

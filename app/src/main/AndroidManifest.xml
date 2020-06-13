@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="project.dheeraj.githubvisualizer">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -11,8 +13,14 @@
         android:largeHeap="true"
         android:roundIcon="@drawable/ic_github_logo"
         android:supportsRtl="true"
+        tools:replace="android:icon"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.CodeViewerActivity"></activity>
+        <activity
+            android:name=".Activity.FileViewerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_file_viewer"
+            android:theme="@style/FullscreenTheme"></activity>
+        <activity android:name=".Activity.CodeViewerActivity" />
         <activity
             android:name=".Activity.TestRepoActivity"
             android:label="@string/title_activity_test_repo"
@@ -65,11 +73,12 @@
             android:theme="@style/AppTheme.profile" />
         <activity
             android:name=".Activity.LoginActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeLogin" />
         <activity
             android:name=".Activity.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/AppMaterialDialog" />
     </application>
 
 </manifest>

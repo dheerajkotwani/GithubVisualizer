@@ -25,6 +25,8 @@
 package project.dheeraj.githubvisualizer.ViewModel
 
 import NotificationModel
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -47,10 +49,18 @@ class NotificationsViewModel: ViewModel() {
 
     fun getNotifications (token: String, page: Int) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableNotificationsList.postValue(repository.getNotification(
-                token,
-                page
-            ) as ArrayList)
+            try {
+                mutableNotificationsList.postValue(
+                    repository.getNotification(
+                        token,
+                        page
+                    ) as ArrayList
+                )
+            }
+            catch (e: Exception) {
+//                Toast.makeText(this, e.message.toString(), Toast.LENGTH_SHORT).show()
+                Log.e("Get Notifications", e.message)
+            }
         }
     }
 

@@ -27,27 +27,23 @@ package project.dheeraj.githubvisualizer.Fragment.Repository
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebSettings
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.activity_repository_info.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_repo_info.*
-import project.dheeraj.githubvisualizer.Activity.TestRepoActivity
 import project.dheeraj.githubvisualizer.AppConfig
-
 import project.dheeraj.githubvisualizer.R
 import project.dheeraj.githubvisualizer.ViewModel.RepositoryViewModel
-import timber.log.Timber
-import java.lang.Exception
+
 
 class RepoInfoFragment : Fragment() {
 
@@ -84,50 +80,37 @@ class RepoInfoFragment : Fragment() {
 
         getRepoData()
         observeReadme()
-//        observeStar()
-//        viewModel.getStar(token, owner, repo)
 
-//        buttonStar.setOnClickListener {
-//            buttonStar.isClickable = false
-//            if (star){
-//                viewModel.removeStar(token, owner, repo)
-//            }
-//            else
-//                viewModel.putStar(token, owner, repo)
-//        }
+        viewModel.getReadme(token, owner, repo)
 
-        tvWatchersRepo.setOnClickListener {
-            val intent = Intent(context, TestRepoActivity::class.java)
-            intent.putExtra("repo", repo)
-            intent.putExtra("owner", owner)
-            startActivity(intent)
+        tvRepoName.setOnClickListener {
+            shareRepo()
         }
+
     }
 
 
     private fun getRepoData() {
 
         viewModel.repoData.observe(viewLifecycleOwner, Observer {
-            tvRepoName.text = it.full_name
-            tvRepoDescription.text = it.description
-            tvForksRepo.text = it.forks_count.toString()
-            tvStaggersRepo.text = it.stargazers_count.toString()
-            starCount = it.stargazers_count
-            tvWatchersRepo.text = it.watchers_count.toString()
-            tvIssuesRepo.text = it.open_issues_count.toString()
 
-//            if (buttonStar.visibility == View.GONE)
-//                buttonStar.visibility = View.VISIBLE
+            if (it != null) {
 
-            if (userInfoCard.visibility == View.GONE)
-                userInfoCard.visibility = View.VISIBLE
+                tvRepoName.text = it.full_name
+                tvRepoDescription.text = it.description
+                tvForksRepo.text = it.forks_count.toString()
+                tvStaggersRepo.text = it.stargazers_count.toString()
+                starCount = it.stargazers_count
+                tvWatchersRepo.text = it.watchers_count.toString()
+                tvIssuesRepo.text = it.open_issues_count.toString()
 
-//            buttonStar.isClickable = true
+                profileProgressBar.visibility = View.GONE
 
-//            Glide.with(this)
-//                .load(it.owner.avatar_url)
-//                .into(repoBackgroundImage)
+                if (userInfoCard.visibility == View.GONE)
+                    userInfoCard.visibility = View.VISIBLE
+            }
         })
+
 
 
         viewModel.repoDetails(token, owner, repo)
@@ -136,21 +119,17 @@ class RepoInfoFragment : Fragment() {
 
     private fun observeReadme() {
 
-        try {
-            viewModel.getReadme(token, owner, repo)
-        }
-        catch (e: Exception) {
-            Timber.e(e)
-        }
 
         viewModel.readmeData.observe(viewLifecycleOwner, Observer {
 
-            profileProgressBar.visibility = View.GONE
             if (!it.download_url.isNullOrEmpty()) {
+
+                if (!repoReadmeLayout.isVisible)
+                    repoReadmeLayout.visibility = View.VISIBLE
 
                 repoWebView.loadFromUrl(it.download_url)
 
-//                repoWebView.setOnTouchListener(OnTouchListener { v, event -> event.action == MotionEvent.ACTION_MOVE })
+                repoWebView.setOnTouchListener(View.OnTouchListener { v, event -> event.action == MotionEvent.ACTION_MOVE })
                 repoWebView.isVerticalScrollBarEnabled = false
                 repoWebView.settings.javaScriptEnabled = true;
                 repoWebView.settings.domStorageEnabled = true
@@ -168,54 +147,19 @@ class RepoInfoFragment : Fragment() {
 
         })
     }
-/*
-    private fun observeStar() {
-        viewModel.starData.observe(viewLifecycleOwner, Observer {
-            if (it == 204 && !buttonStar.isVisible) {
-                star = true
-                buttonStar.setImageResource(R.drawable.ic_star_black_24dp)
-                buttonStar.setColorFilter(
-                    ContextCompat.getColor(context!!, R.color.white),
-                    android.graphics.PorterDuff.Mode.SRC_IN)
-            }
-            else if (it == 404 && !buttonStar.isVisible){
-                star = false
-                buttonStar.setImageResource(R.drawable.ic_star_border_black_24dp)
-                buttonStar.setColorFilter(
-                    ContextCompat.getColor(context!!, R.color.white),
-                    android.graphics.PorterDuff.Mode.SRC_IN)
-            }
-            else if (it == 204 && buttonStar.isVisible && !star) {
-                star = true
-                buttonStar.setImageResource(R.drawable.ic_star_black_24dp)
-                buttonStar.setColorFilter(
-                    ContextCompat.getColor(context!!, R.color.white),
-                    android.graphics.PorterDuff.Mode.SRC_IN)
-                starCount+=1
-                tvStaggersRepo.text = starCount.toString()
-                buttonStar.isClickable = true
-                Toast.makeText(context!!, "Starred", Toast.LENGTH_SHORT).show()
-            }
-            else if (it == 204 && buttonStar.isVisible && star){
-                star = false
-                buttonStar.setImageResource(R.drawable.ic_star_border_black_24dp)
-                buttonStar.setColorFilter(
-                    ContextCompat.getColor(context!!, R.color.white),
-                    android.graphics.PorterDuff.Mode.SRC_IN)
-                starCount-=1
-                tvStaggersRepo.text = starCount.toString()
-                buttonStar.isClickable = true
-                Toast.makeText(context!!, "Star Removed", Toast.LENGTH_SHORT).show()
-            }
-            else {
-                buttonStar.isClickable = false
-                if (buttonStar.isVisible)
-                    buttonStar.isVisible = false
-                Toast.makeText(context!!, "Something went wrong", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
 
- */
+    fun shareRepo() {
+
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "Hey, Check this Repository on Github github.com/${owner}/${repo}\n\nShared via *Github Visualizer App*\n " +
+                    "https://play.google.com/store/apps/details?id=project.dheeraj.githubvisualizer")
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+
+    }
 
 }

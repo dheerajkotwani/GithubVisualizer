@@ -28,49 +28,36 @@ import RepositoryModel
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.bumptech.glide.Glide
-import com.pranavpandey.android.dynamic.toasts.DynamicToast
-import kotlinx.android.synthetic.main.fragment_notification.*
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.dialog.MaterialDialogs
+import com.google.firebase.auth.FirebaseAuth
+import com.shreyaspatil.MaterialDialog.AbstractDialog
+import com.shreyaspatil.MaterialDialog.MaterialDialog
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.view.*
-import project.dheeraj.githubvisualizer.*
 import project.dheeraj.githubvisualizer.Activity.FollowActivity
+import project.dheeraj.githubvisualizer.Activity.LoginActivity
 import project.dheeraj.githubvisualizer.Activity.RepositoriesActivity
 import project.dheeraj.githubvisualizer.Adapter.RepositoryAdapter
-import project.dheeraj.githubvisualizer.Network.GithubApiClient
-import project.dheeraj.githubvisualizer.Network.GithubApiInterface
+import project.dheeraj.githubvisualizer.AppConfig
+import project.dheeraj.githubvisualizer.R
 import project.dheeraj.githubvisualizer.ViewModel.ProfileViewModel
 
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import timber.log.Timber
 
 class ProfileFragment : Fragment() {
-
-//    private lateinit var profileImage: ImageView
-//    private lateinit var tvDisplayName: TextView
-//    private lateinit var tvUserName: TextView
-//    private lateinit var tvStatus: TextView
-//    private lateinit var tvBio: TextView
-//    private lateinit var tvOrganization: TextView
-//    private lateinit var tvEmail: TextView
-//    private lateinit var tvWebsite: TextView
-//    private lateinit var tvTwitter: TextView
-//    private lateinit var tvJoined: TextView
-//    private lateinit var tvFollowers: TextView
-//    private lateinit var tvFollowing: TextView
-//    private lateinit var tvRepositories: TextView
-//    private lateinit var tvStars: TextView
-//    private lateinit var tvLocation: TextView
 
     private lateinit var viewModel: ProfileViewModel
     private lateinit var sharedPref: SharedPreferences
@@ -78,6 +65,7 @@ class ProfileFragment : Fragment() {
     private lateinit var mainView: View
     private var starPage: Int = 1
     private var starRepo: ArrayList<RepositoryModel> = ArrayList()
+    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,6 +110,25 @@ class ProfileFragment : Fragment() {
 
         }
 
+
+        view.llWebsite.setOnClickListener {
+            val url = "${tvWebsite.text}"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(url)
+            startActivity(i)
+        }
+
+        view.llEmail.setOnClickListener {
+            val emailIntent = Intent(
+                Intent.ACTION_SENDTO, Uri.fromParts(
+                    "mailto", "${tvEmail.text}", null
+                )
+            )
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject")
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "Body")
+            startActivity(Intent.createChooser(emailIntent, "Send email..."))
+        }
+
         view.llGists.setOnClickListener {
 
             val intent = Intent(context, RepositoriesActivity::class.java)
@@ -132,9 +139,53 @@ class ProfileFragment : Fragment() {
 
         }
 
+        view.llTwitter.setOnClickListener {
+            var intent: Intent? = null
+            try { // get the Twitter app if possible
+                context!!.packageManager.getPackageInfo("com.twitter.android", 0)
+                intent = Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?user_id=${tvTwitter.text.toString()}"))
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            } catch (e: Exception) { // no Twitter app, revert to browser
+                intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://twitter.com/${tvTwitter.text.toString()}")
+                )
+            }
+            this.startActivity(intent)
+        }
+
+
         // TODO
         view.profileImage.setOnClickListener {
-            DynamicToast.makeWarning(context!!, "Developing").show()
+//            DynamicToast.makeWarning(context!!, "Developing").show()
+            shareUser()
+        }
+
+        firebaseAuth = FirebaseAuth.getInstance()
+
+        view.buttonLogout.setOnClickListener {
+
+            val pDialog = MaterialDialog.Builder(activity!!)
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Confirm", AbstractDialog.OnClickListener { dialogInterface, which ->
+
+                    Toast.makeText(context!!, "Confirm", Toast.LENGTH_SHORT).show()
+                    if (firebaseAuth.currentUser != null) {
+                        firebaseAuth.signOut()
+                        sharedPref.edit().clear().apply()
+                    }
+                    startActivity(Intent(context!!, LoginActivity::class.java))
+                    activity!!.finish()
+                })
+                .setNegativeButton("Cancel", AbstractDialog.OnClickListener { dialogInterface, which ->
+
+                    Toast.makeText(context!!, "Cancel", Toast.LENGTH_SHORT).show()
+                    dialogInterface.dismiss()
+                })
+                .setCancelable(true)
+                .build()
+            pDialog.show()
         }
 
         return view;
@@ -160,8 +211,8 @@ class ProfileFragment : Fragment() {
 
         viewModel.topRepositoryList.observe(viewLifecycleOwner, Observer {
             if (it.isNullOrEmpty()) {
-                if (NotificationsProgressBar.visibility == View.VISIBLE)
-                    NotificationsProgressBar.visibility = View.GONE
+//                if (NotificationsProgressBar.visibility == View.VISIBLE)
+//                    NotificationsProgressBar.visibility = View.GONE
             }
             else {
                 recyclerViewTopRepo.adapter = RepositoryAdapter(context!!, it)
@@ -252,5 +303,20 @@ class ProfileFragment : Fragment() {
         })
 
     }
+
+    fun shareUser() {
+
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "Check my Github profile github.com/${tvUserName.text}\n\nShared via *Github Visualizer App*\n " +
+                    "https://play.google.com/store/apps/details?id=project.dheeraj.githubvisualizer")
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+
+    }
+
 
 }

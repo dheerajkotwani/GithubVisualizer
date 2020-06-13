@@ -26,6 +26,7 @@ package project.dheeraj.githubvisualizer.ViewModel
 
 import EventsModel
 import OrganizationsModel
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -48,12 +49,17 @@ class OrganizationsViewModel: ViewModel() {
 
     fun getOrganizations (token: String, username: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableOrgsList.postValue(
-                repository.getOrganizations(
-                    token,
-                    username
-                ) as ArrayList
-            )
+            try {
+                mutableOrgsList.postValue(
+                    repository.getOrganizations(
+                        token,
+                        username
+                    ) as ArrayList
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get Organizations", e.message)
+            }
         }
     }
 

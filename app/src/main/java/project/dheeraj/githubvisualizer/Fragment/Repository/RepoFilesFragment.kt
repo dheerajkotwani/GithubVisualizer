@@ -147,6 +147,20 @@ class RepoFilesFragment : Fragment(), RepoDirInterface {
 
     }
 
+    override fun onItemLongClick(position: Int) {
+
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "${repoDirFiles[position].html_url}\n\nShared via *Github Visualizer App*\n " +
+                    "https://play.google.com/store/apps/details?id=project.dheeraj.githubvisualizer")
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+
+    }
+
     override fun onFileItemClick(position: Int) {
         if (canClick) {
             if (repoDirFiles[position].type == "dir") {
@@ -160,11 +174,13 @@ class RepoFilesFragment : Fragment(), RepoDirInterface {
 
                 var intent = Intent(context!!, CodeViewerActivity::class.java)
                 intent.putExtra("url", repoDirFiles[position].download_url)
+                intent.putExtra("html_url", repoDirFiles[position].html_url)
                 startActivity(intent)
 
             }
         }
     }
+
 
     override fun onDirItemClick(position: Int) {
 
@@ -174,6 +190,8 @@ class RepoFilesFragment : Fragment(), RepoDirInterface {
         adapterDir.notifyDataSetChanged()
 
     }
+
+
 
 
 

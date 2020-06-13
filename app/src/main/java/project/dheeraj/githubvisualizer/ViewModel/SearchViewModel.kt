@@ -26,12 +26,14 @@ package project.dheeraj.githubvisualizer.ViewModel
 
 import NotificationModel
 import SearchModel
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import project.dheeraj.githubvisualizer.Model.SearchModel.SearchRepoModel
 import project.dheeraj.githubvisualizer.Network.GithubApiInterface
 import project.dheeraj.githubvisualizer.Repository.NetworkRepository
 
@@ -40,10 +42,10 @@ class SearchViewModel: ViewModel() {
     private val repository = NetworkRepository(GithubApiInterface())
 
     private var mutableSearchUserList = MutableLiveData<SearchModel>()
-    private var mutableSearchRepoList = MutableLiveData<SearchModel>()
+    private var mutableSearchRepoList = MutableLiveData<SearchRepoModel>()
 
     val searchUserList: LiveData<SearchModel>
-    val searchRepoList: LiveData<SearchModel>
+    val searchRepoList: LiveData<SearchRepoModel>
 
     init {
         searchUserList = mutableSearchUserList
@@ -52,19 +54,65 @@ class SearchViewModel: ViewModel() {
 
     fun getSearchUser (token: String, username: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableSearchUserList.postValue(repository.getSearchUser(
-                token,
-                username
-            ))
+            try {
+                mutableSearchUserList.postValue(
+                    repository.getSearchUser(
+                        token,
+                        username
+                    )
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get Search Repo", e.message)
+            }
         }
     }
 
     fun getSearchRepo (token: String, username: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutableSearchUserList.postValue(repository.getSearchRepo(
-                token,
-                username
-            ))
+            try {
+                mutableSearchRepoList.postValue(
+                    repository.getSearchRepo(
+                        token,
+                        username
+                    )
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get Search Repo", e.message)
+            }
+        }
+    }
+
+    fun getSearchUserSmall (token: String, username: String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            try {
+                mutableSearchUserList.postValue(
+                    repository.getSearchUserSmall(
+                        token,
+                        username
+                    )
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get Search User", e.message)
+            }
+        }
+    }
+
+    fun getSearchRepoSmall (token: String, username: String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            try {
+                mutableSearchRepoList.postValue(
+                    repository.getSearchRepoSmall(
+                        token,
+                        username
+                    )
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get Search Repo", e.message)
+            }
         }
     }
 

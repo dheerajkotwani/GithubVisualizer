@@ -38,6 +38,7 @@ import SearchModel
 import StarredModel
 import project.dheeraj.githubvisualizer.AppConfig
 import project.dheeraj.githubvisualizer.Model.RepositoryModel.RepositoryContentModel
+import project.dheeraj.githubvisualizer.Model.SearchModel.SearchRepoModel
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -117,11 +118,25 @@ interface GithubApiInterface {
     ): Response<SearchModel>
 
     @Headers("Content-Type: application/json")
-    @GET("/search/users?per_page=100")
+    @GET("/search/repositories?per_page=100")
     suspend fun searchRepo(
         @Header("Authorization") user: String,
         @Query("q") username:String
+    ): Response<SearchRepoModel>
+
+    @Headers("Content-Type: application/json")
+    @GET("/search/users?per_page=5")
+    suspend fun searchUserSmall(
+        @Header("Authorization") user: String,
+        @Query("q") username:String
     ): Response<SearchModel>
+
+    @Headers("Content-Type: application/json")
+    @GET("/search/repositories?per_page=5")
+    suspend fun searchRepoSmall(
+        @Header("Authorization") user: String,
+        @Query("q") username:String
+    ): Response<SearchRepoModel>
 
 
     // Repositories
@@ -308,7 +323,5 @@ interface GithubApiInterface {
         @Header("Authorization") token: String,
         @Path("username") username:String
     ): Response<String>
-
-
 
 }

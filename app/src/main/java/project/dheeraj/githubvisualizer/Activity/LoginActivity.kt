@@ -35,8 +35,11 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.view.isVisible
+import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.*
+import kotlinx.android.synthetic.main.activity_login.*
 import okhttp3.*
 import project.dheeraj.githubvisualizer.*
 import project.dheeraj.githubvisualizer.AppConfig.ACCESS_TOKEN
@@ -54,7 +57,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var icon:ImageView
     private lateinit var usernameEditText:TextInputEditText
     private lateinit var passwordEditText:TextInputEditText
-    private lateinit var loginButton:Button
+//    private lateinit var loginButton:Button
     private lateinit var username:String
     private lateinit var password:String
     private lateinit var auth: FirebaseAuth
@@ -73,22 +76,28 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         }
         loginButton.setOnClickListener(this)
 
+
     }
 
     private fun initialiseViews() {
         icon = findViewById(R.id.github_icon)
         usernameEditText = findViewById(R.id.et_username)
         passwordEditText = findViewById(R.id.et_password)
-        loginButton = findViewById(R.id.button_login)
+//        loginButton = findViewById(R.id.loginButton)
         auth = FirebaseAuth.getInstance()
         sharedPref = getSharedPreferences(
             SHARED_PREF, Context.MODE_PRIVATE)
+
+        Glide.with(this)
+            .load(R.drawable.github_loader)
+            .into(gitLoader)
+
 
     }
 
     override fun onClick(view: View) {
         when(view.id){
-            R.id.button_login->checkFields()
+            R.id.loginButton->checkFields()
 
         }
     }
@@ -113,6 +122,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun verifyCredentials(username: String, password: String) {
+
+        if (!loaderImage.isVisible)
+            loaderImage.visibility = View.VISIBLE
+
+        if (loaderImage.isClickable)
+            loaderImage.isClickable = false
+
+        loginButton.isClickable = false
 
         var token: String = Credentials.basic(username, password);
         val provider: OAuthProvider.Builder = OAuthProvider.newBuilder("github.com")
@@ -158,9 +175,29 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                                 "error: ${t.message}",
                                 Toast.LENGTH_LONG
                             ).show()
+
+                            if (loaderImage.isVisible)
+                                loaderImage.visibility = View.GONE
+
+
+                            if (loaderImage.isFocused)
+                                loaderImage.clearFocus()
+
+                            loginButton.isClickable = true
+
                         }
 
                         override fun onResponse(call: Call<GithubUserModel>, response: Response<GithubUserModel>) {
+
+                            if (loaderImage.isVisible)
+                                loaderImage.visibility = View.GONE
+
+
+                            if (loaderImage.isFocused)
+                                loaderImage.clearFocus()
+
+                            loginButton.isClickable = true
+
                             Log.d("RESPONSE", response.message())
                             Log.d("UserName", response.body()!!.login)
 
@@ -175,6 +212,17 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         }
                     })
 
+            }
+            .addOnFailureListener {
+                if (loaderImage.isFocused)
+                    loaderImage.clearFocus()
+
+                if (loaderImage.isVisible)
+                    loaderImage.visibility = View.GONE
+
+                loginButton.isClickable = true
+
+                Toast.makeText(this@LoginActivity, it.message, Toast.LENGTH_SHORT).show()
             }
 
     }

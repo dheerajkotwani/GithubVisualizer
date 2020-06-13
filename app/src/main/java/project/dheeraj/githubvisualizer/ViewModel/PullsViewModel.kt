@@ -25,6 +25,7 @@
 package project.dheeraj.githubvisualizer.ViewModel
 
 import NotificationModel
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -47,10 +48,17 @@ class PullsViewModel: ViewModel() {
 
     fun getPulls (token: String, page: Int) {
         viewModelScope.launch(Dispatchers.Main) {
-            mutablePullsList.postValue(repository.getNotification(
-                token,
-                1
-            ) as ArrayList)
+            try {
+                mutablePullsList.postValue(
+                    repository.getNotification(
+                        token,
+                        1
+                    ) as ArrayList
+                )
+            }
+            catch (e: Exception) {
+                Log.e("Get Pulls", e.message)
+            }
         }
     }
 

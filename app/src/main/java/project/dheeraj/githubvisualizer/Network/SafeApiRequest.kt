@@ -55,4 +55,4 @@ abstract class SafeApiRequest {
 
 }
 
-class ApiException (message : String): IOException(message)
+class ApiException (message : String): Exception(message)

@@ -28,6 +28,9 @@
     android:layout_height="52dp"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:paddingTop="10dp"
     android:paddingBottom="10dp">
 

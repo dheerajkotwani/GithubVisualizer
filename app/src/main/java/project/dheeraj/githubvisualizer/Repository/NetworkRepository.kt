@@ -57,7 +57,11 @@ class NetworkRepository(
 
     suspend fun getSearchUser(token:String, username: String) = apiRequest { api.searchUser(token, username) }
 
-    suspend fun getSearchRepo(token:String, username: String) = apiRequest { api.searchRepo(token, username) }
+    suspend fun getSearchRepo(token:String, repo: String) = apiRequest { api.searchRepo(token, repo) }
+
+    suspend fun getSearchUserSmall(token:String, username: String) = apiRequest { api.searchUserSmall(token, username) }
+
+    suspend fun getSearchRepoSmall(token:String, repo: String) = apiRequest { api.searchRepoSmall(token, repo) }
 
     suspend fun getFollowers(token:String, username: String, page: Int) = apiRequest { api.getFollowers(token, username, page) }
 
