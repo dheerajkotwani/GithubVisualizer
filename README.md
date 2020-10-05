@@ -1,3 +1,5 @@
+![](./screenshots/Github-Visualizer-App.png)
+
 # Github Visualizer
 ### 📲 Android Application to track any user activity on Github built using the Github Developers Api. A sample application to demonstrate how to use Jetpack Architecture Components in an Android Application following the Clean MVVM Architecture concepts. 
 
@@ -12,9 +14,7 @@
 
 <a href='https://play.google.com/store/apps/details?id=project.dheeraj.githubvisualizer'><img align='center' height='85' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'></a>
 
-![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)
-
-## Features
+## 🚀 Features
 - Explore all Feeds at one place.
 - Get list for latest notification.
 - Get details of all the issues and pull request.
@@ -26,7 +26,7 @@
 - Mutliple methods to share data from users and repositories.
 - Clean MVVM Architecture.
 
-## Tech used
+## ⚙ Tech used
 - Github Api
 - Kotlin
 - Model-View-Viewmodel Architecture
@@ -38,19 +38,24 @@
 - Firebase Analytics
 - Firebase Auth
 
-## Screenshots
+## 📷 Screenshots
 <img src ="./screenshots/screenshot_1.png" width="260" />&nbsp;&nbsp;<img src ="./screenshots/screenshot_1(1).png" width="260" />
 <img src ="./screenshots/screenshot_2.png" width="260" />&nbsp;&nbsp;<img src ="./screenshots/screenshot_2(1).png" width="260" />
 <img src ="./screenshots/screenshot_3.png" width="260" />&nbsp;&nbsp;<img src ="./screenshots/screenshot_3(1).png" width="260" />
 
-## Requirements
+## 🎯 Requirements
 - Android 5.0 and Above
 - Min sdk version 21
 
-## Permissions
+## 💻 Permissions
 - Internet
 
-## License
+## 💲 Donate
+##### If you like the project and wanna support me develop new stuff, You can buy me a coffee.
+<a href="https://www.buymeacoffee.com/dheerajkotwani" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png" alt="Buy Me A Coffee" align='center' height='60'></a>
+
+
+## 📝 License
 
 ```
 MIT License
@@ -76,6 +81,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
+![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)
 ![ForTheBadge ANDROID](https://forthebadge.com/images/badges/built-for-android.svg)
 ![ForTheBadge GIT](https://forthebadge.com/images/badges/uses-git.svg)
 
