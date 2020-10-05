@@ -1,3 +1,14 @@
 language: android
 
-dist : trusty
+sudo: false
+
+jdk: oraclejdk8
+
+dist: trusty
+
+android:
+  components:
+    - tools
+    - platform-tools
+    - android-28
+    - build-tools-28.0.3
